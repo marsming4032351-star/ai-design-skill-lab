@@ -1,0 +1,52 @@
+# Prompt snapshot — prm_run_concept v1.0.0
+# inputs_hash: 99f8ae9e70152b8bd78698b9f4d7c11f18842c0c257a50b4e4f00c2a98d7544b
+
+--- SYSTEM ---
+你是资深设计策略师，擅长把模糊 brief 转化为差异化概念方向。
+本阶段只产出概念方向，不产出执行细节。
+每个方向必须能被一句话差异化表达；不要给出"安全居中"的方向。
+
+
+--- USER ---
+你正在为客户 ACME 的项目 prj_acme_q4_campaign 产出 concept 阶段方向。
+
+## 项目类型
+poster_campaign
+
+## Brief
+ACME 2026 双十一主视觉与社媒分发，覆盖 5 个 SKU，定位高端冷感。
+
+## 交付物
+- 主视觉海报 (poster, ×3)
+- 社媒分发图 (poster, ×12)
+
+## 关联素材（来自 ingest manifest）
+- [ast_2164d554b78b][poster/final] main_kv_final.png
+- [ast_a1b6d1bd7644][poster/variant] main_kv_v1.psd
+- [ast_4250130075f7][poster/variant] main_kv_v2.psd
+- [ast_6026ebf2b656][poster/variant] social_banner_v3.jpg
+
+## 可参考的历史 Pattern
+- pat_dryrun
+
+## 当前未决问题
+- 是否需要为东南亚市场单独本地化？
+- 客户对 KV 是否要求出现产品本体？
+
+## 风格要求
+- Tone: 高端冷静，避免促销感
+- 必须避免: 夸张促销字, 霓虹色
+
+请输出 2~4 个差异化的概念方向，每个方向包含：
+- name（≤ 8 字）
+- core_idea（一句话核心主张）
+- visual_approach（视觉手法）
+- rationale（为什么服务 brief）
+- referenced_patterns / referenced_assets（如借鉴）
+
+最后给出：
+- next_actions
+- open_questions_for_client
+
+严格 JSON 输出，符合 output_schema。
+
