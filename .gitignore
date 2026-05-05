@@ -1,0 +1,9 @@
+
+# Obsidian local config
+.obsidian/
+
+# Test artifacts (tmp directories used in end-to-end tests)
+/tmp/v6_*
+/tmp/v6r*
+/tmp/llm_*.json
+/tmp/*_hook.py
