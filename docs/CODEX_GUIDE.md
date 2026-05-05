@@ -4,7 +4,7 @@
 
 ## 1. 仓库结构速览
 
-当前仓库没有根目录 `README.md`。主要项目说明集中在 `CHANGES.md`、`docs/CHANGES.md` 和 `docs/v6_diff_report.md`。
+当前仓库有根目录 `README.md` 作为 GitHub 首页。更详细的项目说明集中在 `CHANGES.md`、`docs/CHANGES.md` 和 `docs/v6_diff_report.md`。
 
 核心目录：
 
@@ -324,7 +324,47 @@ git push origin vX.Y.Z
 git ls-remote origin refs/tags/vX.Y.Z
 ```
 
-## 4. 推荐的 /goal 命令清单
+## 4. Karpathy Guidelines 使用方式
+
+本仓库内置 Codex skill：
+
+```text
+.codex/skills/karpathy-guidelines/SKILL.md
+```
+
+当任务涉及写代码、改脚本、修 bug、review、重构、接入 LLM hook、提交发布，或任何可能扩大 diff 的操作时，先使用这套规则约束执行方式。
+
+四个原则：
+
+- **Think Before Coding**：先说明目标、假设、相关文件和不确定点；有歧义时先澄清，不要静默选择。
+- **Simplicity First**：优先最小实现；不添加未要求的抽象、配置、依赖或扩展点。
+- **Surgical Changes**：只改当前目标需要的文件和行；禁止顺手重构、格式化邻近代码或删除既有死代码。
+- **Goal-Driven Execution**：每个任务必须有验证标准；完成前用真实命令或文件证据证明目标已达成。
+
+推荐给 Codex 的任务前缀：
+
+```text
+使用 karpathy-guidelines。先明确假设和验证标准，只做最小改动，禁止无关重构；完成后给出测试或检查证据。
+```
+
+适合搭配的检查命令：
+
+```bash
+git status --short --branch
+git diff --stat
+python3 -m pytest -q
+```
+
+提交前检查：
+
+```bash
+git diff --cached --name-status
+git log --oneline --decorate -3
+```
+
+如果 Codex 发现需求与现有系统冲突，应先说明冲突和可选方案；如果发现无关问题，应记录为风险或后续建议，不应混入当前 patch。
+
+## 5. 推荐的 /goal 命令清单
 
 可直接复制给 Codex 使用：
 
@@ -364,7 +404,7 @@ git ls-remote origin refs/tags/vX.Y.Z
 /goal 发布 vX.Y.Z。要求检查 clean tree、确认 HEAD、更新必要文档、跑测试、打 tag，并在我确认后 push tag。
 ```
 
-## 5. 必须人工确认的操作
+## 6. 必须人工确认的操作
 
 以下操作必须先停下来确认：
 
@@ -385,7 +425,7 @@ git ls-remote origin refs/tags/vX.Y.Z
 我将要执行 <具体动作>，影响 <文件/远程/目录>。这一步不可自动推断为安全，请确认是否继续。
 ```
 
-## 6. 安全工作流建议
+## 7. 安全工作流建议
 
 常规开发顺序：
 
