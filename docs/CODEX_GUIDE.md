@@ -349,6 +349,16 @@ git ls-remote origin refs/tags/vX.Y.Z
 - **Surgical Changes**：只改当前目标需要的文件和行；禁止顺手重构、格式化邻近代码或删除既有死代码。
 - **Goal-Driven Execution**：每个任务必须有验证标准；完成前用真实命令或文件证据证明目标已达成。
 
+所有 `/goal` 必须遵循同一条执行链：
+
+```text
+Think → Minimal Change → Verify
+```
+
+- **Think**：先明确目标、假设、相关文件、风险和验证标准。
+- **Minimal Change**：只做满足目标的最小改动，不做无关重构或额外抽象。
+- **Verify**：用测试、文件检查、git 证据或远程状态确认目标完成。
+
 推荐给 Codex 的任务前缀：
 
 ```text
