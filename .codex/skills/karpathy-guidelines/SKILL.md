@@ -1,14 +1,26 @@
 ---
 name: karpathy-guidelines
-description: Use when planning, editing, reviewing, or debugging code in this repository to keep Codex work assumption-aware, simple, surgical, and verified by explicit success criteria.
+description: Default development rules for this repository. MUST be used for all coding, debugging, review, refactoring, test, commit, or publish tasks; especially when modifying scripts/run_design.py or any shared/ module.
 license: MIT
 ---
 
 # Karpathy Guidelines for Codex
 
-Use these behavioral rules to reduce common LLM coding mistakes in this repository. They are adapted for Codex from the Karpathy-inspired guidelines in `forrestchang/andrej-karpathy-skills`.
+These are the default development rules for this repository. Use them for every non-trivial task that changes code, tests, scripts, repository guidance, commits, tags, or pushes. They are adapted for Codex from the Karpathy-inspired guidelines in `forrestchang/andrej-karpathy-skills`.
 
 These rules bias toward caution over speed. For trivial one-line changes, apply the spirit without ceremony.
+
+## Default Scope
+
+Apply this skill automatically when working on:
+
+- any file under `scripts/`, including `scripts/run_design.py`;
+- any file under `shared/`;
+- any file under `tests/`;
+- any executable workflow, CLI behavior, loader, schema, recommendation, prompt rendering, or entity update logic;
+- code review, bug fixing, refactoring, test writing, commit, push, or release tasks.
+
+For `scripts/run_design.py` and `shared/` changes, explicitly state the success criteria and verification command before editing.
 
 ## 1. Think Before Coding
 

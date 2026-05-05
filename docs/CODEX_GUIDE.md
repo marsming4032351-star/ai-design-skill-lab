@@ -324,13 +324,21 @@ git push origin vX.Y.Z
 git ls-remote origin refs/tags/vX.Y.Z
 ```
 
-## 4. Karpathy Guidelines 使用方式
+## 4. Karpathy Guidelines 默认执行规则
 
-本仓库内置 Codex skill：
+本仓库将 `karpathy-guidelines` 设为默认开发规范。所有开发、调试、review、重构、测试、commit、push、发布任务都必须遵循该 skill：
 
 ```text
 .codex/skills/karpathy-guidelines/SKILL.md
 ```
+
+尤其在修改以下路径时必须自动应用：
+
+- `scripts/run_design.py`
+- `scripts/*.py`
+- `shared/*.py`
+- `tests/*.py`
+- 涉及 CLI 行为、schema、loader、prompt render、recommendation、rubric、entity update 的任何代码
 
 当任务涉及写代码、改脚本、修 bug、review、重构、接入 LLM hook、提交发布，或任何可能扩大 diff 的操作时，先使用这套规则约束执行方式。
 
@@ -345,6 +353,19 @@ git ls-remote origin refs/tags/vX.Y.Z
 
 ```text
 使用 karpathy-guidelines。先明确假设和验证标准，只做最小改动，禁止无关重构；完成后给出测试或检查证据。
+```
+
+修改 `scripts/run_design.py` 或 `shared/` 时，Codex 必须先写出：
+
+```text
+假设：
+- <本次目标>
+- <相关文件>
+- <不确定点或无>
+
+验证标准：
+- <必须运行的测试或检查>
+- <预期证据>
 ```
 
 适合搭配的检查命令：
