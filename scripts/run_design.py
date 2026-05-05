@@ -44,6 +44,32 @@ from shared import (  # noqa: E402
 
 
 SKILL_VERSION = "0.1.0"
+RUN_DESIGN_EXECUTION_FLOW = [
+    {
+        "phase": "pre-check",
+        "principle": "Think",
+        "check": "decompose task inputs and establish verification criteria",
+    },
+    {
+        "phase": "execution",
+        "principle": "Surgical",
+        "check": "make the smallest scoped change needed for the run",
+    },
+    {
+        "phase": "post-check",
+        "principle": "Verify",
+        "check": "validate generated entities and run pytest for repository changes",
+    },
+]
+
+
+def _execution_flow_help() -> str:
+    lines = ["design-run execution flow:"]
+    for step in RUN_DESIGN_EXECUTION_FLOW:
+        lines.append(
+            f"  - {step['phase']}: {step['principle']} — {step['check']}"
+        )
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -409,7 +435,7 @@ def build_run_fm(
 
 def run_note_body(fm: dict[str, Any]) -> str:
     m = fm["metrics"]
-    return (
+    lines = [
         f"# Run · design-run · {fm['started_at']}\n\n"
         f"- Project: {fm['project_id']}\n"
         f"- Parent run: {fm.get('parent_run_id') or '(none)'}\n"
@@ -418,7 +444,16 @@ def run_note_body(fm: dict[str, Any]) -> str:
         f"- Plan: {fm['entities_created'][0]}\n"
         f"- Assets consumed: {m.get('consumed_assets_count', 0)}\n"
         f"- Directions produced: {m.get('directions_count', 0)}\n"
-    )
+    ]
+    flow = m.get("execution_flow") or []
+    if flow:
+        lines.extend(["\n## Execution Flow\n"])
+        for step in flow:
+            lines.append(
+                f"- {step.get('phase')}: {step.get('principle')} — {step.get('check')}"
+            )
+        lines.append("")
+    return "".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -426,7 +461,11 @@ def run_note_body(fm: dict[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="design-run skill — concept stage executor.")
+    parser = argparse.ArgumentParser(
+        description="design-run skill — concept stage executor.",
+        epilog=_execution_flow_help(),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("--project", required=True, help="Path to project.md")
     parser.add_argument("--manifest", required=True, help="Path to manifest.jsonl from design-ingest")
     parser.add_argument("--prompts-dir", required=True, help="Directory of Prompt entities (50_Prompts/)")
@@ -715,6 +754,7 @@ def main() -> int:
         "patterns_recommended": len(consumed_patterns),
         "pattern_recommendation": pattern_recommendation_log,
         "pattern_reuse_count_increments": pattern_increments,
+        "execution_flow": RUN_DESIGN_EXECUTION_FLOW,
         "elapsed_perf_seconds": round(time.perf_counter() - started_perf, 4),
     }
 
@@ -779,6 +819,9 @@ def main() -> int:
             print(f"    - {r.pattern_id} (score={r.weighted_score}) - {r.title}")
     print(f"Directions:     {len(plan_fm['directions'])}")
     print(f"LLM mode:       {llm_mode}")
+    print("Execution flow:")
+    for step in RUN_DESIGN_EXECUTION_FLOW:
+        print(f"  {step['phase']}: {step['principle']} — {step['check']}")
     print(f"Outcome:        {outcome}")
     print(f"  plan:    {plan_path}")
     print(f"  prompt:  {snapshot_path}")

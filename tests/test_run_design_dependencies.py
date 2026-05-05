@@ -24,6 +24,9 @@ def test_run_design_help_imports_dependency_chain() -> None:
     assert result.returncode == 0, result.stderr
     assert "design-run skill" in result.stdout
     assert "--patterns-dir" in result.stdout
+    assert "pre-check: Think" in result.stdout
+    assert "execution: Surgical" in result.stdout
+    assert "post-check: Verify" in result.stdout
 
 
 def test_pattern_recommendation_loads_rule_and_increments_reuse_count(tmp_path: Path) -> None:
