@@ -32,22 +32,18 @@ Design is a data flow.
 - Pattern auto-generation & recommendation
 - Reusable design intelligence
 - Structured design pipeline
-- AI-operable system (via Codex Guide)
-
----
-
-## 🧪 Demo
-
-(放你刚刚终端运行截图)
+- AI-operable system via [Codex 操作指南](docs/CODEX_GUIDE.md)
 
 ---
 
 ## 🏗 Architecture
 
-- scripts/ → execution layer
-- shared/ → core engine
-- references/ → data layer
-- docs/ → control layer
+![Design Data Factory 8-layer architecture](docs/assets/design-data-factory-architecture.png)
+
+- `scripts/` → execution layer
+- `shared/` → core engine
+- `references/` → data layer
+- `docs/` → control layer
 
 ---
 
