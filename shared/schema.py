@@ -101,7 +101,7 @@ def validate_asset(fm: dict[str, Any]) -> None:
 # Run
 # ---------------------------------------------------------------------------
 
-VALID_SKILLS = {"design-ingest", "design-run", "design-critic", "design-archive"}
+VALID_SKILLS = {"design-ingest", "design-run", "design-critic", "design-archive", "design-generate"}
 VALID_OUTCOMES = {"success", "partial", "failure"}
 
 _RUN_ID_RE = re.compile(r"^run_[a-z_]+_\d{8}_\d{6}_[a-z0-9]{4}$")
@@ -370,6 +370,62 @@ def validate_pattern(fm: dict[str, Any]) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Visual
+# ---------------------------------------------------------------------------
+
+VALID_VISUAL_STATUSES = {"draft", "reviewed", "adopted", "deprecated", "failed"}
+VALID_GENERATORS = {"lovart", "mock"}
+
+_VISUAL_ID_RE = re.compile(r"^vis_\d{8}_\d{6}_[a-f0-9]{4,12}$")
+
+
+def validate_visual(fm: dict[str, Any]) -> None:
+    for f in ("id", "type", "schema_version", "created_at", "updated_at",
+              "status", "created_by"):
+        _require(fm, f, "visual")
+    if fm["type"] != "visual":
+        raise SchemaError(f"visual: type must be 'visual', got {fm['type']!r}")
+    if fm["status"] not in VALID_VISUAL_STATUSES:
+        raise SchemaError(f"visual: status {fm['status']!r} invalid (allowed: {sorted(VALID_VISUAL_STATUSES)})")
+    for f in ("created_at", "updated_at"):
+        v = fm[f]
+        if not isinstance(v, str) or not ISO8601_RE.match(v):
+            raise SchemaError(f"visual: {f} must be ISO8601 UTC, got {v!r}")
+
+    vid = fm["id"]
+    if not _VISUAL_ID_RE.match(vid):
+        raise SchemaError(f"visual: id {vid!r} does not match pattern vis_<timestamp>_<hash>")
+
+    for f in ("source_run_id", "source_plan_id", "source_direction_id",
+              "generated_at", "llm_mode", "generator", "model",
+              "image_path", "image_hash", "image_size_bytes",
+              "output_format", "prompt_used", "style_description"):
+        if f not in fm:
+            raise SchemaError(f"visual: missing required field {f!r}")
+
+    if fm["llm_mode"] not in VALID_LLM_MODES:
+        raise SchemaError(f"visual: llm_mode {fm['llm_mode']!r} invalid")
+    if fm["generator"] not in VALID_GENERATORS:
+        raise SchemaError(f"visual: generator {fm['generator']!r} invalid")
+    if fm["output_format"] not in ("png", "jpeg", "webp"):
+        raise SchemaError(f"visual: output_format {fm['output_format']!r} invalid")
+
+    ih = fm["image_hash"]
+    if not isinstance(ih, str) or not SHA256_RE.match(ih):
+        raise SchemaError(f"visual: image_hash must be sha256 hex, got {ih!r}")
+
+    if not isinstance(fm["image_size_bytes"], int) or fm["image_size_bytes"] < 0:
+        raise SchemaError("visual: image_size_bytes must be non-negative int")
+
+    asset_ids = fm.get("asset_ids") or []
+    if not isinstance(asset_ids, list):
+        raise SchemaError("visual: asset_ids must be a list")
+
+    if not isinstance(fm.get("prompt_used"), str) or not fm["prompt_used"]:
+        raise SchemaError("visual: prompt_used must be non-empty string")
+
+
+# ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
 
@@ -379,6 +435,7 @@ VALIDATORS = {
     "plan": validate_plan,
     "critique": validate_critique,
     "pattern": validate_pattern,
+    "visual": validate_visual,
 }
 
 
