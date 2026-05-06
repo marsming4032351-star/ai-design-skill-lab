@@ -6,6 +6,7 @@ It models a complete loop:
 
 ```text
 ingest -> run -> critic -> archive -> pattern reuse
+                -> generate -> critic-visual -> archive
 ```
 
 Instead of treating design as static files, this repository treats assets, prompts, rules, plans, critiques, runs, and patterns as versioned knowledge that can be inspected, tested, and reused.
@@ -34,6 +35,7 @@ The result is a small but complete foundation for a "Design OS":
 | Run | `scripts/run_design.py` | Plan Markdown, Plan JSONL, prompt snapshot, run log | Generate concept directions from project context |
 | Critic | `scripts/critic_design.py` | Critique Markdown, Critique JSONL, run log | Score a direction with rubric rules |
 | Archive | `scripts/archive_design.py` | Pattern Markdown, Pattern JSONL, run log | Promote a passed direction into reusable knowledge |
+| Generate | `scripts/generate_design.py` | Visual Markdown/JSONL, manifest.jsonl, run log | Turn Plan directions into visual posters via Lovart or mock |
 
 ## Key Features
 
@@ -85,6 +87,27 @@ python3 scripts/run_design.py \
   --llm dry-run
 ```
 
+Generate a Visual from a Plan direction:
+
+```bash
+python3 scripts/generate_design.py \
+  --plan <run-output-dir>/<plan-id>.md \
+  --direction dir_001 \
+  --out <generate-output-dir> \
+  --llm dry-run
+```
+
+Or generate from a manual prompt (no Plan needed):
+
+```bash
+python3 scripts/generate_design.py \
+  --prompt "暗调留白风格，高端餐饮海报" \
+  --manifest <staging-dir>/manifest.jsonl \
+  --asset-ids ast_abc123 \
+  --out <generate-output-dir> \
+  --llm dry-run
+```
+
 Review a generated direction:
 
 ```bash
@@ -109,6 +132,7 @@ The pipeline is built around durable entities:
 - `Plan`: generated concept directions and next actions.
 - `Critique`: weighted score, decision, strengths, weaknesses, and feedback.
 - `Pattern`: reusable design knowledge extracted from accepted work.
+- `Visual`: generated image/poster entity with provenance, hash, and style metadata.
 - `Run`: audit record for a pipeline execution.
 
 ## LLM Integration
