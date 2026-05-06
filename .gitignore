@@ -2,6 +2,13 @@
 # Obsidian local config
 .obsidian/
 
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
 # Test artifacts (tmp directories used in end-to-end tests)
 /tmp/v6_*
 /tmp/v6r*
