@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>聚贤堂 PPT 设计效果样张</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --paper: #faf4e6;
+      --ink: #0e0e10;
+      --muted: #756a5f;
+      --line: rgba(14, 14, 16, 0.18);
+      --gold: #c9a36b;
+      --seal: #a02b2a;
+      --deep: #171411;
+      --ivory: #fffaf0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #201c17;
+      color: var(--ink);
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "STSong", serif;
+    }
+
+    .page {
+      display: grid;
+      gap: 40px;
+      padding: 48px;
+    }
+
+    .note {
+      max-width: 1440px;
+      margin: 0 auto;
+      color: rgba(250, 244, 230, 0.78);
+      font: 14px/1.8 "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .deck {
+      display: grid;
+      gap: 36px;
+      justify-items: center;
+    }
+
+    .slide {
+      position: relative;
+      width: min(1440px, calc(100vw - 96px));
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.36);
+    }
+
+    .slide.dark {
+      background: var(--deep);
+      color: var(--paper);
+    }
+
+    .grain::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(201, 163, 107, 0.08), transparent 24%),
+        linear-gradient(90deg, rgba(255, 250, 240, 0.08), transparent 18%, rgba(0, 0, 0, 0.05) 72%, transparent);
+      mix-blend-mode: multiply;
+    }
+
+    .frame {
+      position: absolute;
+      inset: 42px;
+      border: 1px solid var(--line);
+    }
+
+    .dark .frame {
+      border-color: rgba(250, 244, 230, 0.22);
+    }
+
+    .kicker {
+      font: 13px/1.3 "Avenir Next", "PingFang SC", sans-serif;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .cn-kicker {
+      margin-top: 8px;
+      font: 13px/1.3 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .dark .cn-kicker {
+      color: rgba(250, 244, 230, 0.62);
+    }
+
+    .seal {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      color: var(--seal);
+      font-size: 34px;
+      line-height: 1;
+      opacity: 0.9;
+    }
+
+    .dark .seal {
+      color: var(--gold);
+      opacity: 0.82;
+    }
+
+    .slide-number {
+      position: absolute;
+      right: 64px;
+      bottom: 48px;
+      font: 12px/1 "Avenir Next", sans-serif;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .dark .slide-number {
+      color: rgba(250, 244, 230, 0.55);
+    }
+
+    .cover {
+      display: grid;
+      grid-template-columns: 1fr 0.74fr;
+      padding: 74px 78px;
+    }
+
+    .cover h1 {
+      margin: 72px 0 0;
+      font-size: clamp(68px, 6.1vw, 112px);
+      line-height: 0.98;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .cover .subtitle {
+      margin-top: 32px;
+      max-width: 640px;
+      font: 28px/1.55 "PingFang SC", sans-serif;
+      color: rgba(250, 244, 230, 0.78);
+    }
+
+    .cover .brandmark {
+      align-self: center;
+      justify-self: center;
+      width: 74%;
+      border: 1px solid rgba(201, 163, 107, 0.36);
+      padding: 28px;
+      background: rgba(250, 244, 230, 0.04);
+    }
+
+    .cover .brandmark img {
+      display: block;
+      width: 100%;
+      filter: saturate(0.92) contrast(1.05);
+    }
+
+    .cover-meta {
+      position: absolute;
+      left: 78px;
+      bottom: 62px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: rgba(250, 244, 230, 0.68);
+      font: 13px/1.6 "Avenir Next", "PingFang SC", sans-serif;
+      letter-spacing: 0.12em;
+    }
+
+    .chapter {
+      padding: 80px 78px;
+    }
+
+    .chapter .layout {
+      display: grid;
+      grid-template-columns: 0.74fr 1.26fr;
+      height: 100%;
+      gap: 72px;
+      align-items: center;
+    }
+
+    .chapter-num {
+      font: 140px/0.8 "Didot", "Times New Roman", serif;
+      color: var(--gold);
+    }
+
+    .chapter h2 {
+      margin: 28px 0 0;
+      font-size: 72px;
+      line-height: 1.08;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .chapter .thesis {
+      margin-top: 34px;
+      max-width: 780px;
+      font: 27px/1.7 "PingFang SC", sans-serif;
+      color: #3f3932;
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 54px;
+      border-top: 1px solid var(--line);
+      padding-top: 28px;
+    }
+
+    .market-item {
+      min-height: 162px;
+      border-left: 1px solid var(--line);
+      padding: 4px 24px 0;
+    }
+
+    .market-item strong {
+      display: block;
+      font-size: 26px;
+      font-weight: 500;
+      margin-bottom: 18px;
+    }
+
+    .market-item span {
+      display: block;
+      font: 16px/1.75 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .duality {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100%;
+    }
+
+    .duality .bad,
+    .duality .good {
+      position: relative;
+      padding: 88px 78px;
+    }
+
+    .duality .bad {
+      background: #f2ecdf;
+      color: rgba(14, 14, 16, 0.56);
+    }
+
+    .duality .good {
+      background: var(--deep);
+      color: var(--paper);
+    }
+
+    .duality h2 {
+      margin: 78px 0 28px;
+      font-size: 58px;
+      line-height: 1.08;
+      font-weight: 500;
+    }
+
+    .duality p {
+      max-width: 520px;
+      margin: 0;
+      font: 23px/1.7 "PingFang SC", sans-serif;
+    }
+
+    .duality .mark {
+      position: absolute;
+      top: 72px;
+      right: 72px;
+      font: 82px/1 "Avenir Next", sans-serif;
+      color: var(--gold);
+    }
+
+    .food {
+      display: grid;
+      grid-template-columns: 0.94fr 1.06fr;
+      gap: 0;
+    }
+
+    .food .image {
+      position: relative;
+      height: 100%;
+    }
+
+    .food img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 72% center;
+      filter: contrast(1.02) saturate(0.86);
+    }
+
+    .food .panel {
+      padding: 82px 76px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .food h2 {
+      margin: 40px 0 20px;
+      font-size: 74px;
+      line-height: 1.03;
+      font-weight: 500;
+    }
+
+    .food .en {
+      color: var(--gold);
+      font: 14px/1.4 "Avenir Next", sans-serif;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+
+    .food .desc {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      font: 22px/1.75 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .mood {
+      padding: 74px 78px;
+    }
+
+    .mood h2 {
+      margin: 24px 0 28px;
+      font-size: 62px;
+      line-height: 1.12;
+      font-weight: 500;
+    }
+
+    .mood .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 0.9fr;
+      gap: 18px;
+      height: 462px;
+      margin-top: 34px;
+    }
+
+    .mood figure {
+      position: relative;
+      margin: 0;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .mood figure:first-child {
+      grid-row: span 2;
+    }
+
+    .mood img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.72) contrast(1.06);
+    }
+
+    .mood figcaption {
+      position: absolute;
+      left: 24px;
+      bottom: 20px;
+      padding-top: 10px;
+      min-width: 150px;
+      border-top: 1px solid rgba(250, 244, 230, 0.56);
+      color: var(--paper);
+      font: 17px/1.4 "PingFang SC", sans-serif;
+    }
+
+    .system {
+      padding: 76px 78px;
+      display: grid;
+      grid-template-columns: 0.55fr 1.45fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .system h2 {
+      margin: 34px 0 26px;
+      font-size: 60px;
+      line-height: 1.08;
+      font-weight: 500;
+    }
+
+    .system p {
+      font: 21px/1.75 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .system img {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--ivory);
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 28px;
+      border: 1px solid var(--line);
+    }
+
+    .swatch {
+      min-height: 88px;
+      padding: 18px;
+      font: 12px/1.5 "Avenir Next", "PingFang SC", sans-serif;
+      letter-spacing: 0.08em;
+    }
+
+    .swatch:nth-child(1) { background: #c9a36b; color: #171411; }
+    .swatch:nth-child(2) { background: #0e0e10; color: #faf4e6; }
+    .swatch:nth-child(3) { background: #faf4e6; color: #0e0e10; }
+    .swatch:nth-child(4) { background: #a02b2a; color: #faf4e6; }
+
+    .path {
+      padding: 82px 78px;
+    }
+
+    .path h2 {
+      margin: 28px 0 54px;
+      font-size: 66px;
+      line-height: 1.08;
+      font-weight: 500;
+    }
+
+    .path-line {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 34px;
+    }
+
+    .stage {
+      border-top: 2px solid var(--gold);
+      padding-top: 26px;
+    }
+
+    .stage .when {
+      font: 13px/1.3 "Avenir Next", sans-serif;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .stage h3 {
+      margin: 24px 0 18px;
+      font-size: 38px;
+      line-height: 1.18;
+      font-weight: 500;
+    }
+
+    .stage p {
+      margin: 0;
+      font: 19px/1.7 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .closing {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 76px;
+    }
+
+    .closing h2 {
+      max-width: 920px;
+      margin: 34px auto 0;
+      font-size: 72px;
+      line-height: 1.18;
+      font-weight: 500;
+    }
+
+    .closing p {
+      margin: 42px 0 0;
+      font: 24px/1.5 "PingFang SC", sans-serif;
+      color: rgba(250, 244, 230, 0.68);
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        padding: 20px;
+      }
+
+      .slide {
+        width: calc(100vw - 40px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="note">
+      聚贤堂品牌定位提案 Look & Feel 样张。目标不是替代完整 PPT，而是给出一线设计公司式的母版气质：大留白、强网格、少色彩、真实资产、每页一个判断。
+    </div>
+
+    <section class="deck">
+      <article class="slide dark cover grain">
+        <div>
+          <div class="kicker">JU XIAN TANG · BRAND POSITIONING</div>
+          <h1>聚贤堂<br>小馆有堂气</h1>
+          <div class="subtitle">一座楼下能进的八大堂。让一百块的京鲁菜馆，站得住八大堂的底子。</div>
+        </div>
+        <div class="brandmark">
+          <img src="assets/signboard.png" alt="聚贤堂牌匾视觉">
+        </div>
+        <div class="cover-meta">
+          <span class="seal">賢</span>
+          <span>INTERNAL STRATEGY DECK · 2026</span>
+        </div>
+      </article>
+
+      <article class="slide chapter grain">
+        <div class="frame"></div>
+        <div class="layout">
+          <div>
+            <div class="chapter-num">01</div>
+            <div class="kicker">AN OBSERVATION</div>
+            <div class="cn-kicker">一个判断</div>
+          </div>
+          <div>
+            <h2>北京餐桌上，<br>中间是空的。</h2>
+            <div class="thesis">聚贤堂要占住的不是高端会所，也不是普通京菜，而是一个有老字号底子、有文化厚度、又让普通人敢进的位置。</div>
+            <div class="market-grid">
+              <div class="market-item">
+                <strong>高端会所</strong>
+                <span>庄重、正式、客单高。适合宴请，但离日常太远。</span>
+              </div>
+              <div class="market-item">
+                <strong>日常京菜</strong>
+                <span>亲切、大众、频次高。好进入，但品牌记忆不深。</span>
+              </div>
+              <div class="market-item">
+                <strong>潮流主题餐饮</strong>
+                <span>话题强、传播快。容易热闹，也容易过时。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">02 / 07</div>
+      </article>
+
+      <article class="slide duality">
+        <div class="bad">
+          <div class="kicker">NOT THIS</div>
+          <div class="mark">×</div>
+          <h2>一家卖京鲁菜的餐厅</h2>
+          <p>卷价格、卷出菜速度、卷翻台率。用户记得菜，却未必记得品牌。</p>
+        </div>
+        <div class="good">
+          <div class="kicker">BUT THIS</div>
+          <div class="mark">○</div>
+          <h2>一处承接人生场合的局</h2>
+          <p>不是吃饭，是赴局。不是消费，是入席。把生意从卖菜重新定义为设局。</p>
+        </div>
+      </article>
+
+      <article class="slide food">
+        <div class="image">
+          <img src="assets/xiangling.jpeg" alt="古法炸响铃双汁">
+        </div>
+        <div class="panel">
+          <div class="kicker">PRODUCT ANCHOR</div>
+          <div class="cn-kicker">产品锚点</div>
+          <h2>一道菜，<br>撑起一个品牌。</h2>
+          <div class="en">DEEP-FRIED RESPONSE BELLS</div>
+          <div class="desc">炸响铃双汁不只是招牌菜，而是聚贤堂“有来历、有工艺、有谈资”的味觉证据。菜名负责记忆，技法负责可信，故事负责传播。</div>
+        </div>
+        <div class="slide-number">04 / 07</div>
+      </article>
+
+      <article class="slide mood dark grain">
+        <div class="kicker">SPATIAL MOOD</div>
+        <h2>热闹但不喧哗，<br>老派但不古装。</h2>
+        <div class="grid">
+          <figure>
+            <img src="assets/mood-yanjing.jpg" alt="燕京工艺气质">
+            <figcaption>工艺的厚度</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/mood-room.jpg" alt="老包间气质">
+            <figcaption>包间的体面</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/mood-light.jpg" alt="暖灯空间气质">
+            <figcaption>灯影的温度</figcaption>
+          </figure>
+        </div>
+        <div class="slide-number">05 / 07</div>
+      </article>
+
+      <article class="slide system grain">
+        <div>
+          <div class="kicker">VISUAL SYSTEM</div>
+          <div class="cn-kicker">视觉系统</div>
+          <h2>Logo 不是标志，<br>是堂号系统。</h2>
+          <p>保留标准横向组合、完整牌匾版、圆形印章版三种形态，让门头、菜单、餐具、礼盒和社媒头像拥有同一套身份逻辑。</p>
+          <div class="palette">
+            <div class="swatch">古铜金<br>#C9A36B</div>
+            <div class="swatch">墨黑<br>#0E0E10</div>
+            <div class="swatch">米白<br>#FAF4E6</div>
+            <div class="swatch">印章红<br>#A02B2A</div>
+          </div>
+        </div>
+        <img src="assets/logo-system.png" alt="聚贤堂 Logo 系统">
+        <div class="slide-number">06 / 07</div>
+      </article>
+
+      <article class="slide path grain">
+        <div class="kicker">BUSINESS PATH</div>
+        <div class="cn-kicker">业态路径</div>
+        <h2>菜馆打底，饭庄扩面，堂会树势。</h2>
+        <div class="path-line">
+          <div class="stage">
+            <div class="when">V1 · NOW</div>
+            <h3>京鲁菜馆</h3>
+            <p>200-300 平方米，商场/社区店，人均 100 左右。先验证“小馆有堂气”的模型。</p>
+          </div>
+          <div class="stage">
+            <div class="when">V2 · +18 MONTHS</div>
+            <h3>聚贤堂饭庄</h3>
+            <p>800-1000 平方米，承接聚餐、小宴和商务会面，扩展完整京鲁菜产品线。</p>
+          </div>
+          <div class="stage">
+            <div class="when">V3 · +36 MONTHS</div>
+            <h3>聚贤堂堂会</h3>
+            <p>庭院/旗舰形态，沉浸堂会、文化沙龙和品牌势能空间，承担品牌上限。</p>
+          </div>
+        </div>
+        <div class="slide-number">07 / 07</div>
+      </article>
+
+      <article class="slide dark closing grain">
+        <div>
+          <div class="seal">賢</div>
+          <h2>我们不做新中式。<br>我们做一件更难的事：<br>让一家人均一百的菜馆，站得住八大堂的底子。</h2>
+          <p>聚贤堂 · 宴饮有道，贤者自来</p>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
