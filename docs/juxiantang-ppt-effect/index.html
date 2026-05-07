@@ -947,6 +947,50 @@
         width: calc(100vw - 40px);
       }
     }
+
+    @media print {
+      @page {
+        size: 16in 9in;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 16in;
+        margin: 0;
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .page {
+        display: block;
+        padding: 0;
+        margin: 0;
+      }
+
+      .note {
+        display: none;
+      }
+
+      .deck {
+        display: block;
+      }
+
+      .slide {
+        width: 16in;
+        height: 9in;
+        max-width: none;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+        page-break-after: always;
+      }
+
+      .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+      }
+    }
   </style>
 </head>
 <body>
