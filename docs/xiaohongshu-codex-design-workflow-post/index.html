@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>用 Codex 做设计策划工作流 - 小红书图文</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --paper: #f7f1e8;
+      --ink: #16181d;
+      --muted: #68635d;
+      --line: rgba(22, 24, 29, 0.14);
+      --gold: #bd9460;
+      --blue: #3c6f99;
+      --deep: #202126;
+      --soft: #fffaf1;
+      --green: #4c8b72;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #d8d0c4;
+      color: var(--ink);
+      font-family: "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+    }
+
+    .wrap {
+      display: grid;
+      gap: 40px;
+      justify-items: center;
+      padding: 48px 0;
+    }
+
+    .card {
+      position: relative;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.18)),
+        var(--paper);
+      box-shadow: 0 22px 80px rgba(0,0,0,0.18);
+    }
+
+    .card.dark {
+      background:
+        radial-gradient(circle at 78% 12%, rgba(189,148,96,0.18), transparent 28%),
+        var(--deep);
+      color: var(--paper);
+    }
+
+    .frame {
+      position: absolute;
+      inset: 54px;
+      border: 1px solid var(--line);
+      pointer-events: none;
+    }
+
+    .dark .frame { border-color: rgba(247,241,232,0.18); }
+
+    .pad {
+      position: relative;
+      height: 100%;
+      padding: 82px 78px;
+      z-index: 2;
+    }
+
+    .kicker {
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    h1, h2 {
+      margin: 0;
+      letter-spacing: -0.02em;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin-top: 88px;
+      font-size: 104px;
+      line-height: 1.05;
+    }
+
+    h2 {
+      margin-top: 34px;
+      font-size: 74px;
+      line-height: 1.12;
+    }
+
+    .subtitle {
+      margin-top: 36px;
+      max-width: 780px;
+      font-size: 36px;
+      line-height: 1.55;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .dark .subtitle,
+    .dark .body,
+    .dark .mini,
+    .dark .footer {
+      color: rgba(247,241,232,0.72);
+    }
+
+    .body {
+      margin-top: 42px;
+      font-size: 34px;
+      line-height: 1.72;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .bigline {
+      margin-top: 52px;
+      font-size: 46px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .footer {
+      position: absolute;
+      left: 78px;
+      right: 78px;
+      bottom: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 128px;
+      height: 48px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 0 20px;
+      color: var(--gold);
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .panel {
+      margin-top: 56px;
+      padding: 36px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,0.64);
+    }
+
+    .dark .panel {
+      background: rgba(255,255,255,0.045);
+      border-color: rgba(247,241,232,0.18);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 42px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 42px;
+    }
+
+    .tile {
+      min-height: 150px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,0.62);
+    }
+
+    .dark .tile {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(247,241,232,0.16);
+    }
+
+    .tile b {
+      display: block;
+      color: var(--gold);
+      font-size: 20px;
+      letter-spacing: 0.1em;
+      margin-bottom: 18px;
+    }
+
+    .tile strong {
+      display: block;
+      font-size: 34px;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .tile span {
+      display: block;
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .dark .tile span { color: rgba(247,241,232,0.68); }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+      margin-top: 52px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 94px 1fr;
+      gap: 22px;
+      align-items: center;
+      padding: 22px 26px;
+      background: rgba(255,250,241,0.72);
+      border-left: 5px solid var(--gold);
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .flow-row em {
+      font-style: normal;
+      color: var(--gold);
+      font-size: 24px;
+      letter-spacing: 0.08em;
+    }
+
+    .prompt-box {
+      margin-top: 42px;
+      padding: 32px;
+      background: #15171b;
+      color: #f7f1e8;
+      font: 26px/1.55 "SF Mono", "Menlo", "PingFang SC", monospace;
+      border-radius: 0;
+    }
+
+    .diagram {
+      position: absolute;
+      right: 70px;
+      bottom: 140px;
+      width: 410px;
+      height: 410px;
+      opacity: 0.96;
+    }
+
+    .orbital {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(189,148,96,0.38);
+      border-radius: 50%;
+    }
+
+    .node {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 108px;
+      height: 108px;
+      border-radius: 24px;
+      background: var(--soft);
+      color: var(--ink);
+      border: 1px solid rgba(189,148,96,0.32);
+      font-size: 22px;
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    }
+
+    .node.n1 { top: -24px; left: 150px; }
+    .node.n2 { top: 132px; right: -24px; }
+    .node.n3 { bottom: -24px; left: 150px; }
+    .node.n4 { top: 132px; left: -24px; }
+    .node.center {
+      top: 151px;
+      left: 151px;
+      background: var(--deep);
+      color: var(--paper);
+    }
+
+    .cards-preview {
+      position: absolute;
+      right: 72px;
+      bottom: 142px;
+      width: 440px;
+      height: 500px;
+    }
+
+    .mini-slide {
+      position: absolute;
+      width: 210px;
+      height: 260px;
+      background: var(--soft);
+      border: 1px solid rgba(22,24,29,0.12);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+      padding: 24px;
+    }
+
+    .mini-slide:nth-child(1) { left: 0; top: 0; }
+    .mini-slide:nth-child(2) { right: 0; top: 62px; }
+    .mini-slide:nth-child(3) { left: 70px; bottom: 0; background: var(--deep); color: var(--paper); }
+
+    .mini-slide .bar {
+      width: 72px;
+      height: 6px;
+      background: var(--gold);
+      margin-bottom: 22px;
+    }
+
+    .mini-slide .line {
+      height: 12px;
+      background: rgba(22,24,29,0.16);
+      margin-top: 12px;
+    }
+
+    .mini-slide:nth-child(3) .line { background: rgba(247,241,232,0.18); }
+
+    .checklist {
+      display: grid;
+      gap: 22px;
+      margin-top: 46px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 20px;
+      align-items: start;
+      font-size: 31px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .check i {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-style: normal;
+      font-size: 24px;
+    }
+
+    .formula {
+      margin-top: 70px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .formula .part {
+      min-height: 160px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
+      border: 1px solid rgba(247,241,232,0.16);
+      background: rgba(255,255,255,0.05);
+      font-size: 25px;
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .result {
+      margin-top: 36px;
+      padding: 36px;
+      background: var(--gold);
+      color: var(--deep);
+      font-size: 36px;
+      line-height: 1.32;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .quote {
+      margin-top: 54px;
+      padding-left: 28px;
+      border-left: 6px solid var(--gold);
+      font-size: 40px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card dark" id="card-01">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">AI DESIGN WORKFLOW</div>
+        <h1>用 Codex<br>做设计策划</h1>
+        <div class="subtitle">一套从 brief 到 PPT 交付的工作流</div>
+        <div class="diagram">
+          <div class="orbital">
+            <div class="node n1">Brief</div>
+            <div class="node n2">策略</div>
+            <div class="node n3">PPT</div>
+            <div class="node n4">验证</div>
+            <div class="node center">Codex</div>
+          </div>
+        </div>
+        <div class="footer"><span>适合设计师 / 策划人 / 品牌顾问</span><span>01 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-02">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">WHY CODEX</div>
+        <h2>设计策划<br>不是只靠灵感</h2>
+        <div class="body">真正耗时间的，往往是这些流程型脑力劳动：</div>
+        <div class="grid-2">
+          <div class="tile"><b>01</b><strong>读资料</strong><span>PPT、PDF、图片、旧方案</span></div>
+          <div class="tile"><b>02</b><strong>拆逻辑</strong><span>找主线、找矛盾、找缺口</span></div>
+          <div class="tile"><b>03</b><strong>找定位</strong><span>市场空位、用户理由、品牌资产</span></div>
+          <div class="tile"><b>04</b><strong>交付检查</strong><span>页数、图片、PDF、逻辑闭环</span></div>
+        </div>
+        <div class="footer"><span>AI 不是替代审美，而是整理复杂过程</span><span>02 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-03">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">FULL PROCESS</div>
+        <h2>我的 Codex<br>设计策划流程</h2>
+        <div class="flow">
+          <div class="flow-row"><em>01</em><span>输入资料</span></div>
+          <div class="flow-row"><em>02</em><span>提取信息</span></div>
+          <div class="flow-row"><em>03</em><span>头脑风暴</span></div>
+          <div class="flow-row"><em>04</em><span>搭建策略</span></div>
+          <div class="flow-row"><em>05</em><span>设计 PPT 逻辑</span></div>
+          <div class="flow-row"><em>06</em><span>生成视觉样张</span></div>
+          <div class="flow-row"><em>07</em><span>导出 PDF</span></div>
+          <div class="flow-row"><em>08</em><span>复盘沉淀</span></div>
+        </div>
+        <div class="footer"><span>重点不是一次生成，而是每一步都有证据</span><span>03 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-04">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">STEP 1</div>
+        <h2>先让 Codex<br>读懂资料</h2>
+        <div class="grid-3">
+          <div class="tile"><b>PPT</b><strong>旧方案</strong><span>提取结构与表达</span></div>
+          <div class="tile"><b>PDF</b><strong>资料包</strong><span>读取品牌背景</span></div>
+          <div class="tile"><b>IMAGE</b><strong>视觉资产</strong><span>识别可复用图像</span></div>
+        </div>
+        <div class="prompt-box">请先读取这些资料，提取品牌定位、视觉资产、产品结构、空间叙事和可复用内容。</div>
+        <div class="footer"><span>不要一上来让 AI 直接“给方案”</span><span>04 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-05">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">STEP 2</div>
+        <h2>先诊断，<br>再创作</h2>
+        <div class="checklist">
+          <div class="check"><i>✓</i><span>哪份方案逻辑更强？</span></div>
+          <div class="check"><i>✓</i><span>哪份方案视觉资产更好？</span></div>
+          <div class="check"><i>✓</i><span>哪些内容重复或矛盾？</span></div>
+          <div class="check"><i>✓</i><span>哪些表达不够高级？</span></div>
+          <div class="check"><i>✓</i><span>哪些证据不足？</span></div>
+        </div>
+        <div class="quote">不要简单合并，要判断主次。</div>
+        <div class="footer"><span>多个版本先拆成“策略骨架”和“视觉资产”</span><span>05 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-06">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">STEP 3</div>
+        <h2>把定位变成<br>一句能记住的话</h2>
+        <div class="grid-2">
+          <div class="tile"><b>01</b><strong>找市场空位</strong><span>为什么需要这个品牌？</span></div>
+          <div class="tile"><b>02</b><strong>找品牌资产</strong><span>凭什么是它能做？</span></div>
+          <div class="tile"><b>03</b><strong>找用户理由</strong><span>用户为什么会来？</span></div>
+          <div class="tile"><b>04</b><strong>找一句主张</strong><span>让人能复述和传播</span></div>
+        </div>
+        <div class="prompt-box">请给出 3 个品牌定位方向，并说明每个方向的优缺点和推荐理由。</div>
+        <div class="footer"><span>让 Codex 做多方案比较，而不是只给一个答案</span><span>06 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-07">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">STEP 4</div>
+        <h2>PPT 先搭逻辑，<br>不急着排版</h2>
+        <div class="flow">
+          <div class="flow-row"><em>01</em><span>市场机会</span></div>
+          <div class="flow-row"><em>02</em><span>竞争卡位</span></div>
+          <div class="flow-row"><em>03</em><span>战略定位</span></div>
+          <div class="flow-row"><em>04</em><span>文化 / 产品证据</span></div>
+          <div class="flow-row"><em>05</em><span>体验系统</span></div>
+          <div class="flow-row"><em>06</em><span>视觉系统</span></div>
+          <div class="flow-row"><em>07</em><span>落地路径</span></div>
+        </div>
+        <div class="footer"><span>每一页都要回答一个问题</span><span>07 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-08">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">STEP 5</div>
+        <h2>先做 Look & Feel<br>视觉样张</h2>
+        <div class="body">不用一开始做完整 PPT。先确认关键页型的气质。</div>
+        <div class="cards-preview">
+          <div class="mini-slide"><div class="bar"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+          <div class="mini-slide"><div class="bar"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+          <div class="mini-slide"><div class="bar"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        </div>
+        <div class="grid-2" style="max-width: 540px;">
+          <div class="tile"><b>PAGE</b><strong>封面</strong><span>定调</span></div>
+          <div class="tile"><b>PAGE</b><strong>市场判断</strong><span>开题</span></div>
+          <div class="tile"><b>PAGE</b><strong>产品锚点</strong><span>证据</span></div>
+          <div class="tile"><b>PAGE</b><strong>视觉系统</strong><span>落地</span></div>
+        </div>
+        <div class="footer"><span>先定风格，再扩完整页数</span><span>08 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-09">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">STEP 6-7</div>
+        <h2>扩成完整提案，<br>再验证交付</h2>
+        <div class="grid-2">
+          <div class="tile"><b>补齐</b><strong>目录 / 竞品 / 客群</strong><span>让逻辑能被听懂</span></div>
+          <div class="tile"><b>补齐</b><strong>产品 / 空间 / 应用</strong><span>让方案能落地</span></div>
+          <div class="tile"><b>检查</b><strong>页数 / 图片 / 破版</strong><span>避免交付事故</span></div>
+          <div class="tile"><b>导出</b><strong>PDF / 截图</strong><span>确认可发布可汇报</span></div>
+        </div>
+        <div class="prompt-box">请用浏览器打开预览文件，截图检查页面是否破版，并导出 PDF。</div>
+        <div class="footer"><span>页数不是越多越好，逻辑闭环才重要</span><span>09 / 10</span></div>
+      </div>
+    </section>
+
+    <section class="card dark" id="card-10">
+      <div class="frame"></div>
+      <div class="pad">
+        <div class="kicker">SAVE THIS WORKFLOW</div>
+        <h2>Codex 做设计策划<br>关键不是一个 prompt</h2>
+        <div class="formula">
+          <div class="part">资料<br>输入</div>
+          <div class="part">结构<br>诊断</div>
+          <div class="part">策略<br>推演</div>
+          <div class="part">视觉<br>样张</div>
+          <div class="part">交付<br>验证</div>
+        </div>
+        <div class="result">= 可复用设计策划流程</div>
+        <div class="footer"><span>收藏这套流程，下次做提案可以直接套</span><span>10 / 10</span></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
