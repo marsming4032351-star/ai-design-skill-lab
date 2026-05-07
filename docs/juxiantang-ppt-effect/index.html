@@ -286,6 +286,307 @@
       color: var(--muted);
     }
 
+    .toc {
+      padding: 76px 78px;
+    }
+
+    .toc h2,
+    .matrix h2,
+    .persona h2,
+    .voice h2,
+    .product-system h2,
+    .sequence h2,
+    .application h2,
+    .model h2,
+    .action h2,
+    .brand-credo h2,
+    .format-focus h2 {
+      margin: 26px 0 42px;
+      font-size: 62px;
+      line-height: 1.1;
+      font-weight: 500;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--line);
+      margin-top: 36px;
+      border: 1px solid var(--line);
+    }
+
+    .toc-item {
+      min-height: 174px;
+      padding: 24px;
+      background: rgba(255, 250, 240, 0.68);
+    }
+
+    .toc-item b,
+    .matrix-card b,
+    .persona-card b,
+    .voice-pair b,
+    .product-card b,
+    .sequence-step b,
+    .app-card b,
+    .model-card b,
+    .action-step b {
+      display: block;
+      margin-bottom: 22px;
+      font: 13px/1.2 "Avenir Next", sans-serif;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+    }
+
+    .toc-item strong {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 25px;
+      line-height: 1.22;
+      font-weight: 500;
+    }
+
+    .toc-item span {
+      display: block;
+      font: 16px/1.6 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .matrix,
+    .persona,
+    .voice,
+    .product-system,
+    .sequence,
+    .application,
+    .model,
+    .action,
+    .brand-credo,
+    .format-focus {
+      padding: 76px 78px;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 36px;
+    }
+
+    .matrix-card {
+      min-height: 306px;
+      padding: 28px 24px;
+      border-top: 2px solid var(--gold);
+      background: rgba(255, 250, 240, 0.52);
+    }
+
+    .matrix-card.focus {
+      background: var(--deep);
+      color: var(--paper);
+    }
+
+    .matrix-card h3,
+    .persona-card h3,
+    .product-card h3,
+    .app-card h3,
+    .model-card h3,
+    .action-step h3 {
+      margin: 0 0 18px;
+      font-size: 31px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .matrix-card p,
+    .persona-card p,
+    .product-card p,
+    .app-card p,
+    .model-card p,
+    .action-step p {
+      margin: 0;
+      font: 18px/1.65 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .matrix-card.focus p {
+      color: rgba(250, 244, 230, 0.7);
+    }
+
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .persona-card {
+      min-height: 322px;
+      padding: 30px 26px;
+      border-right: 1px solid var(--line);
+    }
+
+    .persona-card:last-child {
+      border-right: 0;
+    }
+
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .voice-pair {
+      min-height: 144px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.42);
+    }
+
+    .voice-pair strong {
+      display: block;
+      font-size: 29px;
+      font-weight: 500;
+      line-height: 1.18;
+    }
+
+    .voice-pair span {
+      display: block;
+      margin-top: 10px;
+      font: 15px/1.6 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .credo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 44px;
+      border-top: 1px solid rgba(250, 244, 230, 0.22);
+      border-bottom: 1px solid rgba(250, 244, 230, 0.22);
+    }
+
+    .credo {
+      min-height: 300px;
+      padding: 36px 32px;
+      border-right: 1px solid rgba(250, 244, 230, 0.22);
+    }
+
+    .credo:last-child {
+      border-right: 0;
+    }
+
+    .credo b {
+      display: block;
+      margin-bottom: 30px;
+      font: 13px/1.2 "Avenir Next", sans-serif;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+    }
+
+    .credo strong {
+      display: block;
+      margin-bottom: 20px;
+      font-size: 36px;
+      line-height: 1.18;
+      font-weight: 500;
+    }
+
+    .credo span {
+      display: block;
+      font: 19px/1.7 "PingFang SC", sans-serif;
+      color: rgba(250, 244, 230, 0.68);
+    }
+
+    .product-grid,
+    .app-grid,
+    .model-grid,
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 38px;
+    }
+
+    .product-card,
+    .app-card,
+    .model-card,
+    .action-step {
+      min-height: 294px;
+      padding: 30px 28px;
+      border-top: 2px solid var(--gold);
+      background: rgba(255, 250, 240, 0.5);
+    }
+
+    .sequence-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0;
+      margin-top: 36px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sequence-step {
+      min-height: 298px;
+      padding: 28px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .sequence-step:last-child {
+      border-right: 0;
+    }
+
+    .sequence-step strong {
+      display: block;
+      margin-bottom: 18px;
+      font-size: 28px;
+      line-height: 1.16;
+      font-weight: 500;
+    }
+
+    .sequence-step span {
+      font: 16px/1.6 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .format-band {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 48px;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .format-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .metric {
+      min-height: 134px;
+      padding: 24px;
+      background: rgba(255, 250, 240, 0.58);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 14px;
+      font: 16px/1.5 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
     .proof {
       padding: 76px 78px;
       display: grid;
@@ -668,6 +969,25 @@
           <span class="seal">賢</span>
           <span>INTERNAL STRATEGY DECK · 2026</span>
         </div>
+        <div class="slide-number">01 / 26</div>
+      </article>
+
+      <article class="slide toc grain">
+        <div class="frame"></div>
+        <div class="kicker">CONTENTS</div>
+        <div class="cn-kicker">目录</div>
+        <h2>从市场空位，<br>到品牌系统落地。</h2>
+        <div class="toc-grid">
+          <div class="toc-item"><b>01</b><strong>市场机会</strong><span>北京餐桌中间层缺位，聚贤堂要占住“有底子但敢进”。</span></div>
+          <div class="toc-item"><b>02</b><strong>战略定位</strong><span>不是卖京鲁菜，而是承接人生场合的一处局。</span></div>
+          <div class="toc-item"><b>03</b><strong>文化资产</strong><span>八大堂、老舍婚宴、炸响铃、堂会礼数构成可信证据。</span></div>
+          <div class="toc-item"><b>04</b><strong>体验系统</strong><span>产品、空间、视觉、服务共同组织“赴局/入席”。</span></div>
+          <div class="toc-item"><b>05</b><strong>视觉系统</strong><span>Logo、色彩、门头、应用触点统一为堂号系统。</span></div>
+          <div class="toc-item"><b>06</b><strong>业态路径</strong><span>菜馆打底，饭庄扩面，堂会树势。</span></div>
+          <div class="toc-item"><b>07</b><strong>落地模型</strong><span>先验证 V1 小馆模型，再形成阶段动作。</span></div>
+          <div class="toc-item"><b>08</b><strong>品牌宣言</strong><span>让人均一百的京鲁菜馆，站得住八大堂的底子。</span></div>
+        </div>
+        <div class="slide-number">02 / 26</div>
       </article>
 
       <article class="slide logic-map grain">
@@ -702,7 +1022,7 @@
             <span>先用菜馆跑通基本盘，再以饭庄扩面，最后用堂会建立品牌上限。</span>
           </div>
         </div>
-        <div class="slide-number">02 / 11</div>
+        <div class="slide-number">03 / 26</div>
       </article>
 
       <article class="slide chapter grain">
@@ -732,7 +1052,20 @@
             </div>
           </div>
         </div>
-        <div class="slide-number">03 / 11</div>
+        <div class="slide-number">04 / 26</div>
+      </article>
+
+      <article class="slide matrix grain">
+        <div class="kicker">COMPETITIVE MAP</div>
+        <div class="cn-kicker">竞争卡位</div>
+        <h2>聚贤堂不和谁正面卷，<br>而是重新占一个中间位。</h2>
+        <div class="matrix-grid">
+          <div class="matrix-card"><b>HIGH-END</b><h3>正餐会所</h3><p>庄重、正式、客单高，适合商务宴请，但离日常消费太远。</p></div>
+          <div class="matrix-card"><b>EVERYDAY</b><h3>大众京菜</h3><p>进入门槛低，翻台效率高，但文化厚度和品牌溢价不足。</p></div>
+          <div class="matrix-card"><b>TREND</b><h3>潮流主题</h3><p>社交传播强，容易快速出圈，也容易随着热点退潮。</p></div>
+          <div class="matrix-card focus"><b>OUR POSITION</b><h3>小馆有堂气</h3><p>用菜馆身段承接日常，用八大堂底子制造体面与谈资。</p></div>
+        </div>
+        <div class="slide-number">05 / 26</div>
       </article>
 
       <article class="slide duality">
@@ -748,7 +1081,7 @@
           <h2>一处承接人生场合的局</h2>
           <p>不是吃饭，是赴局。不是消费，是入席。把生意从卖菜重新定义为设局。</p>
         </div>
-        <div class="slide-number">04 / 11</div>
+        <div class="slide-number">06 / 26</div>
       </article>
 
       <article class="slide pillars grain">
@@ -772,7 +1105,49 @@
             <p>牌匾、入席、上菜报名、包间题名。堂气负责体面、谈资和场合感。</p>
           </div>
         </div>
-        <div class="slide-number">05 / 11</div>
+        <div class="slide-number">07 / 26</div>
+      </article>
+
+      <article class="slide brand-credo dark grain">
+        <div class="kicker">BRAND CREDO</div>
+        <div class="cn-kicker">品牌信条</div>
+        <h2>宴饮有道，<br>贤者自来。</h2>
+        <div class="credo-grid">
+          <div class="credo"><b>01</b><strong>宴饮有道</strong><span>不是堆砌，是规矩。从入席、奉茶、上菜、敬酒到散席，每一步都有自己的腔调。</span></div>
+          <div class="credo"><b>02</b><strong>贤者自来</strong><span>不靠噱头拉客。把局做对，该来的人自然会来，且愿意一来再来。</span></div>
+          <div class="credo"><b>03</b><strong>群贤入席</strong><span>贤不是高高在上，而是投契。能聊得来、坐得下、来得起，都是贤者。</span></div>
+        </div>
+        <div class="slide-number">08 / 26</div>
+      </article>
+
+      <article class="slide persona grain">
+        <div class="kicker">WHO WILL COME</div>
+        <div class="cn-kicker">入席之人</div>
+        <h2>不画人口画像，<br>画他们为什么来。</h2>
+        <div class="persona-grid">
+          <div class="persona-card"><b>LOCAL</b><h3>本地老客</h3><p>周末家宴、老友小聚。想找一家不端着、但味道正的好馆子。</p></div>
+          <div class="persona-card"><b>URBANITE</b><h3>都市雅士</h3><p>私人请客、商务会面。需要一个有故事、有体面、好带人的地方。</p></div>
+          <div class="persona-card"><b>CULTURAL</b><h3>文化客</h3><p>差旅探店、带外地朋友。想吃到有来历的北京，而不是表面复古。</p></div>
+          <div class="persona-card"><b>OCCASION</b><h3>场合客</h3><p>生日、周年、庆功、求婚。需要一个对得起重要事情的场所。</p></div>
+        </div>
+        <div class="slide-number">09 / 26</div>
+      </article>
+
+      <article class="slide voice grain">
+        <div class="kicker">BRAND VOICE</div>
+        <div class="cn-kicker">品牌语气</div>
+        <h2>聚贤堂说话，<br>要有礼数，也要有人气。</h2>
+        <div class="voice-grid">
+          <div class="voice-pair"><b>01</b><strong>老派</strong><span>不是古装</span></div>
+          <div class="voice-pair"><b>02</b><strong>有礼</strong><span>不是摆谱</span></div>
+          <div class="voice-pair"><b>03</b><strong>文气</strong><span>不是拽文</span></div>
+          <div class="voice-pair"><b>04</b><strong>热闹</strong><span>不是喧哗</span></div>
+          <div class="voice-pair"><b>05</b><strong>讲究</strong><span>不是端着</span></div>
+          <div class="voice-pair"><b>06</b><strong>旧式</strong><span>不是复古</span></div>
+          <div class="voice-pair"><b>07</b><strong>体面</strong><span>不是高攀</span></div>
+          <div class="voice-pair"><b>08</b><strong>有局</strong><span>不是走量</span></div>
+        </div>
+        <div class="slide-number">10 / 26</div>
       </article>
 
       <article class="slide proof grain">
@@ -812,7 +1187,51 @@
             </div>
           </div>
         </div>
-        <div class="slide-number">06 / 11</div>
+        <div class="slide-number">11 / 26</div>
+      </article>
+
+      <article class="slide proof grain">
+        <div>
+          <div class="kicker">EIGHT HALLS</div>
+          <div class="cn-kicker">八大堂资产</div>
+          <h2>堂号不是装饰，<br>是聚贤堂的身份系统。</h2>
+          <p>清末民初，北京饭庄的最高规格是庭院、戏台、宴席和雅集。聚贤堂要从这套“堂”的秩序里，转译出今天用户能进入的餐饮体验。</p>
+        </div>
+        <div class="proof-list">
+          <div class="proof-item"><b>PLACE</b><div><strong>报子街记忆</strong><span>以地名和旧城记忆作为文化坐标，而不是虚构背景。</span></div></div>
+          <div class="proof-item"><b>HALL</b><div><strong>三面有楼，内设戏台</strong><span>为空间叙事提供“入堂、见戏、入席”的结构原型。</span></div></div>
+          <div class="proof-item"><b>CUISINE</b><div><strong>经营鲁菜</strong><span>让京鲁菜馆定位具备历史来处，不只是当代品类选择。</span></div></div>
+          <div class="proof-item"><b>SIGNATURE</b><div><strong>炸响铃双汁</strong><span>让文化资产能被用户点到、吃到、拍到、讲出来。</span></div></div>
+        </div>
+        <div class="slide-number">12 / 26</div>
+      </article>
+
+      <article class="slide proof grain">
+        <div>
+          <div class="kicker">BRAND MOTIF</div>
+          <div class="cn-kicker">品牌母题</div>
+          <h2>老舍婚宴，<br>不是名人故事。</h2>
+          <p>它证明聚贤堂从一开始就是承接人生场合的地方。旧礼与新人、京鲁宴席与现代爱情、报子街与城市记忆，都可以转译成今天的“赴局”体验。</p>
+        </div>
+        <div class="proof-list">
+          <div class="proof-item"><b>EVENT</b><div><strong>一九三一年七月二十八日</strong><span>一个具体日期，让故事有证据感，而不是泛泛怀旧。</span></div></div>
+          <div class="proof-item"><b>SCENE</b><div><strong>婚礼与宴席</strong><span>把品牌从“吃饭”拉到“人生场合”的层面。</span></div></div>
+          <div class="proof-item"><b>MEMORY</b><div><strong>城市共同记忆</strong><span>外地客听得懂，本地客也觉得有来处。</span></div></div>
+          <div class="proof-item"><b>TRANSFER</b><div><strong>今天的局</strong><span>生日、周年、庆功、小宴，都可以承接这条母题。</span></div></div>
+        </div>
+        <div class="slide-number">13 / 26</div>
+      </article>
+
+      <article class="slide product-system grain">
+        <div class="kicker">PRODUCT SYSTEM</div>
+        <div class="cn-kicker">产品结构</div>
+        <h2>一招、一馆、一街，<br>让用户有记忆，也有复购。</h2>
+        <div class="product-grid">
+          <div class="product-card"><b>TIER 01</b><h3>一招</h3><p>招牌复兴。炸响铃双汁、文武烤鸭、天梯鸭掌作为品牌故事的味觉抓手。</p></div>
+          <div class="product-card"><b>TIER 02</b><h3>一馆</h3><p>京鲁闾巷。葱烧海参、干烧大黄鱼和京鲁民间菜，负责主力消费。</p></div>
+          <div class="product-card"><b>TIER 03</b><h3>一街</h3><p>京味小吃。芸豆卷、豌豆黄、小吃档口，提升频次和社交属性。</p></div>
+        </div>
+        <div class="slide-number">14 / 26</div>
       </article>
 
       <article class="slide food">
@@ -826,7 +1245,22 @@
           <div class="en">DEEP-FRIED RESPONSE BELLS</div>
           <div class="desc">炸响铃双汁不只是招牌菜，而是聚贤堂“有来历、有工艺、有谈资”的味觉证据。菜名负责记忆，技法负责可信，故事负责传播。</div>
         </div>
-        <div class="slide-number">07 / 11</div>
+        <div class="slide-number">15 / 26</div>
+      </article>
+
+      <article class="slide sequence grain">
+        <div class="kicker">ENTERING SEQUENCE</div>
+        <div class="cn-kicker">入堂六步</div>
+        <h2>把顾客动线，<br>设计成赴一场局。</h2>
+        <div class="sequence-grid">
+          <div class="sequence-step"><b>01</b><strong>门头</strong><span>见堂名。牌匾、印章和“敢进”的尺度先建立识别。</span></div>
+          <div class="sequence-step"><b>02</b><strong>前厅</strong><span>见来历。聚贤壁讲八大堂、老舍婚宴和报子街。</span></div>
+          <div class="sequence-step"><b>03</b><strong>明档</strong><span>见工艺。挂炉烤鸭、炸响铃现场成为可看的味道。</span></div>
+          <div class="sequence-step"><b>04</b><strong>席间</strong><span>见礼数。上菜报名、茶酒次第、服务话术成体系。</span></div>
+          <div class="sequence-step"><b>05</b><strong>包间</strong><span>见雅集。春笙、夏弦、秋瑟、冬磬，一间一季。</span></div>
+          <div class="sequence-step"><b>06</b><strong>离店</strong><span>留余味。宴罢仍有记忆点，形成复访理由。</span></div>
+        </div>
+        <div class="slide-number">16 / 26</div>
       </article>
 
       <article class="slide mood dark grain">
@@ -846,7 +1280,19 @@
             <figcaption>灯影的温度</figcaption>
           </figure>
         </div>
-        <div class="slide-number">08 / 11</div>
+        <div class="slide-number">17 / 26</div>
+      </article>
+
+      <article class="slide pillars grain">
+        <div class="kicker">PRIVATE ROOMS</div>
+        <div class="cn-kicker">四时阁</div>
+        <h2>包间不编号，<br>一间一季，一季一韵。</h2>
+        <div class="pillar-grid">
+          <div class="pillar"><div class="word">春</div><h3>春笙</h3><p>竹笙、嫩茶、浅木。适合家宴、生日和轻商务。</p></div>
+          <div class="pillar"><div class="word">夏</div><h3>夏弦</h3><p>丝弦、凉席、青瓷。适合小聚、会面和朋友局。</p></div>
+          <div class="pillar"><div class="word">秋</div><h3>秋瑟 / 冬磬</h3><p>桂花、古铜、红炭、深木。适合庆功、宴请和重要场合。</p></div>
+        </div>
+        <div class="slide-number">18 / 26</div>
       </article>
 
       <article class="slide system grain">
@@ -863,7 +1309,31 @@
           </div>
         </div>
         <img src="assets/logo-system.png" alt="聚贤堂 Logo 系统">
-        <div class="slide-number">09 / 11</div>
+        <div class="slide-number">19 / 26</div>
+      </article>
+
+      <article class="slide application grain">
+        <div class="kicker">APPLICATION SYSTEM</div>
+        <div class="cn-kicker">应用系统</div>
+        <h2>视觉要落在触点上，<br>不是停在 Logo 页。</h2>
+        <div class="app-grid">
+          <div class="app-card"><b>FACADE</b><h3>门头与牌匾</h3><p>用完整牌匾版建立第一眼识别，控制“堂”的体面和“馆”的可进入感。</p></div>
+          <div class="app-card"><b>MENU</b><h3>菜单与菜牌</h3><p>用标准横向组合和菜品故事，形成“点菜也是读来历”的体验。</p></div>
+          <div class="app-card"><b>TABLEWARE</b><h3>餐具与杯垫</h3><p>圆形印章版用于杯垫、筷套、贴纸，把“賢”变成高频记忆符号。</p></div>
+        </div>
+        <div class="slide-number">20 / 26</div>
+      </article>
+
+      <article class="slide application grain">
+        <div class="kicker">TOUCHPOINTS</div>
+        <div class="cn-kicker">传播触点</div>
+        <h2>每个触点，<br>都要把人带回“入席”。</h2>
+        <div class="app-grid">
+          <div class="app-card"><b>PACKAGING</b><h3>礼盒与外带</h3><p>礼盒不做国潮堆花纹，采用牌匾、印章和菜名档案化表达。</p></div>
+          <div class="app-card"><b>UNIFORM</b><h3>员工服与话术</h3><p>服装克制，话术有礼。上菜报名、迎送称谓和订位话术保持一致。</p></div>
+          <div class="app-card"><b>SOCIAL</b><h3>社媒与小程序</h3><p>头像用印章版，内容围绕“一个局、一桌菜、一个来历”组织。</p></div>
+        </div>
+        <div class="slide-number">21 / 26</div>
       </article>
 
       <article class="slide path grain">
@@ -887,7 +1357,51 @@
             <p>庭院/旗舰形态，沉浸堂会、文化沙龙和品牌势能空间，承担品牌上限。</p>
           </div>
         </div>
-        <div class="slide-number">10 / 11</div>
+        <div class="slide-number">22 / 26</div>
+      </article>
+
+      <article class="slide format-focus grain">
+        <div class="kicker">V1 FORMAT</div>
+        <div class="cn-kicker">V1 落地模型</div>
+        <h2>先用一家菜馆，<br>验证“小馆有堂气”。</h2>
+        <div class="format-band">
+          <div class="proof-list">
+            <div class="proof-item"><b>LOCATION</b><div><strong>中高端商场 / 成熟社区</strong><span>优先餐饮层、步行街老街、办公社区和历史街区周边。</span></div></div>
+            <div class="proof-item"><b>MODEL</b><div><strong>大厅跑频次，包间做溢价</strong><span>大厅承接日常，包间承接小局，让人均和体验同时成立。</span></div></div>
+            <div class="proof-item"><b>REACH</b><div><strong>3-5 km 基本盘，全城目的性消费</strong><span>周边白领家庭做复购，招牌菜和文化内容拉动远端客流。</span></div></div>
+          </div>
+          <div class="format-metrics">
+            <div class="metric"><strong>200-300㎡</strong><span>商场/社区可复制面积</span></div>
+            <div class="metric"><strong>100-130</strong><span>整店目标人均区间</span></div>
+            <div class="metric"><strong>70%</strong><span>大厅座位承担日常频次</span></div>
+            <div class="metric"><strong>30%</strong><span>包间承接小宴与带客</span></div>
+          </div>
+        </div>
+        <div class="slide-number">23 / 26</div>
+      </article>
+
+      <article class="slide model grain">
+        <div class="kicker">OPERATING MODEL</div>
+        <div class="cn-kicker">经营抓手</div>
+        <h2>不是只做一套视觉，<br>而是让经营有抓手。</h2>
+        <div class="model-grid">
+          <div class="model-card"><b>TRAFFIC</b><h3>一招拉新</h3><p>炸响铃双汁作为内容传播和首次到店的理由。</p></div>
+          <div class="model-card"><b>FREQUENCY</b><h3>一馆复购</h3><p>京鲁闾巷菜承担日常点单和家庭、朋友聚餐。</p></div>
+          <div class="model-card"><b>PREMIUM</b><h3>一局溢价</h3><p>包间、礼数和堂号空间承接重要场合与带客需求。</p></div>
+        </div>
+        <div class="slide-number">24 / 26</div>
+      </article>
+
+      <article class="slide action grain">
+        <div class="kicker">NEXT ACTIONS</div>
+        <div class="cn-kicker">阶段行动</div>
+        <h2>先跑通小馆，<br>再把品牌做大。</h2>
+        <div class="action-grid">
+          <div class="action-step"><b>PHASE 01</b><h3>定母版</h3><p>统一 Logo、色彩、菜单、门头和 PPT 汇报体系，先保证品牌表达一致。</p></div>
+          <div class="action-step"><b>PHASE 02</b><h3>打样店</h3><p>用 V1 菜馆验证产品结构、客单、翻台、包间比例和服务礼数。</p></div>
+          <div class="action-step"><b>PHASE 03</b><h3>扩业态</h3><p>模型跑通后再扩饭庄与堂会，避免第一阶段过重投入。</p></div>
+        </div>
+        <div class="slide-number">25 / 26</div>
       </article>
 
       <article class="slide dark closing grain">
@@ -896,7 +1410,7 @@
           <h2>我们不做新中式。<br>我们做一件更难的事：<br>让一家人均一百的菜馆，站得住八大堂的底子。</h2>
           <p>聚贤堂 · 宴饮有道，贤者自来</p>
         </div>
-        <div class="slide-number">11 / 11</div>
+        <div class="slide-number">26 / 26</div>
       </article>
     </section>
   </main>
