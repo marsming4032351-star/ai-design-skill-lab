@@ -239,6 +239,156 @@
       color: var(--muted);
     }
 
+    .logic-map {
+      padding: 76px 78px;
+    }
+
+    .logic-map h2 {
+      margin: 26px 0 42px;
+      font-size: 64px;
+      line-height: 1.08;
+      font-weight: 500;
+    }
+
+    .logic-chain {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .logic-step {
+      min-height: 220px;
+      padding: 24px 22px;
+      border-top: 2px solid var(--gold);
+      background: rgba(255, 250, 240, 0.42);
+    }
+
+    .logic-step b {
+      display: block;
+      margin-bottom: 26px;
+      font: 13px/1.2 "Avenir Next", sans-serif;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+    }
+
+    .logic-step strong {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 28px;
+      line-height: 1.18;
+      font-weight: 500;
+    }
+
+    .logic-step span {
+      display: block;
+      font: 16px/1.65 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .proof {
+      padding: 76px 78px;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 54px;
+      align-items: center;
+    }
+
+    .proof h2 {
+      margin: 26px 0;
+      font-size: 62px;
+      line-height: 1.1;
+      font-weight: 500;
+    }
+
+    .proof p {
+      margin: 0;
+      font: 22px/1.75 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .proof-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .proof-item {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 22px;
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .proof-item b {
+      font: 13px/1.3 "Avenir Next", sans-serif;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+    }
+
+    .proof-item strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .proof-item span {
+      display: block;
+      font: 18px/1.65 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .pillars {
+      padding: 76px 78px;
+    }
+
+    .pillars h2 {
+      margin: 26px 0 48px;
+      font-size: 66px;
+      line-height: 1.08;
+      font-weight: 500;
+    }
+
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pillar {
+      min-height: 292px;
+      padding: 34px 30px;
+      border-right: 1px solid var(--line);
+    }
+
+    .pillar:last-child {
+      border-right: 0;
+    }
+
+    .pillar .word {
+      margin-bottom: 26px;
+      font-size: 64px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .pillar h3 {
+      margin: 0 0 18px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .pillar p {
+      margin: 0;
+      font: 19px/1.7 "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
     .duality {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -520,6 +670,41 @@
         </div>
       </article>
 
+      <article class="slide logic-map grain">
+        <div class="frame"></div>
+        <div class="kicker">NARRATIVE LOGIC</div>
+        <div class="cn-kicker">汇报逻辑总览</div>
+        <h2>先证明为什么需要它，<br>再证明为什么只能是聚贤堂。</h2>
+        <div class="logic-chain">
+          <div class="logic-step">
+            <b>01</b>
+            <strong>市场有空位</strong>
+            <span>高端太远，日常太薄，潮流太快。北京缺一个有底子、又能日常进入的京鲁菜品牌。</span>
+          </div>
+          <div class="logic-step">
+            <b>02</b>
+            <strong>生意要重定</strong>
+            <span>如果只卖菜，就会同质化；聚贤堂要做的是承接人生场合的一处局。</span>
+          </div>
+          <div class="logic-step">
+            <b>03</b>
+            <strong>品牌有证据</strong>
+            <span>八大堂、老舍婚宴、炸响铃、堂会空间，不是包装概念，而是可转译的资产。</span>
+          </div>
+          <div class="logic-step">
+            <b>04</b>
+            <strong>体验能落地</strong>
+            <span>馆、味、堂分别对应店型、产品和空间礼数，形成可复制的顾客体验。</span>
+          </div>
+          <div class="logic-step">
+            <b>05</b>
+            <strong>模型可生长</strong>
+            <span>先用菜馆跑通基本盘，再以饭庄扩面，最后用堂会建立品牌上限。</span>
+          </div>
+        </div>
+        <div class="slide-number">02 / 11</div>
+      </article>
+
       <article class="slide chapter grain">
         <div class="frame"></div>
         <div class="layout">
@@ -547,7 +732,7 @@
             </div>
           </div>
         </div>
-        <div class="slide-number">02 / 07</div>
+        <div class="slide-number">03 / 11</div>
       </article>
 
       <article class="slide duality">
@@ -563,6 +748,71 @@
           <h2>一处承接人生场合的局</h2>
           <p>不是吃饭，是赴局。不是消费，是入席。把生意从卖菜重新定义为设局。</p>
         </div>
+        <div class="slide-number">04 / 11</div>
+      </article>
+
+      <article class="slide pillars grain">
+        <div class="kicker">POSITIONING SYSTEM</div>
+        <div class="cn-kicker">定位系统</div>
+        <h2>小馆有堂气，<br>不是一句口号，是三件事同时成立。</h2>
+        <div class="pillar-grid">
+          <div class="pillar">
+            <div class="word">馆</div>
+            <h3>先让人敢进</h3>
+            <p>200-300 平方米，商场/社区可复制，人均约 100。小馆决定进入门槛和经营模型。</p>
+          </div>
+          <div class="pillar">
+            <div class="word">味</div>
+            <h3>再让人记住</h3>
+            <p>炸响铃双汁、文武烤鸭、京鲁闾巷菜。味道不是堆菜单，而是建立可传播的招牌锚点。</p>
+          </div>
+          <div class="pillar">
+            <div class="word">堂</div>
+            <h3>最后让人愿意带客</h3>
+            <p>牌匾、入席、上菜报名、包间题名。堂气负责体面、谈资和场合感。</p>
+          </div>
+        </div>
+        <div class="slide-number">05 / 11</div>
+      </article>
+
+      <article class="slide proof grain">
+        <div>
+          <div class="kicker">CULTURAL PROOF</div>
+          <div class="cn-kicker">文化证据</div>
+          <h2>文化不是装饰，<br>是聚贤堂进入市场的理由。</h2>
+          <p>如果没有真实资产，“小馆有堂气”会变成空泛的新中式表达。聚贤堂的优势在于，每个体验动作都能找到来历。</p>
+        </div>
+        <div class="proof-list">
+          <div class="proof-item">
+            <b>ASSET 01</b>
+            <div>
+              <strong>八大堂</strong>
+              <span>提供堂号身份、饭庄规格和老北京宴饮体系的历史底座。</span>
+            </div>
+          </div>
+          <div class="proof-item">
+            <b>ASSET 02</b>
+            <div>
+              <strong>老舍婚宴</strong>
+              <span>证明聚贤堂从一开始就不是普通吃饭之地，而是承接人生场合的地方。</span>
+            </div>
+          </div>
+          <div class="proof-item">
+            <b>ASSET 03</b>
+            <div>
+              <strong>炸响铃双汁</strong>
+              <span>把历史来历转成可点、可拍、可讲述的招牌产品。</span>
+            </div>
+          </div>
+          <div class="proof-item">
+            <b>ASSET 04</b>
+            <div>
+              <strong>堂会礼数</strong>
+              <span>把空间、服务和话术变成体验系统，让一百块的店也有入席感。</span>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">06 / 11</div>
       </article>
 
       <article class="slide food">
@@ -576,12 +826,12 @@
           <div class="en">DEEP-FRIED RESPONSE BELLS</div>
           <div class="desc">炸响铃双汁不只是招牌菜，而是聚贤堂“有来历、有工艺、有谈资”的味觉证据。菜名负责记忆，技法负责可信，故事负责传播。</div>
         </div>
-        <div class="slide-number">04 / 07</div>
+        <div class="slide-number">07 / 11</div>
       </article>
 
       <article class="slide mood dark grain">
         <div class="kicker">SPATIAL MOOD</div>
-        <h2>热闹但不喧哗，<br>老派但不古装。</h2>
+        <h2>空间不是做旧，<br>是把顾客带入一场局。</h2>
         <div class="grid">
           <figure>
             <img src="assets/mood-yanjing.jpg" alt="燕京工艺气质">
@@ -596,7 +846,7 @@
             <figcaption>灯影的温度</figcaption>
           </figure>
         </div>
-        <div class="slide-number">05 / 07</div>
+        <div class="slide-number">08 / 11</div>
       </article>
 
       <article class="slide system grain">
@@ -613,7 +863,7 @@
           </div>
         </div>
         <img src="assets/logo-system.png" alt="聚贤堂 Logo 系统">
-        <div class="slide-number">06 / 07</div>
+        <div class="slide-number">09 / 11</div>
       </article>
 
       <article class="slide path grain">
@@ -637,7 +887,7 @@
             <p>庭院/旗舰形态，沉浸堂会、文化沙龙和品牌势能空间，承担品牌上限。</p>
           </div>
         </div>
-        <div class="slide-number">07 / 07</div>
+        <div class="slide-number">10 / 11</div>
       </article>
 
       <article class="slide dark closing grain">
@@ -646,6 +896,7 @@
           <h2>我们不做新中式。<br>我们做一件更难的事：<br>让一家人均一百的菜馆，站得住八大堂的底子。</h2>
           <p>聚贤堂 · 宴饮有道，贤者自来</p>
         </div>
+        <div class="slide-number">11 / 11</div>
       </article>
     </section>
   </main>
