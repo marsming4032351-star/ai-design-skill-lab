@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLM Wiki 与 GBrain 小红书图文</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --cyan: #48e9ff;
+      --lime: #b8ff5d;
+      --coral: #ff6f61;
+      --ink: #081116;
+      --paper: #f8fbff;
+      --muted: rgba(248, 251, 255, .72);
+      --line: rgba(255, 255, 255, .22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #05080b;
+      color: var(--paper);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      display: grid;
+      gap: 28px;
+      place-items: center;
+      padding: 32px;
+    }
+
+    .card {
+      position: relative;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #071014;
+      isolation: isolate;
+    }
+
+    .bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+    }
+
+    .veil {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(2, 8, 11, .92) 0%, rgba(2, 8, 11, .48) 36%, rgba(2, 8, 11, .82) 100%),
+        radial-gradient(circle at 12% 18%, rgba(72, 233, 255, .26), transparent 31%),
+        radial-gradient(circle at 88% 76%, rgba(184, 255, 93, .16), transparent 32%);
+      z-index: -2;
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.1));
+      z-index: -1;
+    }
+
+    .content {
+      height: 100%;
+      padding: 82px 76px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      background: rgba(6, 18, 24, .58);
+      color: var(--lime);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      backdrop-filter: blur(18px);
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 {
+      max-width: 850px;
+      margin-top: 34px;
+      font-size: 116px;
+      line-height: .95;
+      letter-spacing: 0;
+      font-weight: 950;
+    }
+
+    h2 {
+      max-width: 890px;
+      margin-top: 30px;
+      font-size: 76px;
+      line-height: 1.05;
+      letter-spacing: 0;
+      font-weight: 950;
+    }
+
+    .lead {
+      max-width: 800px;
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 35px;
+      line-height: 1.42;
+      font-weight: 650;
+    }
+
+    .highlight {
+      color: var(--cyan);
+      text-shadow: 0 0 24px rgba(72, 233, 255, .42);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(3, 12, 16, .72);
+      backdrop-filter: blur(20px);
+      padding: 30px;
+      box-shadow: 0 22px 70px rgba(0, 0, 0, .32);
+    }
+
+    .duo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 52px;
+    }
+
+    .box {
+      min-height: 314px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .075);
+      padding: 28px;
+    }
+
+    .box strong,
+    .step strong {
+      display: block;
+      color: var(--paper);
+      font-size: 36px;
+      line-height: 1.05;
+      margin-bottom: 18px;
+      font-weight: 950;
+    }
+
+    .box p {
+      color: var(--muted);
+      font-size: 27px;
+      line-height: 1.42;
+      font-weight: 620;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .chip {
+      padding: 12px 16px;
+      border: 1px solid rgba(72, 233, 255, .34);
+      color: var(--paper);
+      background: rgba(72, 233, 255, .1);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .formula {
+      margin-top: 36px;
+      padding: 26px 28px;
+      border-left: 8px solid var(--lime);
+      background: rgba(184, 255, 93, .12);
+      color: var(--paper);
+      font-size: 36px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .steps {
+      display: grid;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, .38);
+      padding: 22px 24px;
+    }
+
+    .step strong {
+      color: var(--lime);
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 27px;
+      line-height: 1.32;
+      font-weight: 620;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      color: rgba(248, 251, 255, .68);
+      font-size: 24px;
+      font-weight: 750;
+    }
+
+    .save {
+      color: var(--coral);
+      font-size: 31px;
+      font-weight: 950;
+    }
+
+    .number {
+      color: var(--lime);
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body>
+  <section class="card" id="card-01">
+    <img class="bg" src="assets/01-cover-ai-knowledge.png" alt="">
+    <div class="veil"></div>
+    <div class="grain"></div>
+    <div class="content">
+      <main>
+        <span class="eyebrow">AI KNOWLEDGE MAP</span>
+        <h1>LLM Wiki + <span class="highlight">GBrain</span> 是什么？</h1>
+        <p class="lead">别再只把 AI 当聊天框。下一代 Agent 需要一本会长大的知识库，和一个能记住上下文的大脑。</p>
+      </main>
+      <footer class="footer">
+        <span>知识分享 / AI 笔记管理</span>
+        <span class="number">01 / 03</span>
+      </footer>
+    </div>
+  </section>
+
+  <section class="card" id="card-02">
+    <img class="bg" src="assets/02-two-layers.png" alt="">
+    <div class="veil"></div>
+    <div class="grain"></div>
+    <div class="content">
+      <main>
+        <span class="eyebrow">TWO LAYERS</span>
+        <h2>LLM Wiki 管知识，GBrain 管记忆</h2>
+        <div class="duo">
+          <article class="box">
+            <strong>LLM Wiki</strong>
+            <p>把资料、规则、项目决策沉淀成可检索、可编辑、可引用的 Markdown 知识页。</p>
+            <div class="chips">
+              <span class="chip">外部知识库</span>
+              <span class="chip">可审计</span>
+              <span class="chip">适合协作</span>
+            </div>
+          </article>
+          <article class="box">
+            <strong>GBrain</strong>
+            <p>把偏好、上下文、任务状态变成 Agent 可调用的长期记忆层。</p>
+            <div class="chips">
+              <span class="chip">内部记忆</span>
+              <span class="chip">会持续学习</span>
+              <span class="chip">更个性化</span>
+            </div>
+          </article>
+        </div>
+      </main>
+      <footer class="footer">
+        <span>一个像资料库，一个像工作记忆</span>
+        <span class="number">02 / 03</span>
+      </footer>
+    </div>
+  </section>
+
+  <section class="card" id="card-03">
+    <img class="bg" src="assets/03-obsidian-workflow.png" alt="">
+    <div class="veil"></div>
+    <div class="grain"></div>
+    <div class="content">
+      <main>
+        <span class="eyebrow">OBSIDIAN WORKFLOW</span>
+        <h2>普通人怎么用？把 Obsidian 变成 AI 第二大脑</h2>
+        <div class="formula">Obsidian 笔记 + LLM Wiki + GBrain + Tools = 会积累经验的 Agent</div>
+        <div class="steps">
+          <article class="step">
+            <strong>01 资料进 Wiki</strong>
+            <p>会议、项目、灵感、参考案例，都沉淀成结构化 Markdown 页面。</p>
+          </article>
+          <article class="step">
+            <strong>02 规则进记忆</strong>
+            <p>你的审美偏好、写作语气、工作流程，让 GBrain 长期记住。</p>
+          </article>
+          <article class="step">
+            <strong>03 Agent 调用它们</strong>
+            <p>下次做策划、写文案、整理复盘，不用反复交代背景。</p>
+          </article>
+        </div>
+      </main>
+      <footer class="footer">
+        <span class="save">收藏：这是个人 AI 知识系统的雏形</span>
+        <span class="number">03 / 03</span>
+      </footer>
+    </div>
+  </section>
+</body>
+</html>
