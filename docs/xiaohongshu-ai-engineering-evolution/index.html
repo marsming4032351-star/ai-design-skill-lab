@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 工程三阶段演化图文</title>
+  <style>
+    :root {
+      --bg: #070a0e;
+      --ink: #f7fbff;
+      --muted: rgba(247, 251, 255, .72);
+      --line: rgba(247, 251, 255, .18);
+      --cyan: #48e9ff;
+      --lime: #b7ff5a;
+      --coral: #ff7167;
+      --amber: #ffd166;
+      --blue: #6da8ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 36px;
+      display: grid;
+      gap: 32px;
+      place-items: center;
+      background: #05070a;
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .card {
+      position: relative;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(72, 233, 255, .28), transparent 34%),
+        radial-gradient(circle at 88% 20%, rgba(255, 113, 103, .20), transparent 28%),
+        radial-gradient(circle at 72% 84%, rgba(183, 255, 90, .18), transparent 34%),
+        linear-gradient(135deg, #081018 0%, #0b0d12 52%, #0a1412 100%);
+      isolation: isolate;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.7), rgba(0,0,0,.12));
+      z-index: -2;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.36)),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.018), rgba(255,255,255,.018) 1px, transparent 1px, transparent 5px);
+      z-index: -1;
+    }
+
+    .content {
+      height: 100%;
+      padding: 78px 74px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      min-height: 42px;
+      padding: 7px 16px 6px;
+      border: 1px solid var(--line);
+      background: rgba(7, 13, 18, .58);
+      color: var(--lime);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 {
+      margin-top: 30px;
+      max-width: 860px;
+      font-size: 102px;
+      line-height: .98;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-top: 26px;
+      max-width: 900px;
+      font-size: 78px;
+      line-height: 1.06;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin-top: 30px;
+      max-width: 850px;
+      color: var(--muted);
+      font-size: 34px;
+      line-height: 1.42;
+      font-weight: 650;
+    }
+
+    .accent { color: var(--cyan); }
+    .hot { color: var(--coral); }
+    .lime { color: var(--lime); }
+    .amber { color: var(--amber); }
+
+    .timeline {
+      margin-top: 64px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 116px 1fr;
+      gap: 20px;
+      align-items: stretch;
+      min-height: 154px;
+      border: 1px solid var(--line);
+      background: rgba(2, 8, 12, .58);
+      backdrop-filter: blur(14px);
+    }
+
+    .stage .num {
+      display: grid;
+      place-items: center;
+      color: #071014;
+      background: var(--cyan);
+      font-size: 42px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stage:nth-child(2) .num { background: var(--amber); }
+    .stage:nth-child(3) .num { background: var(--lime); }
+
+    .stage-body {
+      padding: 24px 22px 22px 0;
+    }
+
+    .stage-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .stage-title strong {
+      font-size: 36px;
+      line-height: 1.05;
+      font-weight: 950;
+    }
+
+    .stage-title span {
+      color: var(--muted);
+      font-size: 24px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .stage p,
+    .panel p,
+    .mini p,
+    .point p {
+      color: var(--muted);
+      font-size: 27px;
+      line-height: 1.38;
+      font-weight: 620;
+    }
+
+    .diagram {
+      margin-top: 48px;
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .bubble {
+      position: absolute;
+      border: 1px solid var(--line);
+      background: rgba(4, 12, 17, .72);
+      padding: 22px 24px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.28);
+    }
+
+    .bubble strong {
+      display: block;
+      font-size: 31px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
+
+    .bubble p {
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .model {
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border: 2px solid rgba(72, 233, 255, .56);
+      background:
+        radial-gradient(circle, rgba(72,233,255,.28), rgba(72,233,255,.08) 58%, rgba(0,0,0,.38));
+      box-shadow: 0 0 70px rgba(72, 233, 255, .22), inset 0 0 60px rgba(72, 233, 255, .16);
+      font-size: 44px;
+      line-height: 1.12;
+      font-weight: 950;
+    }
+
+    .panel {
+      margin-top: 46px;
+      border: 1px solid var(--line);
+      background: rgba(3, 10, 14, .66);
+      padding: 30px;
+      backdrop-filter: blur(16px);
+    }
+
+    .panel h3 {
+      margin: 0 0 16px;
+      font-size: 36px;
+      line-height: 1.1;
+    }
+
+    .matrix {
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .mini {
+      min-height: 292px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.07);
+      padding: 22px;
+    }
+
+    .mini strong {
+      display: block;
+      font-size: 31px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      font-weight: 950;
+    }
+
+    .formula {
+      margin-top: 42px;
+      padding: 30px;
+      border-left: 8px solid var(--lime);
+      background: rgba(183, 255, 90, .12);
+      font-size: 39px;
+      line-height: 1.25;
+      font-weight: 950;
+    }
+
+    .points {
+      margin-top: 38px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .point {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 16px;
+      align-items: start;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.34);
+      padding: 20px 22px;
+    }
+
+    .dot {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      background: var(--cyan);
+      color: #061014;
+      font-size: 26px;
+      font-weight: 950;
+      border-radius: 50%;
+    }
+
+    .point strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 950;
+    }
+
+    .quote {
+      margin-top: 44px;
+      padding: 36px;
+      border: 1px solid rgba(72, 233, 255, .42);
+      background: rgba(72, 233, 255, .10);
+      font-size: 42px;
+      line-height: 1.26;
+      font-weight: 950;
+    }
+
+    .footer {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      color: rgba(247,251,255,.68);
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 780;
+    }
+
+    .number {
+      color: var(--lime);
+      font-size: 28px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <section class="card" id="card-01">
+    <div class="content">
+      <main>
+        <div class="eyebrow">AI ENGINEERING EVOLUTION</div>
+        <h1>AI 工程正在经历 <span class="accent">三阶段演化</span></h1>
+        <p class="lead">从“怎么问模型”，到“怎么喂信息”，再到“怎么给 Agent 搭一套可控系统”。Harness Engineering 火起来，核心就在这个变化里。</p>
+        <div class="timeline">
+          <div class="stage">
+            <div class="num">01</div>
+            <div class="stage-body">
+              <div class="stage-title"><strong>Prompt Engineering</strong><span>把话说清楚</span></div>
+              <p>优化提示词，让模型更准确理解需求。</p>
+            </div>
+          </div>
+          <div class="stage">
+            <div class="num">02</div>
+            <div class="stage-body">
+              <div class="stage-title"><strong>Context Engineering</strong><span>把信息给对</span></div>
+              <p>管理上下文，把正确资料在正确时机交给模型。</p>
+            </div>
+          </div>
+          <div class="stage">
+            <div class="num">03</div>
+            <div class="stage-body">
+              <div class="stage-title"><strong>Harness Engineering</strong><span>把系统搭稳</span></div>
+              <p>围绕模型设计工具、权限、反馈、评估和执行环境。</p>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer class="footer">
+        <span>Prompt -> Context -> Harness</span>
+        <span class="number">01 / 05</span>
+      </footer>
+    </div>
+  </section>
+
+  <section class="card" id="card-02">
+    <div class="content">
+      <main>
+        <div class="eyebrow">STAGE 01</div>
+        <h2>Prompt Engineering：研究怎么<span class="amber">问问题</span></h2>
+        <p class="lead">它关注的是“发给模型的那句话”。早期模型不够稳，提示词写法会明显影响结果。</p>
+        <div class="panel">
+          <h3>典型动作</h3>
+          <p>补充角色、目标、约束、格式、示例，让模型减少误解。</p>
+        </div>
+        <div class="formula">粗糙问题：帮猫起名<br>更好问题：给一只橘色、活泼、爱玩的小猫起两个字的名字</div>
+        <div class="points">
+          <div class="point">
+            <span class="dot">✓</span>
+            <div><strong>优点</strong><p>上手快，立刻能改善回答质量。</p></div>
+          </div>
+          <div class="point">
+            <span class="dot">!</span>
+            <div><strong>局限</strong><p>只改“怎么说”，解决不了复杂任务里的资料、工具、验证和执行问题。</p></div>
+          </div>
+        </div>
+      </main>
+      <footer class="footer">
+        <span>关键词：提示词 / 约束 / 输出格式</span>
+        <span class="number">02 / 05</span>
+      </footer>
+    </div>
+  </section>
+
+  <section class="card" id="card-03">
+    <div class="content">
+      <main>
+        <div class="eyebrow">STAGE 02</div>
+        <h2>Context Engineering：研究怎么<span class="accent">给信息</span></h2>
+        <p class="lead">Context 不只是 prompt，还包括对话历史、检索资料、工具列表、规则、记忆和环境信息。</p>
+        <div class="matrix">
+          <div class="mini"><strong>压缩</strong><p>对长对话做总结，避免上下文被历史记录撑爆。</p></div>
+          <div class="mini"><strong>检索</strong><p>需要时从文档、代码库、知识库里动态取资料。</p></div>
+          <div class="mini"><strong>披露</strong><p>不一次性塞满信息，用到哪块再给哪块。</p></div>
+        </div>
+        <div class="quote">核心不是“给更多”，而是“在正确时机给正确内容”。</div>
+      </main>
+      <footer class="footer">
+        <span>Prompt 是 Context 的一部分</span>
+        <span class="number">03 / 05</span>
+      </footer>
+    </div>
+  </section>
+
+  <section class="card" id="card-04">
+    <div class="content">
+      <main>
+        <div class="eyebrow">STAGE 03</div>
+        <h2>Harness Engineering：研究怎么<span class="lime">驾驭 Agent</span></h2>
+        <p class="lead">Harness 可以理解为模型外面的“控制系统”：让模型有工具可用、有规则可守、有反馈可改、有环境可跑。</p>
+        <div class="diagram">
+          <div class="model">Large<br>Model</div>
+          <div class="bubble" style="left:0;top:18px;width:300px;"><strong>工具管理</strong><p>文件、浏览器、日志、CI、数据库、部署工具。</p></div>
+          <div class="bubble" style="right:0;top:30px;width:306px;"><strong>权限与边界</strong><p>哪些能做、哪些要确认、哪些必须隔离。</p></div>
+          <div class="bubble" style="left:38px;bottom:22px;width:320px;"><strong>验证反馈</strong><p>测试、lint、截图、指标、评估器、回滚。</p></div>
+          <div class="bubble" style="right:30px;bottom:36px;width:330px;"><strong>任务编排</strong><p>规划、拆解、执行、审查、长期运行。</p></div>
+        </div>
+      </main>
+      <footer class="footer">
+        <span>一个常见说法：Agent = Model + Harness</span>
+        <span class="number">04 / 05</span>
+      </footer>
+    </div>
+  </section>
+
+  <section class="card" id="card-05">
+    <div class="content">
+      <main>
+        <div class="eyebrow">SO WHAT</div>
+        <h2>它是突破，还是炒概念？</h2>
+        <p class="lead">更准确的判断：Harness Engineering 不是全新技术发明，但它是当下很重要的系统工程框架。</p>
+        <div class="points">
+          <div class="point">
+            <span class="dot">1</span>
+            <div><strong>不是凭空冒出来</strong><p>测试框架、评估框架、工具链、CI、日志、权限，这些工程手段早就存在。</p></div>
+          </div>
+          <div class="point">
+            <span class="dot">2</span>
+            <div><strong>新在组织方式</strong><p>它把零散工程能力组织成一套“让 Agent 稳定干活”的系统。</p></div>
+          </div>
+          <div class="point">
+            <span class="dot">3</span>
+            <div><strong>不是终局</strong><p>模型越强，一部分 harness 会被模型能力吸收；但新任务也会需要新的 harness。</p></div>
+          </div>
+        </div>
+        <div class="quote"><span class="hot">结论：</span>Prompt 让 AI 听懂你，Context 让 AI 知道背景，Harness 让 AI 真正能干活。</div>
+      </main>
+      <footer class="footer">
+        <span>收藏这张：AI 工程三阶段心智模型</span>
+        <span class="number">05 / 05</span>
+      </footer>
+    </div>
+  </section>
+</body>
+</html>

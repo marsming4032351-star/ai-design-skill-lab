@@ -41,11 +41,11 @@
 
 ## Obsidian Skills
 
-| Skill | 使用场景 | 使用方法 |
-|---|---|---|
-| `obsidian-cli` | 读写 Obsidian vault、搜索笔记、管理任务/属性、调试插件和主题。 | 当你让我“查 Obsidian 笔记”“创建/移动/搜索 vault 内容”“调试 Obsidian 插件”时触发。 |
-| `obsidian-markdown` | 编写 Obsidian Flavored Markdown，包括 wikilink、embed、callout、frontmatter、标签等。 | 当你让我写或改 Obsidian 笔记、模板、知识库 Markdown 时触发。 |
-| `obsidian-bases` | 创建或编辑 Obsidian Bases `.base` 文件，配置表格/卡片视图、过滤、公式、汇总。 | 当你提到 Obsidian Bases、数据库视图、表格视图、卡片视图、过滤公式时触发。 |
+| Skill               | 使用场景                                                                     | 使用方法                                                       |
+| ------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| `obsidian-cli`      | 读写 Obsidian vault、搜索笔记、管理任务/属性、调试插件和主题。                                  | 当你让我“查 Obsidian 笔记”“创建/移动/搜索 vault 内容”“调试 Obsidian 插件”时触发。 |
+| `obsidian-markdown` | 编写 Obsidian Flavored Markdown，包括 wikilink、embed、callout、frontmatter、标签等。 | 当你让我写或改 Obsidian 笔记、模板、知识库 Markdown 时触发。                   |
+| `obsidian-bases`    | 创建或编辑 Obsidian Bases `.base` 文件，配置表格/卡片视图、过滤、公式、汇总。                      | 当你提到 Obsidian Bases、数据库视图、表格视图、卡片视图、过滤公式时触发。               |
 
 ## 飞书 / Lark Skills
 
@@ -75,22 +75,22 @@
 
 这些是过程类 skills，主要约束我如何规划、执行、验证开发工作。
 
-| Skill | 使用场景 | 使用方法 |
-|---|---|---|
-| `superpowers:using-superpowers` | 每次开始任务时检查是否有适用 skill。 | 作为总入口规则，提醒我先看 skills，再行动。 |
-| `superpowers:brainstorming` | 所有创意、功能、设计、行为改动前的头脑风暴和方案确认。 | 当你让我“设计/策划/做一个功能/改行为”时触发；先了解上下文，再提方案。 |
-| `superpowers:writing-plans` | 根据已确认的规格写详细实施计划。 | 当已有 spec/方案，需要拆成具体任务和文件步骤时触发。 |
-| `superpowers:executing-plans` | 按已写好的实施计划逐步执行。 | 当你让我“按计划执行”或已有计划文档时触发。 |
-| `superpowers:subagent-driven-development` | 用多个独立子任务并行推进开发。 | 当任务可拆成互不冲突的实现块，且允许使用 subagent 时触发。 |
-| `superpowers:dispatching-parallel-agents` | 面对多个独立任务时并行派发 agent。 | 当至少有两个可独立处理的工作块时触发；需用户允许使用 subagents。 |
-| `superpowers:systematic-debugging` | 遇到 bug、测试失败、异常行为时系统化调试。 | 当出现失败、报错、行为不符合预期时触发；先定位原因再修。 |
-| `superpowers:test-driven-development` | 实现功能或修 bug 前使用 TDD。 | 当要写代码改行为时触发；先写失败测试，再实现，再验证。 |
-| `superpowers:verification-before-completion` | 完成前必须做验证，不能只凭感觉说完成。 | 当我要宣称修好、通过、完成、可交付前触发。 |
-| `superpowers:requesting-code-review` | 完成主要实现后请求代码审查。 | 当实现较大或合并前需要质量检查时触发。 |
-| `superpowers:receiving-code-review` | 收到代码审查意见后处理反馈。 | 当你给 review 意见或我收到审查反馈时触发；先验证意见再改。 |
-| `superpowers:finishing-a-development-branch` | 开发分支完成后决定合并、PR、清理等。 | 当实现和测试都完成，要收尾集成时触发。 |
-| `superpowers:using-git-worktrees` | 需要隔离工作区时创建 git worktree。 | 当任务大、当前工作区脏、需要隔离开发时触发。 |
-| `superpowers:writing-skills` | 编写、修改、验证 skills。 | 当你要创建/改进 skill 本身时触发。 |
+| Skill                                        | 使用场景                        | 使用方法                                  |
+| -------------------------------------------- | --------------------------- | ------------------------------------- |
+| `superpowers:using-superpowers`              | 每次开始任务时检查是否有适用 skill。       | 作为总入口规则，提醒我先看 skills，再行动。             |
+| `superpowers:brainstorming`                  | 所有创意、功能、设计、行为改动前的头脑风暴和方案确认。 | 当你让我“设计/策划/做一个功能/改行为”时触发；先了解上下文，再提方案。 |
+| `superpowers:writing-plans`                  | 根据已确认的规格写详细实施计划。            | 当已有 spec/方案，需要拆成具体任务和文件步骤时触发。         |
+| `superpowers:executing-plans`                | 按已写好的实施计划逐步执行。              | 当你让我“按计划执行”或已有计划文档时触发。                |
+| `superpowers:subagent-driven-development`    | 用多个独立子任务并行推进开发。             | 当任务可拆成互不冲突的实现块，且允许使用 subagent 时触发。    |
+| `superpowers:dispatching-parallel-agents`    | 面对多个独立任务时并行派发 agent。        | 当至少有两个可独立处理的工作块时触发；需用户允许使用 subagents。 |
+| `superpowers:systematic-debugging`           | 遇到 bug、测试失败、异常行为时系统化调试。     | 当出现失败、报错、行为不符合预期时触发；先定位原因再修。          |
+| `superpowers:test-driven-development`        | 实现功能或修 bug 前使用 TDD。         | 当要写代码改行为时触发；先写失败测试，再实现，再验证。           |
+| `superpowers:verification-before-completion` | 完成前必须做验证，不能只凭感觉说完成。         | 当我要宣称修好、通过、完成、可交付前触发。                 |
+| `superpowers:requesting-code-review`         | 完成主要实现后请求代码审查。              | 当实现较大或合并前需要质量检查时触发。                   |
+| `superpowers:receiving-code-review`          | 收到代码审查意见后处理反馈。              | 当你给 review 意见或我收到审查反馈时触发；先验证意见再改。     |
+| `superpowers:finishing-a-development-branch` | 开发分支完成后决定合并、PR、清理等。         | 当实现和测试都完成，要收尾集成时触发。                   |
+| `superpowers:using-git-worktrees`            | 需要隔离工作区时创建 git worktree。    | 当任务大、当前工作区脏、需要隔离开发时触发。                |
+| `superpowers:writing-skills`                 | 编写、修改、验证 skills。            | 当你要创建/改进 skill 本身时触发。                 |
 
 ## 本仓库专用 Skill
 

@@ -1,3 +1,91 @@
+# AI Native Design Harness Runtime
+
+Design Data Factory v6 is now evolving into an **AI Native Design Harness Runtime**: a deterministic runtime layer for design agents, review loops, design memory, and reusable design infrastructure.
+
+This repository now has three connected identities:
+
+- **AI Native Design Harness Runtime**: an execution harness for AI-assisted design workflows.
+- **Design Agent Runtime**: a task lifecycle for planner, generator, critic, review, retry, and archive stages.
+- **Design Infrastructure OS**: a structured operating layer for design assets, prompts, rules, critiques, patterns, and run history.
+
+The original Design Data Factory remains the data and pipeline foundation. The Harness adds runtime behavior on top of it.
+
+## Harness Runtime Architecture
+
+```text
+Goal
+  |
+  v
+Runtime
+  |
+  v
+Planner
+  |
+  v
+Generator
+  |
+  v
+Critic
+  |
+  v
+Retry Loop <---- critic feedback
+  |
+  v
+Archive
+  |
+  v
+Pattern
+```
+
+The current Harness runtime is intentionally deterministic. It does not need a live LLM to prove lifecycle behavior, state transitions, event logging, review gates, or retry semantics.
+
+## Feishu Workspace
+
+The Harness Runtime usage guide is also published to Feishu as a mobile-friendly workspace entry:
+
+- [AI Native Design Runtime 使用指南](https://www.feishu.cn/docx/NxtudZxU4oE9rnx48BmcEEb4nbh)
+
+Use Feishu as the publishing surface for Codex and Harness reports, usage guides, and project summaries.
+
+## Current Harness Capabilities
+
+- **Lifecycle**: runs a task through planner, generator, critic, review, archive.
+- **Event log**: records runtime events such as step starts, step finishes, critic pass/fail, retry, review, and run finish.
+- **Review loop**: requests review before archive and can stop with `REVIEW_REQUIRED`.
+- **Retry**: sends critic feedback back to the generator when critic fails.
+- **Archive**: promotes a passing mock visual into a mock archive pattern.
+- **Deterministic runtime**: supports repeatable local execution and tests without real LLM calls.
+
+## CLI Usage
+
+Run the Harness demo:
+
+```bash
+python3 scripts/run_harness_demo.py examples/harness_goal.yaml
+```
+
+The demo prints `run_id`, `review_required`, `retry_count`, `max_retries`, `final_state`, `step_history`, and `event_log`.
+
+## Current Stage
+
+- **M1 Skeleton**: task specs, registry, runtime shell, review decision model.
+- **M2 Runtime Execution**: deterministic planner, generator, critic, review, archive lifecycle.
+- **M3 Review/Retry Loop**: critic feedback loop, retry count, max retries, pass/fail events, final state.
+
+## Next Stage
+
+- **M4 Memory**: feed archived patterns and runtime history back into future planning.
+- **M5 Evaluator**: add repeatable evaluation cases and quality gates for design outputs.
+- **M6 Multi-Agent Runtime**: coordinate multiple specialized design agents under one runtime.
+
+## Why Harness Matters More Than One-Off Image Generation
+
+Single-shot image generation produces an artifact. A Harness produces an operating loop.
+
+For serious design work, the important system is not only the model call. It is the lifecycle around the model: what goal was given, what plan was made, what was generated, how it was judged, what feedback was applied, what was retried, what was archived, and what can be reused later.
+
+The Harness turns AI design from isolated outputs into inspectable infrastructure. That makes design work testable, repeatable, reviewable, and compounding.
+
 # Design Data Factory v6
 
 Design Data Factory is an AI-powered design production system that turns design work into reusable, structured data assets.
@@ -50,6 +138,8 @@ The result is a small but complete foundation for a "Design OS":
 
 ```text
 .
+├── harness/        # AI Native Design Harness Runtime
+├── examples/       # Harness demo goal files
 ├── scripts/        # CLI entry points: ingest, run, critic, archive
 ├── shared/         # loaders, schema validation, prompt rendering, engines
 ├── references/     # sample projects, prompts, rules, patterns, schemas, runs
@@ -155,6 +245,10 @@ The hook receives rendered prompt JSON on stdin and must write model output JSON
 
 ## Documentation
 
+- [Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md): plain-language Harness runtime architecture.
+- [Roadmap](docs/ROADMAP.md): completed milestones and next runtime evolution.
+- [Harness Usage](docs/HARNESS_USAGE.md): CLI demo, retry flow, event log, and final states.
+- [Harness M3 Review Loop](docs/HARNESS_M3_REVIEW_LOOP.md): M3 review/retry behavior.
 - [Codex 操作指南](docs/CODEX_GUIDE.md): how to use Codex safely in this repository.
 - [v6 Change Notes](docs/CHANGES.md): current v6 behavior and architecture decisions.
 - [v6 Diff Report](docs/v6_diff_report.md): merge comparison report.

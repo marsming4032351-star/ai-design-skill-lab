@@ -9,6 +9,12 @@ __pycache__/
 # macOS
 .DS_Store
 
+# Generated output
+output/
+playwright-cli/
+.playwright-cli/
+*.zip
+
 # Test artifacts (tmp directories used in end-to-end tests)
 /tmp/v6_*
 /tmp/v6r*

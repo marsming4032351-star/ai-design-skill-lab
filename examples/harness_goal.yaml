@@ -1,0 +1,12 @@
+id: task_demo_design_loop
+skill_id: design-harness
+requires_review: true
+workspace: output/harness_demo
+max_retries: 1
+inputs:
+  brief: 高端冷感海报
+  llm: dry-run
+  critic_decision: pass
+metadata:
+  source: examples/harness_goal.yaml
+  purpose: manual HarnessRuntime demo
