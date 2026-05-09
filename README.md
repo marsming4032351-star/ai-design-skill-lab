@@ -43,8 +43,9 @@ The current Harness runtime is intentionally deterministic. It does not need a l
 
 Use Feishu as the mobile workspace for Codex and Harness reports, usage guides, and project summaries:
 
-- [AI Native Design Runtime 使用指南](https://www.feishu.cn/docx/VR1udIMLwosSb5xmohZcSgr9nEc)
-- [Mars 的 Codex 使用指南](https://www.feishu.cn/docx/OrlJdlCSYo7w7exV6Vwc4HCAn7c)
+- [AI Native Design Runtime 使用指南](https://www.feishu.cn/docx/Z4nqdERXdonUrtxgdCUcQOpynhd)
+- [Mars 的 Codex 使用指南](https://www.feishu.cn/docx/IC5jdbHWQo9PNHxLvmHcq441nJb)
+- [Git Commit vs Git Push：AI Runtime 日常工作流指南](https://www.feishu.cn/docx/Xmw9djKKSodp9WxxJZAceyasnLb)
 - [AI Native Design Runtime 展示测试页](https://www.feishu.cn/docx/UAy2dLx7Bo1qioxYUGRc7sEFngd)
 
 ## Demo Cockpit / 展示测试界面
@@ -95,7 +96,7 @@ Runtime Timeline shows Goal -> Planner -> Generator -> Critic -> Retry -> Review
 Git workflow guide:
 
 - Local guide: [Git Commit vs Git Push：AI Runtime 日常工作流指南](docs/feishu/GIT_WORKFLOW_GUIDE.md)
-- Feishu guide: pending publish; `lark-cli docs +create` is blocked by missing local app secret keychain entry even though `tokenStatus=valid`.
+- Feishu guide: [Git Commit vs Git Push：AI Runtime 日常工作流指南](https://www.feishu.cn/docx/Xmw9djKKSodp9WxxJZAceyasnLb)
 
 Principles:
 
