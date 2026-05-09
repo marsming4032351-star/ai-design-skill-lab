@@ -39,13 +39,12 @@ Pattern
 
 The current Harness runtime is intentionally deterministic. It does not need a live LLM to prove lifecycle behavior, state transitions, event logging, review gates, or retry semantics.
 
-## Feishu Workspace
+## 移动端飞书文档入口
 
-The Harness Runtime usage guide is also published to Feishu as a mobile-friendly workspace entry:
+Use Feishu as the mobile workspace for Codex and Harness reports, usage guides, and project summaries:
 
-- [AI Native Design Runtime 使用指南](https://www.feishu.cn/docx/NxtudZxU4oE9rnx48BmcEEb4nbh)
-
-Use Feishu as the publishing surface for Codex and Harness reports, usage guides, and project summaries.
+- [AI Native Design Runtime 使用指南](https://www.feishu.cn/docx/VR1udIMLwosSb5xmohZcSgr9nEc)
+- [Mars 的 Codex 使用指南](https://www.feishu.cn/docx/OrlJdlCSYo7w7exV6Vwc4HCAn7c)
 
 ## Current Harness Capabilities
 
