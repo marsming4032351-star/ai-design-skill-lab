@@ -65,6 +65,31 @@ Feishu display document:
 
 - [AI Native Design Runtime 展示测试页](https://www.feishu.cn/docx/UAy2dLx7Bo1qioxYUGRc7sEFngd)
 
+## Runtime Workspace Preview
+
+The Runtime Workspace turns CLI output into a visible operating surface for demos, review, and governance.
+
+Local preview:
+
+```bash
+open demo/runtime_dashboard.html
+open demo/runtime_timeline.html
+open demo/runtime_cockpit.html
+```
+
+Runtime lifecycle diagram:
+
+- [Runtime Flow Mermaid](docs/visuals/runtime_flow.md)
+
+Feishu Workspace:
+
+- Source: [AI Native Design Runtime Workspace](docs/feishu/AI_NATIVE_DESIGN_RUNTIME_WORKSPACE.md)
+- Feishu publish is attempted through `lark-cli docs +create --as user`; if local auth/keychain is blocked, the source document remains the handoff artifact.
+
+Runtime Dashboard shows current state, latest run, retry count, critic result, blocked state, event log, step history, review queue, metrics, and Runtime Company structure.
+
+Runtime Timeline shows Goal -> Planner -> Generator -> Critic -> Retry -> Review -> Archive, including human boundary and event log.
+
 ## Git Workflow / Runtime Governance
 
 Git workflow guide:

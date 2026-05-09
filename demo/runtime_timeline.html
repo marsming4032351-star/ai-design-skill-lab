@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime Timeline</title>
+  <style>
+    :root {
+      --bg: #050608;
+      --panel: #0d0f14;
+      --panel-2: #11141b;
+      --line: #252a35;
+      --text: #f3f5f7;
+      --muted: #8b93a3;
+      --soft: #c7ccd6;
+      --green: #38d996;
+      --blue: #7aa2ff;
+      --amber: #f0bf5a;
+      --red: #ff6b7a;
+      --violet: #a78bfa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(122, 162, 255, 0.14), transparent 32%),
+        linear-gradient(180deg, #050608 0%, #080a0f 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    .shell {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 54px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 18px 0 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .kicker {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: 0.94;
+      letter-spacing: 0;
+      max-width: 820px;
+    }
+
+    .summary {
+      max-width: 360px;
+      color: var(--soft);
+      margin: 6px 0 0;
+      font-size: 15px;
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      margin: 22px 0 26px;
+    }
+
+    .status {
+      background: rgba(13, 15, 20, 0.96);
+      padding: 16px;
+      min-height: 94px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .value {
+      margin-top: 8px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .green { color: var(--green); }
+    .blue { color: var(--blue); }
+    .amber { color: var(--amber); }
+    .red { color: var(--red); }
+    .violet { color: var(--violet); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(13, 15, 20, 0.86);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      color: var(--soft);
+      font-weight: 700;
+    }
+
+    .panel-body { padding: 18px; }
+
+    .runtime-flow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(104px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .node {
+      min-height: 108px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+      position: relative;
+    }
+
+    .node::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -11px;
+      width: 11px;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .node:last-child::after { display: none; }
+
+    .node b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 12px;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 92px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(17, 20, 27, 0.72);
+    }
+
+    .event time {
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .event strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .event p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--soft);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .history {
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-row {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .history-row:last-child { border-bottom: 0; }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(56, 217, 150, 0.1);
+      justify-self: center;
+    }
+
+    .code {
+      margin: 0;
+      padding: 14px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: #dce3ef;
+      background: #080a0f;
+      font-size: 13px;
+    }
+
+    .os-map {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .os-card {
+      padding: 14px;
+      min-height: 112px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .os-card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .os-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .grid {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .status-strip,
+      .os-map {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <div class="kicker">AI Native Design Runtime Workspace</div>
+        <h1>Runtime Timeline</h1>
+      </div>
+      <p class="summary">A visual execution trace for design agents: goal intake, planning, generation, critique, retry, human boundary, and archive.</p>
+    </header>
+
+    <section class="status-strip" aria-label="runtime state">
+      <div class="status"><div class="label">final_state</div><div class="value green">ARCHIVED</div></div>
+      <div class="status"><div class="label">review_required</div><div class="value amber">true</div></div>
+      <div class="status"><div class="label">retry_count</div><div class="value blue">1 / 2</div></div>
+      <div class="status"><div class="label">blocked_state</div><div class="value green">clear</div></div>
+      <div class="status"><div class="label">archive</div><div class="value violet">pattern saved</div></div>
+    </section>
+
+    <section class="grid">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head"><span>Runtime Lifecycle</span><span class="pill">Goal -> Archive</span></div>
+          <div class="panel-body runtime-flow">
+            <div class="node"><b>Human Goal</b><span>Define the design intent and acceptance boundary.</span></div>
+            <div class="node"><b>Planner</b><span>Convert intent into structured task steps.</span></div>
+            <div class="node"><b>Generator</b><span>Create candidate design output.</span></div>
+            <div class="node"><b>Critic</b><span>Evaluate output against goal and rubric.</span></div>
+            <div class="node"><b>Retry</b><span>Apply feedback when the critic fails the output.</span></div>
+            <div class="node"><b>Review</b><span>Stop at a human boundary before publish.</span></div>
+            <div class="node"><b>Archive</b><span>Save reusable pattern and run memory.</span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><span>event_log Timeline</span><span class="pill">observable runtime</span></div>
+          <div class="panel-body timeline">
+            <article class="event"><time>00:00.00</time><div><strong>run_started</strong><p>TaskSpec accepted and RunContext created.</p></div><span class="pill blue">runtime</span></article>
+            <article class="event"><time>00:00.04</time><div><strong>planner_finished</strong><p>Plan contains generator, critic, review, archive.</p></div><span class="pill">planner</span></article>
+            <article class="event"><time>00:00.13</time><div><strong>generator_finished</strong><p>Candidate visual produced for critic inspection.</p></div><span class="pill">generator</span></article>
+            <article class="event"><time>00:00.21</time><div><strong>critic_failed</strong><p>Critic requires stronger alignment with prompt constraints.</p></div><span class="pill red">critic</span></article>
+            <article class="event"><time>00:00.24</time><div><strong>retry_requested</strong><p>Feedback routed to generator, retry_count increments.</p></div><span class="pill amber">retry</span></article>
+            <article class="event"><time>00:00.39</time><div><strong>review_required</strong><p>Human boundary reached before archive promotion.</p></div><span class="pill amber">human</span></article>
+            <article class="event"><time>00:00.48</time><div><strong>archive_finished</strong><p>Approved output archived as reusable pattern memory.</p></div><span class="pill green">archive</span></article>
+          </div>
+        </section>
+      </div>
+
+      <aside class="stack">
+        <section class="panel">
+          <div class="panel-head"><span>step_history</span><span class="pill">ordered trace</span></div>
+          <div class="panel-body history">
+            <div class="history-row"><span class="dot"></span><strong>plan</strong><span class="pill green">done</span></div>
+            <div class="history-row"><span class="dot"></span><strong>generate</strong><span class="pill green">done</span></div>
+            <div class="history-row"><span class="dot"></span><strong>critic</strong><span class="pill red">retry</span></div>
+            <div class="history-row"><span class="dot"></span><strong>generate_retry</strong><span class="pill green">done</span></div>
+            <div class="history-row"><span class="dot"></span><strong>review</strong><span class="pill amber">required</span></div>
+            <div class="history-row"><span class="dot"></span><strong>archive</strong><span class="pill green">done</span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><span>Blocked State</span><span class="pill green">not blocked</span></div>
+          <div class="panel-body">
+            <pre class="code">blocked_state:
+  status: clear
+  reason: null
+  human_action: none
+  policy: pause at external boundary</pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><span>Runtime OS Map</span><span class="pill">control plane</span></div>
+          <div class="panel-body os-map">
+            <div class="os-card"><h3>Execution</h3><p>HarnessRuntime coordinates planner, generator, critic, retry, review, archive.</p></div>
+            <div class="os-card"><h3>Observation</h3><p>Event log and step history make every state transition inspectable.</p></div>
+            <div class="os-card"><h3>Governance</h3><p>Human review and blocked state stop unsafe automation at external boundaries.</p></div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
