@@ -65,6 +65,19 @@ Feishu display document:
 
 - [AI Native Design Runtime 展示测试页](https://www.feishu.cn/docx/UAy2dLx7Bo1qioxYUGRc7sEFngd)
 
+## Git Workflow / Runtime Governance
+
+Git workflow guide:
+
+- Local guide: [Git Commit vs Git Push：AI Runtime 日常工作流指南](docs/feishu/GIT_WORKFLOW_GUIDE.md)
+- Feishu guide: pending publish; `lark-cli docs +create` is blocked by missing local app secret keychain entry even though `tokenStatus=valid`.
+
+Principles:
+
+- `git commit` records local Runtime milestones.
+- `git push` publishes those milestones to GitHub.
+- Review before push, especially for tokens, output, logs, pycache, docs, auth cache, workspace metadata, and local paths.
+
 ## Current Harness Capabilities
 
 - **Lifecycle**: runs a task through planner, generator, critic, review, archive.
