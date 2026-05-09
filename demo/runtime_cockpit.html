@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Native Design Runtime</title>
+  <style>
+    :root {
+      --ink: #111315;
+      --muted: #5f6874;
+      --line: #d9dee5;
+      --panel: #ffffff;
+      --panel-soft: #f6f8fb;
+      --accent: #0f766e;
+      --accent-ink: #084f49;
+      --gold: #a26717;
+      --blue: #315f9f;
+      --bg: #eef2f4;
+      --shadow: 0 18px 40px rgba(17, 19, 21, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.88), rgba(238,242,244,0.96)),
+        repeating-linear-gradient(90deg, rgba(17,19,21,0.04) 0 1px, transparent 1px 64px),
+        repeating-linear-gradient(0deg, rgba(17,19,21,0.035) 0 1px, transparent 1px 64px);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 42px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 0 34px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .mark {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--ink);
+      display: grid;
+      place-items: center;
+      background: var(--panel);
+      box-shadow: 4px 4px 0 rgba(15, 118, 110, 0.18);
+      font-size: 13px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-main,
+    .panel {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: clamp(28px, 5vw, 54px);
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      color: var(--accent-ink);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 18px 0 16px;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      max-width: 780px;
+    }
+
+    .tagline {
+      margin: 0;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: clamp(18px, 2vw, 24px);
+    }
+
+    .hero-footer {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .metric {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .signal-panel {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .signal {
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .signal b {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .signal p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: clamp(24px, 3vw, 36px);
+      letter-spacing: 0;
+    }
+
+    .runtime-map {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(112px, 1fr));
+      gap: 10px;
+      overflow-x: auto;
+      padding: 6px 2px 18px;
+    }
+
+    .node {
+      min-height: 96px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .node::after {
+      content: "→";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .node:last-child::after {
+      content: "";
+    }
+
+    .node small {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .node strong {
+      font-size: 15px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      min-height: 180px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .chip {
+      align-self: flex-start;
+      padding: 4px 8px;
+      border: 1px solid currentColor;
+      color: var(--accent-ink);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .command {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: #15191d;
+      color: #edf5f4;
+      font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .output-item {
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      padding: 12px;
+    }
+
+    .output-item b {
+      display: block;
+      font-size: 14px;
+    }
+
+    .output-item span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .roadmap article {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+      min-height: 150px;
+    }
+
+    .roadmap strong {
+      color: var(--blue);
+    }
+
+    .feishu-links {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .feishu-links a {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 150ms ease, border-color 150ms ease;
+    }
+
+    .feishu-links a:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .feishu-links span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 26px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .split,
+      .cards,
+      .roadmap,
+      .feishu-links {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-footer,
+      .output-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .runtime-map {
+        grid-template-columns: repeat(9, 150px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar">
+      <div class="brand"><span class="mark">RT</span> ai-design-skill-lab</div>
+      <div>AI Infrastructure / Design OS / Feishu Workspace</div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <div class="eyebrow">Runtime Demo Cockpit</div>
+          <h1>AI Native Design Runtime</h1>
+          <p class="tagline">A self-correcting runtime system for design agents.</p>
+        </div>
+        <div class="hero-footer">
+          <div class="metric"><strong>M1</strong><span>Skeleton</span></div>
+          <div class="metric"><strong>M2</strong><span>Runtime Execution</span></div>
+          <div class="metric"><strong>M3</strong><span>Review / Retry Loop</span></div>
+        </div>
+      </div>
+
+      <aside class="panel signal-panel">
+        <div class="signal">
+          <b>Not a single-image tool</b>
+          <p>The value is the lifecycle around generation: planning, critique, retry, review, archive, and memory.</p>
+        </div>
+        <div class="signal">
+          <b>Human steer, agents execute</b>
+          <p>Codex executes scoped goals. Harness records the runtime. Feishu receives the report.</p>
+        </div>
+        <div class="signal">
+          <b>Pause is a feature</b>
+          <p>Blocked state design turns OAuth, external auth, and human approval into explicit runtime states.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <h2>Runtime 全景图</h2>
+      <div class="runtime-map" aria-label="Runtime map">
+        <div class="node"><small>01</small><strong>Human Goal</strong></div>
+        <div class="node"><small>02</small><strong>Codex</strong></div>
+        <div class="node"><small>03</small><strong>Harness Runtime</strong></div>
+        <div class="node"><small>04</small><strong>Planner</strong></div>
+        <div class="node"><small>05</small><strong>Generator</strong></div>
+        <div class="node"><small>06</small><strong>Critic</strong></div>
+        <div class="node"><small>07</small><strong>Retry Loop</strong></div>
+        <div class="node"><small>08</small><strong>Archive</strong></div>
+        <div class="node"><small>09</small><strong>Feishu Workspace</strong></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>当前能力</h2>
+      <div class="cards">
+        <article class="card">
+          <span class="chip">M1</span>
+          <div>
+            <h3>Skeleton</h3>
+            <p>TaskSpec, RunContext, StepResult, SkillRegistry, ReviewDecision, and the runtime shell.</p>
+          </div>
+        </article>
+        <article class="card">
+          <span class="chip">M2</span>
+          <div>
+            <h3>Runtime Execution</h3>
+            <p>Deterministic planner, generator, critic, review, and archive lifecycle.</p>
+          </div>
+        </article>
+        <article class="card">
+          <span class="chip">M3</span>
+          <div>
+            <h3>Review / Retry Loop</h3>
+            <p>Critic feedback returns to the generator until pass or max retry exhaustion.</p>
+          </div>
+        </article>
+        <article class="card">
+          <span class="chip">Boundary</span>
+          <div>
+            <h3>Blocked State</h3>
+            <p>WAITING_AUTH, WAITING_HUMAN, BLOCKED_EXTERNAL, PAUSED, and RESUMABLE as design states.</p>
+          </div>
+        </article>
+        <article class="card">
+          <span class="chip">Workspace</span>
+          <div>
+            <h3>Feishu Workspace</h3>
+            <p>Guides and reports are published to Feishu for mobile reading and stakeholder review.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section split">
+      <article class="panel">
+        <h2>Demo 运行命令</h2>
+        <code class="command">python3 scripts/run_harness_demo.py examples/harness_goal.yaml</code>
+        <p class="footer-note">Run from the repository root. The demo uses deterministic mock stages and does not call a live LLM.</p>
+      </article>
+
+      <article class="panel">
+        <h2>输出解释</h2>
+        <div class="output-grid">
+          <div class="output-item"><b>run_id</b><span>本次运行的唯一编号。</span></div>
+          <div class="output-item"><b>final_state</b><span>ARCHIVED, FAILED, or REVIEW_REQUIRED.</span></div>
+          <div class="output-item"><b>step_history</b><span>每个阶段返回的 StepResult。</span></div>
+          <div class="output-item"><b>event_log</b><span>Runtime 决策与事件轨迹。</span></div>
+          <div class="output-item"><b>review_required</b><span>是否声明需要 review gate。</span></div>
+          <div class="output-item"><b>retry_count</b><span>已启动的重试次数。</span></div>
+          <div class="output-item"><b>max_retries</b><span>允许的最大重试次数。</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>下一阶段路线</h2>
+      <div class="roadmap">
+        <article><strong>M4 Memory</strong><p>Use archived patterns and prior run history as planning context for future tasks.</p></article>
+        <article><strong>M5 Evaluator</strong><p>Add golden cases, regression checks, and quality gates before archive or promotion.</p></article>
+        <article><strong>M6 Multi-Agent Runtime</strong><p>Coordinate planner, generator, critic, memory, archive, and human review agents.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>飞书移动端入口</h2>
+      <div class="feishu-links">
+        <a href="https://www.feishu.cn/docx/VR1udIMLwosSb5xmohZcSgr9nEc">
+          <strong>AI Native Design Runtime 使用指南</strong>
+          <span>仓库定位、Runtime 模块、M1/M2/M3、路线图。</span>
+        </a>
+        <a href="https://www.feishu.cn/docx/OrlJdlCSYo7w7exV6Vwc4HCAn7c">
+          <strong>Mars 的 Codex 使用指南</strong>
+          <span>/goal 写法、Git 流程、飞书发布、Blocked State。</span>
+        </a>
+        <a href="https://www.feishu.cn/docx/UAy2dLx7Bo1qioxYUGRc7sEFngd">
+          <strong>Runtime Demo Cockpit</strong>
+          <span>展示测试页说明、演示话术和后续飞书工作台演化。</span>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

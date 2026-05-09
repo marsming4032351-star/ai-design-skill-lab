@@ -45,6 +45,25 @@ Use Feishu as the mobile workspace for Codex and Harness reports, usage guides, 
 
 - [AI Native Design Runtime 使用指南](https://www.feishu.cn/docx/VR1udIMLwosSb5xmohZcSgr9nEc)
 - [Mars 的 Codex 使用指南](https://www.feishu.cn/docx/OrlJdlCSYo7w7exV6Vwc4HCAn7c)
+- [AI Native Design Runtime 展示测试页](https://www.feishu.cn/docx/UAy2dLx7Bo1qioxYUGRc7sEFngd)
+
+## Demo Cockpit / 展示测试界面
+
+Open the local single-file cockpit:
+
+```bash
+open demo/runtime_cockpit.html
+```
+
+Run the deterministic Harness demo:
+
+```bash
+python3 scripts/run_harness_demo.py examples/harness_goal.yaml
+```
+
+Feishu display document:
+
+- [AI Native Design Runtime 展示测试页](https://www.feishu.cn/docx/UAy2dLx7Bo1qioxYUGRc7sEFngd)
 
 ## Current Harness Capabilities
 
