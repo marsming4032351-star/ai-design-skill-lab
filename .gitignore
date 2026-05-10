@@ -26,3 +26,4 @@ references/beautiful-html-templates/
 /tmp/v6r*
 /tmp/llm_*.json
 /tmp/*_hook.py
+00_Inbox_Staging/*.md
