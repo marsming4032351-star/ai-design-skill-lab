@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从刷到开源项目到 Codex 分析沉淀 - 小红书图文</title>
+  <style>
+    :root {
+      --ink: #f8fafc;
+      --muted: rgba(248, 250, 252, 0.72);
+      --paper: #f5efe4;
+      --dark: #0b1018;
+      --panel: rgba(15, 23, 42, 0.82);
+      --line: rgba(255, 255, 255, 0.14);
+      --amber: #f6b44b;
+      --blue: #75a7ff;
+      --green: #9be7b1;
+      --red: #ff7a5c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #111827;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    }
+
+    main {
+      display: grid;
+      gap: 32px;
+      padding: 32px;
+      justify-content: center;
+    }
+
+    .card {
+      position: relative;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 12%, rgba(117, 167, 255, 0.28), transparent 28%),
+        radial-gradient(circle at 12% 90%, rgba(246, 180, 75, 0.24), transparent 30%),
+        linear-gradient(160deg, #111827, #0b1018 55%, #05070b);
+      isolation: isolate;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+      z-index: -1;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border: 1px solid var(--line);
+      pointer-events: none;
+    }
+
+    .cover {
+      background: #05070b;
+    }
+
+    .cover .bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.92;
+      z-index: -3;
+    }
+
+    .cover .veil {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(5, 7, 11, 0.9), rgba(5, 7, 11, 0.56) 45%, rgba(5, 7, 11, 0.16)),
+        linear-gradient(180deg, rgba(5, 7, 11, 0.3), rgba(5, 7, 11, 0.92));
+      z-index: -2;
+    }
+
+    .inner {
+      position: relative;
+      height: 100%;
+      padding: 78px 78px 72px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 36px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 24px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: 98px;
+      line-height: 1.02;
+      letter-spacing: 0;
+      font-weight: 900;
+    }
+
+    h2 {
+      max-width: 840px;
+      font-size: 78px;
+      line-height: 1.04;
+      letter-spacing: 0;
+      font-weight: 900;
+    }
+
+    h3 {
+      font-size: 34px;
+      line-height: 1.18;
+      font-weight: 800;
+    }
+
+    .lead {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: 34px;
+      line-height: 1.45;
+      margin-top: 32px;
+    }
+
+    .cover-title {
+      align-self: center;
+    }
+
+    .mark {
+      color: var(--amber);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      color: rgba(248, 250, 252, 0.54);
+      font-size: 22px;
+      letter-spacing: 0.04em;
+    }
+
+    .page {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      color: var(--amber);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+    }
+
+    .workflow {
+      display: grid;
+      gap: 18px;
+      align-self: center;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 24px;
+      padding: 28px;
+      align-items: start;
+    }
+
+    .num {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: rgba(246, 180, 75, 0.12);
+      color: var(--amber);
+      font: 800 30px/1 "SFMono-Regular", Consolas, monospace;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 27px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .terminal {
+      align-self: center;
+      padding: 34px;
+      background: #060910;
+      border: 1px solid var(--line);
+      box-shadow: 0 28px 90px rgba(0,0,0,0.34);
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .terminal .bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .dot:nth-child(2) { background: var(--amber); }
+    .dot:nth-child(3) { background: var(--green); }
+
+    .cmd {
+      display: block;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: #dbeafe;
+      font-size: 30px;
+      line-height: 1.35;
+    }
+
+    .cmd:first-of-type {
+      border-top: 0;
+    }
+
+    .cmd b {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .grid {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .tile {
+      min-height: 230px;
+      padding: 30px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .tile b {
+      color: var(--blue);
+      font: 800 24px/1 "SFMono-Regular", Consolas, monospace;
+    }
+
+    .tile p {
+      color: var(--muted);
+      font-size: 28px;
+      line-height: 1.45;
+      margin-top: 18px;
+    }
+
+    .quote {
+      align-self: center;
+      padding: 48px;
+      background: var(--paper);
+      color: #111827;
+      border: 1px solid rgba(17, 24, 39, 0.18);
+      box-shadow: 18px 18px 0 rgba(246, 180, 75, 0.8);
+    }
+
+    .quote h2 {
+      max-width: 100%;
+      color: #111827;
+      font-size: 70px;
+    }
+
+    .quote p {
+      color: rgba(17,24,39,0.72);
+      font-size: 31px;
+      line-height: 1.5;
+      margin-top: 30px;
+    }
+
+    .checklist {
+      align-self: center;
+      display: grid;
+      gap: 18px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 22px;
+      padding: 26px 30px;
+      align-items: center;
+    }
+
+    .tick {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: rgba(155, 231, 177, 0.14);
+      border: 1px solid rgba(155, 231, 177, 0.42);
+      color: var(--green);
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .check strong {
+      display: block;
+      font-size: 31px;
+      line-height: 1.24;
+    }
+
+    .check span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1.38;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        padding: 0;
+        gap: 0;
+      }
+
+      .card {
+        width: 100vw;
+        height: 125vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card cover" id="card-01">
+      <img class="bg" src="assets/gpt-image-open-source-codex-cover.png" alt="">
+      <div class="veil"></div>
+      <div class="inner">
+        <div class="eyebrow">Open Source × Codex</div>
+        <div class="cover-title">
+          <h1>刷到一个开源项目，<span class="mark">别只收藏</span></h1>
+          <p class="lead">把视频 / 图文里的 GitHub 项目，变成自己的资料库、判断力和可复用工作流。</p>
+        </div>
+        <div class="footer"><span>AI 工作流经验分享</span><span class="page">01 / 05</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-02">
+      <div class="inner">
+        <div>
+          <div class="eyebrow">Step 01</div>
+          <h2 style="margin-top:30px">先让 Codex 读懂项目，不急着复制代码</h2>
+        </div>
+        <div class="terminal">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <span class="cmd"><b>Input</b> 这个 GitHub 项目适合做什么？</span>
+          <span class="cmd"><b>Read</b> README / AGENTS / index / examples</span>
+          <span class="cmd"><b>Ask</b> 它的机制、边界、可复用点是什么？</span>
+          <span class="cmd"><b>Output</b> 先给结论，再决定是否克隆</span>
+        </div>
+        <div class="footer"><span>先理解，再引入</span><span class="page">02 / 05</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-03">
+      <div class="inner">
+        <div>
+          <div class="eyebrow">Step 02</div>
+          <h2 style="margin-top:30px">适合参考，才克隆到 references</h2>
+          <p class="lead">外部项目不要直接混进成品目录。先放在参考区，保持边界清楚。</p>
+        </div>
+        <div class="workflow">
+          <div class="step panel"><div class="num">01</div><div><h3>clone 到 references/</h3><p>把它当外部参考库，而不是当前项目的一部分。</p></div></div>
+          <div class="step panel"><div class="num">02</div><div><h3>保留来源说明</h3><p>记录 GitHub URL、用途、适合场景和使用限制。</p></div></div>
+          <div class="step panel"><div class="num">03</div><div><h3>必要时写入 .gitignore</h3><p>完整第三方仓库通常不直接提交，只提交自己的评估文档。</p></div></div>
+        </div>
+        <div class="footer"><span>Reference, not product</span><span class="page">03 / 05</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-04">
+      <div class="inner">
+        <div>
+          <div class="eyebrow">Step 03</div>
+          <h2 style="margin-top:30px">把项目读成自己的评估文档</h2>
+        </div>
+        <div class="grid">
+          <div class="tile panel"><b>README</b><p>它解决什么问题？作者希望用户怎样开始？</p></div>
+          <div class="tile panel"><b>AGENTS</b><p>它希望 AI Agent 如何选择、复制和改造模板？</p></div>
+          <div class="tile panel"><b>INDEX</b><p>是否有结构化索引？能不能机器读取和筛选？</p></div>
+          <div class="tile panel"><b>WORKFLOW</b><p>它应该接入 PPT、网页，还是小红书卡片？</p></div>
+        </div>
+        <div class="footer"><span>从收藏变成知识资产</span><span class="page">04 / 05</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-05">
+      <div class="inner">
+        <div>
+          <div class="eyebrow">Step 04</div>
+          <h2 style="margin-top:30px">最后看 git status，只提交该提交的东西</h2>
+        </div>
+        <div class="checklist">
+          <div class="check panel"><div class="tick">✓</div><div><strong>提交自己的评估文档</strong><span>例如模板机制、接入建议、适用场景。</span></div></div>
+          <div class="check panel"><div class="tick">✓</div><div><strong>提交真正的成品文件</strong><span>例如小红书的 HTML 源文件、发布文案和 PNG。</span></div></div>
+          <div class="check panel"><div class="tick">✓</div><div><strong>忽略完整外部仓库</strong><span>第三方 checkout 留在本地 reference，避免撑大 Git 历史。</span></div></div>
+          <div class="check panel"><div class="tick">✓</div><div><strong>不要顺手 git add .</strong><span>临时文件、缓存、授权输出、本机路径都要先排除。</span></div></div>
+        </div>
+        <div class="footer"><span>AI 越快，边界越重要</span><span class="page">05 / 05</span></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
