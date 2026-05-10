@@ -15,6 +15,9 @@ playwright-cli/
 .playwright-cli/
 *.zip
 
+# Local external reference checkouts
+references/beautiful-html-templates/
+
 # Test artifacts (tmp directories used in end-to-end tests)
 /tmp/v6_*
 /tmp/v6r*
