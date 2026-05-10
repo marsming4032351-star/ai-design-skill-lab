@@ -69,7 +69,21 @@ python3 scripts/obsidian_capture.py \
 --source "wechat"
 ```
 
-示例命令：
+日常快捷命令：
+
+```bash
+./scripts/capture.sh wechat "文章标题" "文章内容或链接"
+```
+
+示例：
+
+```bash
+./scripts/capture.sh wechat "北京老字号案例" "这是一篇关于北京老字号升级的微信文章"
+```
+
+快捷命令内部仍然调用 `scripts/obsidian_capture.py`，默认写入 `00_Inbox_Staging/`。
+
+原 Python 命令仍然可用，适合需要显式指定参数或扩展后续选项时使用：
 
 ```bash
 python3 scripts/obsidian_capture.py \

@@ -127,3 +127,36 @@ def test_cli_dry_run_creates_note_in_requested_staging_dir(tmp_path: Path) -> No
     fm, _ = frontmatter.read(created[0])
     assert fm["material_type"] == "prompt"
     assert fm["asset_type"] == "prompt_candidate"
+
+
+def test_capture_shortcut_creates_wechat_note_in_default_staging_dir() -> None:
+    title = "快捷入口微信测试"
+    result = subprocess.run(
+        [
+            str(ROOT / "scripts" / "capture.sh"),
+            "wechat",
+            title,
+            "这是一篇关于北京老字号升级的微信文章",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    created_note: Path | None = None
+
+    try:
+        assert result.returncode == 0, result.stderr
+        assert "dry_run=True" in result.stdout
+        created = sorted((ROOT / "00_Inbox_Staging").glob("*.md"), key=lambda p: p.stat().st_mtime)
+        assert created
+        created_note = created[-1]
+        fm, body = frontmatter.read(created_note)
+        assert fm["title"] == title
+        assert fm["source"] == "wechat"
+        assert fm["project"] == "yulu"
+        assert fm["asset_type"] == "brand_reference"
+        assert "北京老字号升级" in body
+    finally:
+        if created_note and created_note.exists():
+            created_note.unlink()
