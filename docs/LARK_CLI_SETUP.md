@@ -1,238 +1,242 @@
 # Lark CLI Setup
 
 Date: 2026-05-09
-Status: Current channel is configured partially, but not yet usable
+Status: app secret restored in macOS Keychain; Feishu document creation verified outside the Codex sandbox
 
 ## Purpose
 
-The goal is to make `lark-cli` a long-lived working channel for Codex and Harness outputs.
+The goal is to make `lark-cli` a long-lived publishing channel for Codex, Harness Runtime, and Runtime Workspace outputs.
 
 Reports, usage guides, architecture notes, project summaries, and future Harness run artifacts should be publishable to Feishu Docs or Feishu Wiki without repeating full authorization every time.
 
-The important rule is:
+Important operating rule:
 
 ```text
-Check existing config first. Do not start with lark-cli config init --new.
+Check existing config and auth state first. Do not start with lark-cli config init.
 ```
 
-## Current Configuration State
+## Current Problem And Resolution
 
-Current local inspection showed:
+Codex could inspect the existing `lark-cli` auth state, but document creation was blocked because the app secret was missing from the credential store that `lark-cli` uses for app resolution.
+
+Observed current state:
 
 | Check | Result |
 |---|---|
-| `lark-cli` installed | Yes |
-| Version | `1.0.0` |
+| `lark-cli` version | `1.0.0` |
 | Config file | Present at `~/.lark-cli/config.json` |
 | Brand | `feishu` |
 | Default identity | `auto` |
-| Known user | `mars ming` |
-| Auth token status | `no_token` |
-| App secret in keychain | Missing |
-| User token in keychain | Missing |
-| `lark-cli doctor` | Fails at app resolution |
-| Default drive/wiki/space config | No separate default space, drive, or wiki config found in `~/.lark-cli` |
+| User identity | Present |
+| `lark-cli auth status` | Returns user auth metadata and `tokenStatus=valid` |
+| `lark-cli doctor` outside Codex sandbox | Passes config, app resolution, token, and endpoint checks |
+| `lark-cli doctor` inside Codex sandbox | May fail to read Keychain, depending on sandbox permissions |
+| App secret storage | Expected in macOS Keychain |
+| App secret keychain item | Restored manually by the human owner |
 
-The current channel is therefore not ready for document creation.
-
-Observed failure:
+The original failing check was:
 
 ```text
+app_resolved: fail
 keychain entry not found: lark-cli/appsecret:<app-id>
 ```
 
-This means the config file still points to an app whose secret should be stored in macOS Keychain, but the keychain item is missing.
+The app secret, token, and complete user open id are intentionally not copied into this repository document.
 
-## How To Check Whether Lark CLI Is Ready
+Verified result after repair:
 
-Use these commands before creating documents:
+```text
+lark-cli doctor -> ok=true
+lark-cli auth status -> tokenStatus=valid
+lark-cli docs +create -> document created successfully
+```
+
+## Why `auth status` Is Visible But `docs create` Fails
+
+`lark-cli auth status` and `lark-cli docs +create` do not prove the same thing.
+
+`auth status` can read local user auth metadata:
+
+- configured brand
+- configured app id
+- default identity
+- known user
+- granted scopes
+- token expiry metadata
+- token status
+
+That metadata can exist even when the app secret cannot be resolved.
+
+`docs +create` needs a working app context before it can call Feishu document APIs. In this setup, the app context is split across two stores:
+
+- `~/.lark-cli/config.json`: non-secret app/user configuration
+- macOS Keychain: secret material such as the app secret
+
+The config file still pointed to an app, but the matching Keychain item was missing:
+
+```text
+lark-cli/appsecret:<app-id>
+```
+
+Therefore `auth status` can still print useful metadata, while `docs +create` fails before creating a document because the CLI cannot resolve the app secret.
+
+## Current Credential Source Model
+
+Current local sources:
+
+```text
+~/.lark-cli/config.json
+~/.lark-cli/cache/remote_meta.meta.json
+macOS Keychain
+```
+
+The config file is present and `lark-cli config show` redacts `appSecret` as `****`.
+
+That redaction does not prove the secret is available. It only means the CLI knows the field is secret and should not print it. `lark-cli doctor` is the stronger check because it actually attempts app resolution.
+
+## Safe Repair Strategy
+
+Do not put `app_secret` into:
+
+- this repository
+- README
+- docs
+- shell history
+- committed logs
+- chat messages
+- command output
+- `.env` files that might be committed
+
+The required repair is to restore the app secret into the local secure credential store that `lark-cli` expects.
+
+### Preferred Manual Repair: Keychain Prompt
+
+Use macOS Keychain and let `security` prompt for the secret instead of writing the secret in the command line.
+
+Correct Keychain shape:
 
 ```bash
-command -v lark-cli
-lark-cli --version
-lark-cli config show
-lark-cli config default-as
-lark-cli auth list
+security add-generic-password \
+  -U \
+  -s 'lark-cli' \
+  -a 'appsecret:<app-id>' \
+  -w
+```
+
+Keep `-w` as the final option. macOS will prompt for the password value. Paste the app secret into that prompt, not into a file, not into the shell command itself, and not into chat.
+
+Important detail:
+
+```text
+service = lark-cli
+account = appsecret:<app-id>
+```
+
+Do not put the full `lark-cli/appsecret:<app-id>` string into the Keychain service field. `lark-cli` reports missing credentials as `service/account`, so the error text can look like a single path even though the Keychain fields are separate.
+
+After writing the Keychain item, verify:
+
+```bash
+lark-cli doctor
 lark-cli auth status
-lark-cli doctor
 ```
 
-Expected healthy signs:
+If the user token is expired or needs refresh after the app resolves, handle that as a separate user authorization boundary. Codex should not start a new auth flow unless explicitly instructed.
 
-- `config show` returns the app configuration.
-- `config default-as` is known, preferably `user` or `auto`.
-- `auth list` shows the intended user with a usable token status.
-- `auth status` succeeds.
-- `doctor` passes config and auth checks.
+### Codex Sandbox Note
 
-Do not print access tokens, refresh tokens, app secrets, or Authorization headers into logs.
+The repaired Keychain entry is visible when `lark-cli doctor` runs outside the Codex sandbox. Inside the default sandbox, `lark-cli doctor` may still report a missing Keychain item.
 
-## Identity Mode
+For Feishu publishing from Codex, run `lark-cli doctor`, `lark-cli auth status`, and `lark-cli docs +create` with the permissions required to access the user's macOS Keychain. Do not treat a sandbox-only Keychain failure as proof that the human repair failed.
 
-For Codex publishing documents into the user's workspace, prefer user identity:
+### Alternative Manual Repair: CLI Stdin Mode
+
+If the installed `lark-cli` version provides a dedicated repair command that accepts app secret from stdin, use that instead of putting the secret in an argument.
+
+Safe shape:
 
 ```bash
-lark-cli docs +create --as user --title "Title" --markdown "Content"
+<secure local secret source> | lark-cli <repair-command> --app-id '<app-id>' --app-secret-stdin
 ```
 
-Bot identity is useful for app-owned resources, but it may not see or manage the user's personal cloud space in the expected way.
+Only use a stdin-based CLI command if it does not reinitialize unrelated config and does not print the secret.
 
-The current default identity is:
+Avoid:
+
+```bash
+lark-cli config init
+```
+
+unless the human owner intentionally chooses a one-time full repair outside Codex. Codex should not run it for routine publishing.
+
+## Correct Codex Flow For Creating Feishu Documents
+
+Codex should use this flow:
 
 ```text
-auto
+1. Run lark-cli auth status.
+2. Run lark-cli doctor.
+3. If doctor passes and tokenStatus is valid, create or update the Feishu document.
+4. If doctor fails with missing app secret, stop.
+5. Record BLOCKED_EXTERNAL / WAITING_AUTH.
+6. Ask the human to repair Keychain securely.
+7. Resume only after the human confirms doctor passes.
 ```
 
-For predictable document publishing, use explicit `--as user` in automation.
-
-## How To Create A Feishu Document
-
-Once auth is healthy, create a document with:
+The publishing command, only after checks pass:
 
 ```bash
-lark-cli docs +create \
-  --as user \
-  --title "Codex 飞书 CLI 连通性测试" \
-  --markdown "这是一份由 Codex 通过 lark-cli 创建的测试文档。
-如果你能看到这份文档，说明飞书 CLI 已经可以作为长期工作通道使用。"
+lark-cli docs +create --as user --title "<title>" --markdown "<markdown>"
 ```
 
-Successful output should include a document token and document URL.
+Do not repeatedly run `docs +create` when `doctor` is failing. The failure is not retryable by the Runtime.
 
-If creating inside a specific Feishu folder later, add:
+## Runtime Blocked State
 
-```bash
---folder-token <folder_token>
-```
-
-If creating inside a Wiki space later, use the relevant `--wiki-space` or `--wiki-node` option.
-
-## How To Avoid Repeated Authorization
-
-Do not run `lark-cli config init --new` as the first step.
-
-Use this decision flow:
+Before repair, this issue should be classified as:
 
 ```text
-1. Run lark-cli doctor.
-2. If doctor passes, create the document directly.
-3. If config exists but auth is missing, inspect auth status/list.
-4. If only user token is missing, run scoped auth login instead of full config init.
-5. If app secret keychain entry is missing, repair app config/keychain once.
-6. After repair, verify with doctor.
-7. Only then publish documents.
+BLOCKED_EXTERNAL
 ```
 
-For missing user authorization, prefer scoped login:
-
-```bash
-lark-cli auth login --scope "<required_scope>"
-```
-
-For missing app config or missing app secret keychain entry, `config init --new` may be required, but it should be treated as a one-time setup action.
-
-## Repairing The Current Keychain State
-
-The current local failure is not only a missing user token. The app itself cannot be resolved because the app secret keychain entry is missing.
-
-If the existing app should be reused and the app secret is known, repair the app config non-interactively instead of creating another app:
-
-```bash
-printf '<app-secret>' | lark-cli config init \
-  --app-id '<app-id>' \
-  --app-secret-stdin \
-  --brand feishu
-```
-
-Do not paste the real app secret into chat, shell history, logs, or committed files. Use a local secret source or paste it directly into the terminal command when you are operating the machine yourself.
-
-After app config is repaired, verify:
-
-```bash
-lark-cli doctor
-```
-
-If the app resolves but the user token is still missing, run a bounded user login. Prefer `--no-wait` so the CLI returns the verification information instead of blocking indefinitely:
-
-```bash
-lark-cli auth login --domain docs,drive,wiki --no-wait --json
-```
-
-Then complete the browser authorization and finish with the returned device code:
-
-```bash
-lark-cli auth login --device-code '<device-code>'
-```
-
-Finally verify again:
-
-```bash
-lark-cli auth status
-lark-cli doctor
-```
-
-## What To Do If Authorization Gets Stuck
-
-Authorization may require browser login, QR scan, OAuth consent, or app configuration in Feishu.
-
-Runtime behavior should be:
+Reason:
 
 ```text
-detect auth boundary -> show required user action -> stop waiting -> enter WAITING_AUTH
-```
-
-Do not keep retrying.
-
-Do not launch multiple authorization flows.
-
-Do not leave an agent blocked indefinitely on `lark-cli config init --new`.
-
-Recommended operator behavior:
-
-1. Start one bounded init or login flow.
-2. Copy the browser URL or QR instruction to the user.
-3. Wait for a bounded period.
-4. If not completed, stop the process.
-5. Record the state as `WAITING_AUTH` or `BLOCKED_EXTERNAL`.
-6. Resume only after the user confirms authorization is complete.
-
-This matches the Harness blocked-state design: external auth is not an agent-repairable failure.
-
-## Current Attempt Notes
-
-A bounded `lark-cli config init --new` was attempted once after checking the existing config.
-
-Result:
-
-- First sandboxed attempt failed because network DNS lookup for `accounts.feishu.cn` was blocked.
-- One escalated bounded attempt was allowed.
-- It timed out after 90 seconds and was stopped.
-- No reusable auth token or app secret keychain entry was created.
-- The Feishu test document was not created because the CLI channel is still not authenticated.
-
-Current blocked state:
-
-```text
-WAITING_AUTH / BLOCKED_EXTERNAL
+Configured app id exists, but the local secure credential store is missing the corresponding app secret.
 ```
 
 Required human action:
 
 ```text
-Complete Feishu app config and OAuth authorization once, then rerun lark-cli doctor.
+Restore the app secret to macOS Keychain or another lark-cli-supported secure credential store.
+```
+
+Codex action:
+
+```text
+Stop publishing attempts, document the state, and wait for human repair.
+```
+
+After repair, verified publishing can continue.
+
+Test document created:
+
+```text
+Codex Feishu Keychain Connected
 ```
 
 ## Future Harness Publishing Flow
 
-Harness should eventually publish reports to Feishu through a dedicated publish stage.
+Harness should publish reports to Feishu through a dedicated publish stage.
 
 Suggested flow:
 
 ```text
 Harness run finishes
   -> produce markdown report
-  -> check lark-cli doctor
-  -> if healthy, publish with docs +create or docs +update
+  -> run lark-cli auth status
+  -> run lark-cli doctor
+  -> if tokenStatus valid and doctor passes, publish with docs +create or docs +update
   -> record doc_url in RunContext state
   -> append publish event to event_log
   -> if auth/config blocked, enter WAITING_AUTH or BLOCKED_EXTERNAL
@@ -251,18 +255,24 @@ Suggested event types:
 
 The publish stage should never hide auth failure as a normal retryable error. Feishu publishing is an external boundary, so it needs explicit blocked-state handling.
 
-## Next Command Pattern
+## Quick Diagnostic Commands
 
-When the channel is healthy, use:
-
-```bash
-lark-cli docs +create --as user --title "<title>" --markdown "<markdown>"
-```
-
-Before each publishing session, use:
+Use these commands before publishing:
 
 ```bash
+lark-cli auth status
 lark-cli doctor
+lark-cli config show
+lark-cli config default-as
+lark-cli auth list
 ```
 
-If `doctor` fails with missing keychain or auth, fix that state first instead of repeatedly creating documents or rerunning full initialization.
+Expected healthy state:
+
+```text
+tokenStatus=valid
+lark-cli doctor ok=true
+app_resolved pass
+```
+
+If `doctor` fails, do not create documents yet.
