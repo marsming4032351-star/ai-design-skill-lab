@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTML 导出小红书图片工作流</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --ink: #181b20;
+      --paper: #fbf7ef;
+      --muted: #5f666f;
+      --line: rgba(24, 27, 32, .15);
+      --dark: #12161c;
+      --green: #247a65;
+      --red: #c25548;
+      --blue: #3b6f9d;
+      --gold: #b88b4a;
+      --soft: #fffdf8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 46px 0;
+      display: grid;
+      gap: 40px;
+      justify-items: center;
+      background: #d8d3c8;
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .card {
+      position: relative;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(251,247,239,.98), rgba(240,233,222,.98)),
+        radial-gradient(circle at 84% 14%, rgba(184,139,74,.20), transparent 28%);
+      box-shadow: 0 24px 80px rgba(18, 22, 28, .22);
+      isolation: isolate;
+    }
+
+    .card.dark {
+      background:
+        radial-gradient(circle at 76% 14%, rgba(59,111,157,.32), transparent 34%),
+        radial-gradient(circle at 18% 82%, rgba(36,122,101,.26), transparent 32%),
+        linear-gradient(135deg, #12161c, #1c2027);
+      color: var(--paper);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(24,27,32,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24,27,32,.045) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: -2;
+    }
+
+    .card.dark::before {
+      background-image:
+        linear-gradient(rgba(251,247,239,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(251,247,239,.06) 1px, transparent 1px);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 54px;
+      border: 1px solid var(--line);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .card.dark::after { border-color: rgba(251,247,239,.18); }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      padding: 78px 76px 66px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      font-size: 23px;
+      line-height: 1;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .dark .topline,
+    .dark .lead,
+    .dark .note,
+    .dark .footer { color: rgba(251,247,239,.74); }
+
+    .badge {
+      padding: 10px 16px 9px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.42);
+      color: var(--green);
+      font-weight: 950;
+    }
+
+    .dark .badge {
+      border-color: rgba(251,247,239,.20);
+      background: rgba(18,22,28,.68);
+      color: #78d6bd;
+    }
+
+    h1, h2, p { margin: 0; letter-spacing: 0; }
+
+    h1 {
+      max-width: 860px;
+      margin-top: 54px;
+      font-size: 96px;
+      line-height: 1.04;
+      font-weight: 950;
+    }
+
+    h2 {
+      max-width: 880px;
+      margin-top: 36px;
+      font-size: 72px;
+      line-height: 1.12;
+      font-weight: 950;
+    }
+
+    .lead {
+      margin-top: 30px;
+      max-width: 840px;
+      color: var(--muted);
+      font-size: 34px;
+      line-height: 1.52;
+      font-weight: 720;
+    }
+
+    .accent { color: var(--blue); }
+    .hot { color: var(--red); }
+    .gold { color: var(--gold); }
+
+    .visual {
+      margin-top: 52px;
+      min-height: 430px;
+      display: grid;
+      align-items: center;
+    }
+
+    .browser {
+      border: 1px solid rgba(24,27,32,.14);
+      background: var(--soft);
+      box-shadow: 0 18px 60px rgba(18,22,28,.12);
+    }
+
+    .bar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(24,27,32,.10);
+      background: rgba(18,22,28,.05);
+    }
+
+    .dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 999px;
+      background: var(--red);
+    }
+
+    .dot:nth-child(2) { background: var(--gold); }
+    .dot:nth-child(3) { background: var(--green); }
+
+    .preview {
+      height: 420px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      padding: 28px;
+    }
+
+    .mini-card {
+      position: relative;
+      overflow: hidden;
+      background: #12161c;
+      color: var(--paper);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mini-card.light {
+      background: #f4ebdd;
+      color: var(--ink);
+      border: 1px solid rgba(24,27,32,.14);
+    }
+
+    .mini-card strong {
+      font-size: 38px;
+      line-height: 1.12;
+      font-weight: 950;
+    }
+
+    .mini-card span {
+      font-size: 22px;
+      line-height: 1.35;
+      opacity: .78;
+      font-weight: 700;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 44px;
+    }
+
+    .panel {
+      min-height: 330px;
+      padding: 30px;
+      background: rgba(255,255,255,.45);
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .dark .panel {
+      background: rgba(251,247,239,.07);
+      border-color: rgba(251,247,239,.15);
+    }
+
+    .panel b {
+      font-size: 36px;
+      line-height: 1.18;
+      font-weight: 950;
+    }
+
+    .panel p {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 27px;
+      line-height: 1.46;
+      font-weight: 700;
+    }
+
+    .dark .panel p { color: rgba(251,247,239,.72); }
+
+    .steps {
+      margin-top: 42px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 20px;
+      align-items: start;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.45);
+    }
+
+    .num {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      background: var(--dark);
+      color: var(--paper);
+      font-size: 25px;
+      font-weight: 950;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 32px;
+      line-height: 1.18;
+      font-weight: 950;
+    }
+
+    .step span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1.38;
+      font-weight: 700;
+    }
+
+    .code {
+      margin-top: 42px;
+      padding: 30px;
+      background: #10141a;
+      color: #eaf4ef;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 27px;
+      line-height: 1.52;
+      border: 1px solid rgba(251,247,239,.14);
+      white-space: pre-wrap;
+    }
+
+    .checklist {
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .check {
+      min-height: 142px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.46);
+    }
+
+    .check strong {
+      display: block;
+      font-size: 30px;
+      line-height: 1.18;
+      font-weight: 950;
+    }
+
+    .check span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1.36;
+      font-weight: 720;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <section class="card dark" id="card-01">
+    <div class="content">
+      <div>
+        <div class="topline">
+          <span class="badge">DESIGN DATA FACTORY</span>
+          <span>小红书图文工作流 03</span>
+        </div>
+        <h1>别再让 AI 直接生成满屏中文</h1>
+        <p class="lead">更稳定的方法是：<span class="gold">HTML/CSS 排版</span>，再用浏览器截图导出 1080 x 1350 的小红书图片。</p>
+        <div class="visual">
+          <div class="browser">
+            <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+            <div class="preview">
+              <div class="mini-card">
+                <strong>HTML<br>负责文字和版式</strong>
+                <span>标题、分段、编号、检查项都可改</span>
+              </div>
+              <div class="mini-card light">
+                <strong>PNG<br>负责发布和收藏</strong>
+                <span>统一尺寸、稳定清晰、方便复用</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="footer">适合：教程图文、工具拆解、策划流程、品牌方法论。</p>
+    </div>
+  </section>
+
+  <section class="card" id="card-02">
+    <div class="content">
+      <div>
+        <div class="topline">
+          <span class="badge">WHY</span>
+          <span>先讲判断</span>
+        </div>
+        <h2>纯生图的问题，不是不好看</h2>
+        <p class="lead">问题是它很难稳定生成可读中文，也很难反复修改。小红书教程图文最重要的是：读得清、改得动、能复查。</p>
+        <div class="split">
+          <div class="panel">
+            <b class="hot">纯生图适合</b>
+            <p>氛围、主视觉、封面背景、产品质感、情绪画面。</p>
+          </div>
+          <div class="panel">
+            <b class="accent">HTML 适合</b>
+            <p>长标题、中文正文、步骤清单、命令代码、对比表。</p>
+          </div>
+        </div>
+      </div>
+      <p class="footer">结论：主视觉可以生图，正文和结构交给 HTML。</p>
+    </div>
+  </section>
+
+  <section class="card" id="card-03">
+    <div class="content">
+      <div>
+        <div class="topline">
+          <span class="badge">STRUCTURE</span>
+          <span>一张图就是一个 section</span>
+        </div>
+        <h2>HTML 里先把每张卡片固定成 1080 x 1350</h2>
+        <p class="lead">不要先写一整页文章。把每张图当成一个可截图的模块，设置固定尺寸和独立 id。</p>
+        <div class="code">&lt;section class="card" id="card-01"&gt;
+  &lt;h1&gt;封面标题&lt;/h1&gt;
+  &lt;p&gt;这张图只讲一个观点&lt;/p&gt;
+&lt;/section&gt;
+
+.card {
+  width: 1080px;
+  height: 1350px;
+}</div>
+      </div>
+      <p class="footer">核心原则：一张卡只讲一个任务，不让文字挤在一起。</p>
+    </div>
+  </section>
+
+  <section class="card dark" id="card-04">
+    <div class="content">
+      <div>
+        <div class="topline">
+          <span class="badge">EXPORT</span>
+          <span>浏览器截图导出</span>
+        </div>
+        <h2>用 Playwright 按 id 截图</h2>
+        <p class="lead">先打开 HTML，再分别截取每个卡片节点。这样导出的 PNG 尺寸稳定，排版也和浏览器看到的一致。</p>
+        <div class="code">python3 -m http.server 8765
+
+playwright screenshot "#card-01" \
+  --filename "cards/card-01.png"
+
+file cards/card-01.png</div>
+      </div>
+      <p class="footer">如果你用 Codex，可以让它自动完成打开、截图、检查尺寸。</p>
+    </div>
+  </section>
+
+  <section class="card" id="card-05">
+    <div class="content">
+      <div>
+        <div class="topline">
+          <span class="badge">CHECKLIST</span>
+          <span>发布前最后一遍</span>
+        </div>
+        <h2>导出后别急着发，先查 6 件事</h2>
+        <div class="checklist">
+          <div class="check"><strong>尺寸</strong><span>必须是 1080 x 1350，比例 4:5。</span></div>
+          <div class="check"><strong>中文</strong><span>标题、正文、代码都要清晰可读。</span></div>
+          <div class="check"><strong>溢出</strong><span>检查文字有没有压线、遮挡或出框。</span></div>
+          <div class="check"><strong>一致</strong><span>卡片内容要和发布文案互相对应。</span></div>
+          <div class="check"><strong>来源</strong><span>外部素材要写清用途，不混进主项目。</span></div>
+          <div class="check"><strong>复用</strong><span>README 写清怎么改、怎么导出。</span></div>
+        </div>
+      </div>
+      <p class="footer">这就是我现在做小红书图文最稳定的一条链路：brief -> HTML -> browser -> PNG -> archive。</p>
+    </div>
+  </section>
+</body>
+</html>
