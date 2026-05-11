@@ -2,15 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with this repository.
 
+Start with `MAP.md`. It is the current source of truth for repository structure, task routing, and the boundary between the Pipeline and Harness Runtime. Use this file as Claude-specific execution guidance after the route is clear.
+
 ## Project: Design Data Factory v6
 
 An AI-powered design production system that turns design work into reusable, structured data assets. The pipeline models a closed loop: `ingest → run → critic → archive → pattern reuse`.
+
+The repository now has two independent systems:
+
+- **Design Data Factory Pipeline** (`scripts/` + `shared/`): asset production through single-step CLIs.
+- **Harness Runtime** (`harness/`): deterministic mock lifecycle for Goal → Plan → Generate → Critic → Review → Archive. It does not currently call Pipeline CLIs or consume the `shared/` asset engines.
 
 ## Key Commands
 
 ```bash
 # Run all tests
 python3 -m pytest -q
+
+# Validate MAP.md before documentation or routing changes
+python3 scripts/lint_map.py
 
 # Run a single test
 python3 -m pytest tests/test_run_design_dependencies.py -q
@@ -39,6 +49,8 @@ python3 scripts/run_design.py ... --llm hook --llm-hook ./hooks/manual_relay_hoo
 - No Makefile or build system
 
 ## Architecture
+
+`MAP.md` is the routing document. Keep this section as implementation notes, not a replacement for MAP.
 
 ### Pipeline Stages
 

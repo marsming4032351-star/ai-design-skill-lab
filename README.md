@@ -1,5 +1,7 @@
 # AI Native Design Harness Runtime
 
+Start here: [MAP.md](MAP.md) is the current repository map and task-routing source of truth. It explains what to read first, which command to run for each task, and the current boundary between the Pipeline and Harness Runtime.
+
 Design Data Factory v6 is now evolving into an **AI Native Design Harness Runtime**: a deterministic runtime layer for design agents, review loops, design memory, and reusable design infrastructure.
 
 This repository now has three connected identities:
@@ -9,6 +11,15 @@ This repository now has three connected identities:
 - **Design Infrastructure OS**: a structured operating layer for design assets, prompts, rules, critiques, patterns, and run history.
 
 The original Design Data Factory remains the data and pipeline foundation. The Harness adds runtime behavior on top of it.
+
+Current boundary: the Design Data Factory Pipeline (`scripts/` + `shared/`) and Harness Runtime (`harness/`) are still independent. The current Harness is a deterministic mock lifecycle; it does not call Pipeline CLIs, consume `references/`, or share the `shared/` asset engines yet.
+
+## Current Operating Structure
+
+- **MAP + lint**: `MAP.md` is the navigation source; validate it with `python3 scripts/lint_map.py`.
+- **Pipeline**: `scripts/` + `shared/` turn raw material into structured assets such as Plans, Critiques, Patterns, Visuals, and Run records.
+- **Harness**: `harness/` runs a mock Goal -> Plan -> Generate -> Critic -> Review -> Archive lifecycle for runtime behavior.
+- **Output Skill**: `docs/OUTPUT_SKILL_SPEC.md` defines the output protocol for Xiaohongshu posts, HTML export, PPT / Presentation Output, and output package checks.
 
 ## Harness Runtime Architecture
 
@@ -211,6 +222,7 @@ Check the repository:
 
 ```bash
 git status --short --branch
+python3 scripts/lint_map.py
 python3 scripts/run_design.py --help
 python3 -m pytest -q
 ```
@@ -302,6 +314,8 @@ The hook receives rendered prompt JSON on stdin and must write model output JSON
 
 ## Documentation
 
+- [Repository Map](MAP.md): current structure, routing, Pipeline / Harness boundary, and MAP lint rules.
+- [Output Skill Spec](docs/OUTPUT_SKILL_SPEC.md): output protocol for Xiaohongshu, HTML export, and Presentation packages.
 - [Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md): plain-language Harness runtime architecture.
 - [Roadmap](docs/ROADMAP.md): completed milestones and next runtime evolution.
 - [Harness Usage](docs/HARNESS_USAGE.md): CLI demo, retry flow, event log, and final states.

@@ -1,4 +1,22 @@
-# skill-v6 · Pattern 推荐 + PyYAML 上线（双交付）
+# CHANGES
+
+本文件记录仓库关键历史变更，不替代 `MAP.md`。当前仓库结构、任务路由、Pipeline / Harness 边界和可执行入口，以 `MAP.md` 为准。
+
+## Recent
+
+### 2026-05-11 · 仓库导航和输出协议
+
+- `420a113 docs: add repository map and lint checker`
+  - 新增 `MAP.md`，作为人和 AI agent 进入仓库时的第一事实源。
+  - 新增 `scripts/lint_map.py`，用于校验 MAP 中的路径、CLI help、待补项数量和 Harness / Pipeline 措辞一致性。
+- `71989b1 docs: add output skill specification`
+  - 新增 `docs/OUTPUT_SKILL_SPEC.md`，统一小红书图文、HTML 导出、PPT / Presentation Output 和外部 skill 评估的输出协议。
+- `89df602 docs(xiaohongshu): 新增两个图文工作流发布包`
+  - 补充小红书图文工作流发布包，继续验证 HTML/CSS -> Playwright -> PNG 的输出路径。
+
+## History
+
+### skill-v6 · Pattern 推荐 + PyYAML 上线（双交付）
 
 ## 本次发布做了两件事
 
