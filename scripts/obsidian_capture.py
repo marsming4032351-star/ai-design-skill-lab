@@ -14,7 +14,7 @@ from shared.obsidian_staging import create_staging_note
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Dry-run capture of links, text, GitHub repos, prompts, and image notes into Obsidian staging Markdown."
+        description="Capture links, text, GitHub repos, prompts, and image notes into Obsidian staging Markdown."
     )
     parser.add_argument("--input", required=True, help="Link, image description, article body, GitHub repo URL, or raw note text.")
     parser.add_argument("--title", default=None, help="Optional note title. If omitted, inferred from input/source.")
@@ -28,10 +28,10 @@ def main() -> int:
         out_dir=args.out,
         title=args.title,
         source=args.source,
-        dry_run=True if args.dry_run else True,
+        dry_run=args.dry_run,
     )
     print(f"created={note_path}")
-    print("dry_run=True")
+    print(f"dry_run={args.dry_run}")
     return 0
 
 

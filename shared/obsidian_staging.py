@@ -86,7 +86,7 @@ def create_staging_note(
     out_dir: Path,
     title: str | None = None,
     source: str = "",
-    dry_run: bool = True,
+    dry_run: bool = False,
     now: datetime | None = None,
 ) -> Path:
     timestamp = now or datetime.now(timezone.utc)
