@@ -21,6 +21,26 @@ Current boundary: the Design Data Factory Pipeline (`scripts/` + `shared/`) and 
 - **Harness**: `harness/` runs a mock Goal -> Plan -> Generate -> Critic -> Review -> Archive lifecycle for runtime behavior.
 - **Output Skill**: `docs/OUTPUT_SKILL_SPEC.md` defines the output protocol for Xiaohongshu posts, HTML export, PPT / Presentation Output, and output package checks.
 
+## Real-World Driven Design Harness：先于画图的设计编排系统
+
+Real-World Driven Design Harness 是一套面向真实空间、品牌、餐饮门店和展馆项目的方法论。它的原则是：AI 不应该一开始就生成效果图；设计前 40%-50% 应用于场地调研、历史研究、人群理解、甲方动机分析、情绪判断和设计机会提炼。
+
+在这套方法里，人类设计师是现实物理世界的传感器，负责捕捉现场的光、声音、尺度、人群、历史、情绪和约束；AI 智能体是研究、解释、推演、评审和归档执行器，负责把现实输入转化为结构化研究、设计机会、设计框架、视觉提示词、评审标准和可复用 Pattern。
+
+核心链路：
+
+```text
+Human Sensor -> Research Agent -> Interpretation Agent -> Opportunity Agent
+  -> Framework Agent -> Visual Agent -> Critic Agent -> Archive Agent
+```
+
+相关入口：
+
+- 方法论文档：[Real-World Driven Design Harness](docs/real-world-driven-design-harness.md)
+- 项目模板：`templates/project-real-world-design-harness/`
+- 智能体提示词：`prompts/research_agent.md`、`prompts/interpretation_agent.md`、`prompts/framework_agent.md`、`prompts/visual_prompt_agent.md`、`prompts/critic_agent.md`
+- 阶段规则：`rules/no-drawing-before-framework.md`
+
 ## Harness Runtime Architecture
 
 ```text

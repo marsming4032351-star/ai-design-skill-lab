@@ -153,6 +153,9 @@
 | `demo/` | Runtime 可视化原型（cockpit / dashboard / timeline） | — |
 | `examples/` | 示例 Goal 和 staging 样本 | — |
 | `harness/` | Harness Runtime 源码 | 当前**不**调用 Pipeline |
+| `templates/` | 项目模板目录 | 当前包含 Real-World Driven Design Harness 模板 |
+| `prompts/` | 顶层方法论 Agent 提示词 | 当前用于 Real-World Driven Design Harness；Pipeline 实体 Prompt 仍在 `references/50_Prompts/` |
+| `rules/` | 顶层方法论规则 | 当前用于流程 gate；Pipeline Rule 实体仍在 `references/40_Rules/` |
 | `scripts/` | Pipeline CLI 入口 | 每个 Python CLI 必须支持 `--help` |
 | `shared/` | Pipeline 当前的共用核心库 | 未来 Harness 也会消费 |
 | `hooks/` | Manual relay / 外部 hook | — |
@@ -252,4 +255,4 @@
 
 ---
 
-_Last updated: 2026-05-11 · 维护人：repo owner · 校验脚本：`scripts/lint_map.py`_
+_Last updated: 2026-05-13 · 维护人：repo owner · 校验脚本：`scripts/lint_map.py`_
