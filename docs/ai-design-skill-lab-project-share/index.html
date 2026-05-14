@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Design Skill Lab 项目分享</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --paper: #fffaf0;
+      --ink: #17202a;
+      --muted: #637082;
+      --line: rgba(23, 32, 42, .14);
+      --red: #e84d3d;
+      --blue: #2468d8;
+      --green: #148f67;
+      --yellow: #f2b63d;
+      --violet: #7657c7;
+      --dark: #17202a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      background: #d8d2c8;
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .stage {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+    }
+
+    .deck {
+      position: relative;
+      width: min(1500px, calc(100vw - 52px));
+      aspect-ratio: 16 / 9;
+      background: var(--paper);
+      box-shadow: 0 28px 90px rgba(43, 37, 28, .28);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 72px 82px 62px;
+      background:
+        linear-gradient(90deg, rgba(23,32,42,.04) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(23,32,42,.04) 1px, transparent 1px),
+        var(--paper);
+      background-size: 48px 48px;
+      overflow: hidden;
+    }
+
+    .slide.active { display: block; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border: 1px solid var(--line);
+      pointer-events: none;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      bottom: -180px;
+      width: 420px;
+      height: 420px;
+      border: 72px solid var(--accent, var(--blue));
+      opacity: .12;
+      transform: rotate(18deg);
+      pointer-events: none;
+    }
+
+    .dark {
+      background: var(--dark);
+      color: #fff;
+    }
+
+    .dark::before { border-color: rgba(255,255,255,.16); }
+    .dark::after { opacity: .2; }
+
+    .top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .dark .top { color: rgba(255,255,255,.62); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 13px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .dark .badge {
+      background: #fff;
+      color: var(--dark);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      position: relative;
+      z-index: 2;
+      margin-top: 76px;
+      max-width: 980px;
+      font-size: clamp(70px, 7vw, 118px);
+      line-height: .98;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      position: relative;
+      z-index: 2;
+      margin-top: 48px;
+      max-width: 1040px;
+      font-size: clamp(52px, 5.2vw, 84px);
+      line-height: 1.04;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 2;
+      margin-top: 28px;
+      max-width: 980px;
+      color: var(--muted);
+      font-size: clamp(24px, 2.15vw, 34px);
+      line-height: 1.42;
+      font-weight: 720;
+    }
+
+    .dark .lead { color: rgba(255,255,255,.72); }
+
+    .footer {
+      position: absolute;
+      z-index: 3;
+      left: 82px;
+      right: 82px;
+      bottom: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 32px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .dark .footer { color: rgba(255,255,255,.58); }
+
+    .page-no {
+      min-width: 72px;
+      text-align: right;
+      color: currentColor;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .accent { color: var(--accent, var(--blue)); }
+    .red { color: var(--red); }
+    .blue { color: var(--blue); }
+    .green { color: var(--green); }
+    .yellow { color: #a76d00; }
+    .violet { color: var(--violet); }
+
+    .cover-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 64px;
+      align-items: center;
+      height: calc(100% - 88px);
+    }
+
+    .mark {
+      height: 430px;
+      display: grid;
+      place-items: center;
+      padding: 36px;
+      border: 3px solid rgba(255,255,255,.26);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.08), transparent 46%),
+        rgba(255,255,255,.04);
+      text-align: center;
+    }
+
+    .mark strong {
+      display: block;
+      font-size: 52px;
+      line-height: 1.08;
+      font-weight: 950;
+    }
+
+    .mark span {
+      display: block;
+      margin-top: 18px;
+      color: rgba(255,255,255,.68);
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 760;
+    }
+
+    .cards {
+      position: relative;
+      z-index: 2;
+      margin-top: 38px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      min-height: 166px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.48);
+    }
+
+    .card b {
+      display: block;
+      color: var(--card-color, var(--blue));
+      font-size: 28px;
+      line-height: 1.16;
+      font-weight: 950;
+    }
+
+    .card span {
+      display: block;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .wide-grid {
+      position: relative;
+      z-index: 2;
+      margin-top: 46px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .layer {
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 26px 24px;
+      background: rgba(255,255,255,.56);
+      border: 1px solid var(--line);
+      border-top: 12px solid var(--layer-color);
+    }
+
+    .layer h3 {
+      font-size: 32px;
+      line-height: 1.1;
+      font-weight: 950;
+    }
+
+    .layer p {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+      font-weight: 720;
+    }
+
+    .layer .path {
+      margin-top: 24px;
+      color: var(--layer-color);
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 900;
+    }
+
+    .split {
+      position: relative;
+      z-index: 2;
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      min-height: 350px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.52);
+    }
+
+    .panel h3 {
+      color: var(--panel-color, var(--blue));
+      font-size: 32px;
+      line-height: 1.08;
+      font-weight: 950;
+    }
+
+    .panel p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.38;
+      font-weight: 720;
+    }
+
+    .steps {
+      margin-top: 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .step {
+      min-height: 48px;
+      padding: 11px 14px;
+      border-left: 10px solid var(--panel-color, var(--blue));
+      background: rgba(23,32,42,.055);
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 850;
+    }
+
+    .flowline {
+      position: relative;
+      z-index: 2;
+      margin-top: 54px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .flow-node {
+      min-height: 200px;
+      padding: 22px 18px;
+      background: rgba(255,255,255,.56);
+      border: 1px solid var(--line);
+      border-bottom: 12px solid var(--node-color);
+    }
+
+    .flow-node b {
+      display: block;
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 950;
+    }
+
+    .flow-node span {
+      display: block;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.42;
+      font-weight: 700;
+    }
+
+    .map {
+      position: relative;
+      z-index: 2;
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .map-box {
+      min-height: 138px;
+      padding: 22px 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.55);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .map-box b {
+      display: block;
+      font-size: 27px;
+      line-height: 1.1;
+      font-weight: 950;
+    }
+
+    .map-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .map-slide .map {
+      margin-top: 32px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 18px;
+    }
+
+    .map-slide .map-box {
+      min-height: 92px;
+      padding: 17px 22px;
+      gap: 7px;
+      border-left: 12px solid var(--map-color, var(--blue));
+    }
+
+    .map-slide .map-box b {
+      font-size: 25px;
+    }
+
+    .map-slide .map-box span {
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .map-slide .footer {
+      bottom: 28px;
+    }
+
+    .quote {
+      position: relative;
+      z-index: 2;
+      margin-top: 28px;
+      max-width: 1050px;
+      padding: 24px 30px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 30px;
+      line-height: 1.28;
+      font-weight: 900;
+    }
+
+    .dark .quote {
+      background: #fff;
+      color: var(--dark);
+    }
+
+    .output-slide .quote {
+      margin-top: 18px;
+      padding: 18px 24px;
+      font-size: 26px;
+      line-height: 1.24;
+    }
+
+    .final-line {
+      position: relative;
+      z-index: 2;
+      margin-top: 52px;
+      padding: 36px 42px;
+      border: 3px solid currentColor;
+      max-width: 1160px;
+      font-size: 38px;
+      line-height: 1.45;
+      font-weight: 930;
+    }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 5px;
+      background: rgba(23,32,42,.18);
+      z-index: 20;
+    }
+
+    .bar {
+      height: 100%;
+      width: 8.333%;
+      background: var(--blue);
+      transition: width .18s ease;
+    }
+
+    .controls {
+      position: fixed;
+      right: 24px;
+      top: 22px;
+      z-index: 21;
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      width: 42px;
+      height: 36px;
+      border: 1px solid rgba(23,32,42,.22);
+      background: rgba(255,250,240,.9);
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .stage { padding: 12px; }
+      .deck { width: calc(100vw - 24px); }
+      .controls { display: none; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .stage { display: block; padding: 0; }
+      .deck {
+        width: 100vw;
+        aspect-ratio: auto;
+        box-shadow: none;
+        overflow: visible;
+      }
+      .slide {
+        position: relative;
+        display: block !important;
+        width: 100vw;
+        height: 56.25vw;
+        page-break-after: always;
+      }
+      .progress, .controls { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <div class="deck" aria-live="polite">
+      <section class="slide dark active" style="--accent: var(--red);">
+        <div class="cover-grid">
+          <div>
+            <div class="top">
+              <span class="badge">PROJECT SHARE</span>
+              <span>AI Design Skill Lab / Design Data Factory</span>
+            </div>
+            <h1>把 AI 设计从一次性输出变成可复用系统</h1>
+            <p class="lead">这不是一个素材文件夹，而是一套把资料、规则、Prompt、运行记录和输出成果沉淀成资产的设计工作台。</p>
+          </div>
+          <div class="mark">
+            <div>
+              <strong>Design<br>Data<br>Factory</strong>
+              <span>brief -> reference -> plan -> render -> review -> archive -> reuse</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span>项目分享 / 2026</span><span class="page-no">01 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--red);">
+        <div class="top"><span class="badge">WHY</span><span>先讲问题</span></div>
+        <h2>AI 设计最大的痛点，不是不会生成</h2>
+        <p class="lead">真正麻烦的是：生成之后，很难说明来源、判断、迭代和下次如何复用。</p>
+        <div class="cards">
+          <div class="card" style="--card-color: var(--red);"><b>结果散落</b><span>图片、Prompt、截图、聊天记录分散在不同地方，后续很难找。</span></div>
+          <div class="card" style="--card-color: var(--blue);"><b>判断不可见</b><span>为什么选这个方向、为什么拒绝另一个方向，经常没有记录。</span></div>
+          <div class="card" style="--card-color: var(--green);"><b>经验不回流</b><span>一次项目做完，下一个项目还是从零开始问、找、试。</span></div>
+        </div>
+        <div class="quote">这个项目要解决的，是让 AI 设计工作可复盘、可验证、可复用。</div>
+        <div class="footer"><span>从“生成结果”升级到“沉淀系统”</span><span class="page-no">02 / 12</span></div>
+      </section>
+
+      <section class="slide map-slide" style="--accent: var(--blue);">
+        <div class="top"><span class="badge">POSITION</span><span>项目定位</span></div>
+        <h2>AI Design Skill Lab 是一个设计生产实验室</h2>
+        <p class="lead">它把设计经验拆成可以被人和 Agent 共同读取、执行、验证和版本化的工程资产。</p>
+        <div class="cards">
+          <div class="card" style="--card-color: var(--blue);"><b>Design Data Factory</b><span>负责资料、Pattern、Rule、Prompt、Run 记录等资产沉淀。</span></div>
+          <div class="card" style="--card-color: var(--green);"><b>Harness Runtime</b><span>负责模拟一次 AI 设计任务如何计划、生成、评价、复审、归档。</span></div>
+          <div class="card" style="--card-color: var(--violet);"><b>Output Skill</b><span>负责把判断变成可发布、可演示、可归档的输出包。</span></div>
+        </div>
+        <div class="footer"><span>核心不是“多做一点内容”，而是“让一次工作成为资产”。</span><span class="page-no">03 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--violet);">
+        <div class="top"><span class="badge">STRUCTURE</span><span>四层结构</span></div>
+        <h2>从资料到输出，中间分成四层</h2>
+        <p class="lead">先接住输入，再沉淀资产，再执行生产流程，最后形成可交付输出。</p>
+        <div class="wide-grid">
+          <div class="layer" style="--layer-color: var(--red);"><h3>资料层</h3><p>接住未消化输入：文章、brief、截图、外部项目和历史导入。</p><div class="path">00_Inbox_Staging / imports / references</div></div>
+          <div class="layer" style="--layer-color: var(--blue);"><h3>资产层</h3><p>把经验结构化：可复用模式、规则、提示词、运行记录和 schema。</p><div class="path">references / shared</div></div>
+          <div class="layer" style="--layer-color: var(--green);"><h3>生产层</h3><p>让流程可执行：CLI 处理资产，Runtime 模拟任务生命周期。</p><div class="path">scripts / harness</div></div>
+          <div class="layer" style="--layer-color: var(--violet);"><h3>输出层</h3><p>形成可展示成果：图文包、HTML deck、评估文档和发布文案。</p><div class="path">docs / demo / tests</div></div>
+        </div>
+        <div class="footer"><span>理解这四层，就能理解目录为什么这样拆。</span><span class="page-no">04 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--blue);">
+        <div class="top"><span class="badge">PIPELINE</span><span>资产生产链路</span></div>
+        <h2>Pipeline 负责把资料加工成资产</h2>
+        <p class="lead">它是一组单步 CLI，每一步都可以独立运行、检查和复用。</p>
+        <div class="flowline">
+          <div class="flow-node" style="--node-color: var(--red);"><b>scan</b><span>盘点原始资料，生成 manifest 和 Asset 记录。</span></div>
+          <div class="flow-node" style="--node-color: var(--blue);"><b>run</b><span>结合 brief、Prompt、Pattern，生成设计 Plan。</span></div>
+          <div class="flow-node" style="--node-color: var(--green);"><b>critic</b><span>用规则和 rubric 评价方向是否值得继续。</span></div>
+          <div class="flow-node" style="--node-color: var(--violet);"><b>archive</b><span>把通过评价的方向归档为 Pattern。</span></div>
+          <div class="flow-node" style="--node-color: var(--yellow);"><b>generate</b><span>把方向继续转成 Visual 或输出素材。</span></div>
+        </div>
+        <div class="footer"><span>入口主要在 scripts/，共用能力在 shared/。</span><span class="page-no">05 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--green);">
+        <div class="top"><span class="badge">HARNESS</span><span>任务生命周期</span></div>
+        <h2>Harness 负责验证“任务怎么跑完”</h2>
+        <p class="lead">它更像一个运行时外壳，用状态机描述一次 AI 设计任务从目标到归档的全过程。</p>
+        <div class="flowline">
+          <div class="flow-node" style="--node-color: var(--blue);"><b>Goal</b><span>明确这次任务要解决什么问题。</span></div>
+          <div class="flow-node" style="--node-color: var(--green);"><b>Planner</b><span>拆解任务，给出执行计划。</span></div>
+          <div class="flow-node" style="--node-color: var(--yellow);"><b>Generator</b><span>生成候选设计或 mock 结果。</span></div>
+          <div class="flow-node" style="--node-color: var(--red);"><b>Critic</b><span>评价结果，失败时触发 retry。</span></div>
+          <div class="flow-node" style="--node-color: var(--violet);"><b>Review</b><span>需要人工边界时停下，最后 Archive。</span></div>
+        </div>
+        <div class="footer"><span>当前是 deterministic mock lifecycle，不调用 Pipeline CLI。</span><span class="page-no">06 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--red);">
+        <div class="top"><span class="badge">BOUNDARY</span><span>当前边界</span></div>
+        <h2>现在先分开跑，未来再打通</h2>
+        <p class="lead">这是当前仓库最重要的架构边界：不要误以为 Harness 已经接入了 Pipeline。</p>
+        <div class="split">
+          <div class="panel" style="--panel-color: var(--blue);"><h3>当前状态</h3><p>Pipeline 和 Harness 各自独立演化，分别验证资产生产能力和任务生命周期能力。</p><div class="steps"><div class="step">Pipeline：真实处理 references / shared 资产</div><div class="step">Harness：mock 运行 Planner / Generator / Critic</div><div class="step">两者当前互不依赖</div></div></div>
+          <div class="panel" style="--panel-color: var(--green);"><h3>目标状态</h3><p>M4-M6 之后，让 Harness 消费 Pipeline 产物，并逐步调度 Pipeline CLI。</p><div class="steps"><div class="step">M4：Memory，消费历史 Pattern</div><div class="step">M5：Evaluator，引入质量门</div><div class="step">M6：Multi-Agent Runtime</div></div></div>
+        </div>
+        <div class="footer"><span>先把边界讲清楚，项目协作才不会混乱。</span><span class="page-no">07 / 12</span></div>
+      </section>
+
+      <section class="slide output-slide" style="--accent: var(--violet);">
+        <div class="top"><span class="badge">OUTPUT SKILL</span><span>输出规范</span></div>
+        <h2>Output Skill 负责把判断变成交付物</h2>
+        <p class="lead">它定义小红书图文、HTML 导出、PPT / Presentation Output 应该如何组织文件、记录来源和验证质量。</p>
+        <div class="cards">
+          <div class="card" style="--card-color: var(--red);"><b>小红书图文</b><span>HTML/CSS 源文件，浏览器截图导出 1080 x 1350 PNG。</span></div>
+          <div class="card" style="--card-color: var(--blue);"><b>HTML Deck</b><span>横向 presentation，可浏览、可投屏、可导出封面和关键页。</span></div>
+          <div class="card" style="--card-color: var(--green);"><b>输出检查</b><span>检查结构、尺寸、中文可读性、来源记录和复用价值。</span></div>
+        </div>
+        <div class="quote">输出不是最后一步截图，而是可回到系统里的资产包。</div>
+        <div class="footer"><span>输出任务先读 docs/OUTPUT_SKILL_SPEC.md。</span><span class="page-no">08 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--yellow);">
+        <div class="top"><span class="badge">END TO END</span><span>一次任务流动</span></div>
+        <h2>从 brief 到复用，是一条闭环</h2>
+        <p class="lead">这个仓库关心的不是“这次做完”，而是“这次之后，下次能不能更快更稳”。</p>
+        <div class="flowline">
+          <div class="flow-node" style="--node-color: var(--red);"><b>brief</b><span>目标、资料、限制、场景进入 staging。</span></div>
+          <div class="flow-node" style="--node-color: var(--blue);"><b>reference</b><span>隔离外部资料，判断是否值得吸收。</span></div>
+          <div class="flow-node" style="--node-color: var(--green);"><b>plan</b><span>生成方向，并记录消耗了哪些资产。</span></div>
+          <div class="flow-node" style="--node-color: var(--violet);"><b>render</b><span>转成 HTML、图文、deck 或 visual。</span></div>
+          <div class="flow-node" style="--node-color: var(--yellow);"><b>reuse</b><span>通过评价的经验沉淀为 Pattern / Rule / 文档。</span></div>
+        </div>
+        <div class="footer"><span>brief -> reference -> analysis -> plan -> prompt -> layout -> render -> review -> archive -> reuse</span><span class="page-no">09 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--blue);">
+        <div class="top"><span class="badge">MAP</span><span>目录怎么读</span></div>
+        <h2>分享时不用讲所有文件，只讲入口</h2>
+        <p class="lead">MAP.md 是第一事实源。其它目录围绕资料、资产、生产、输出分工。</p>
+        <div class="map">
+          <div class="map-box" style="--map-color: var(--red);"><b>MAP.md</b><span>当前结构、任务路由、Pipeline / Harness 边界。</span></div>
+          <div class="map-box" style="--map-color: var(--violet);"><b>docs/</b><span>架构说明、输出包、评估文档、Feishu / Obsidian 指南。</span></div>
+          <div class="map-box" style="--map-color: var(--yellow);"><b>references/</b><span>Pattern、Rule、Prompt、schema、Run 和隔离参考。</span></div>
+          <div class="map-box" style="--map-color: var(--blue);"><b>scripts/</b><span>Pipeline 单步 CLI：scan、run、critic、archive、generate。</span></div>
+          <div class="map-box" style="--map-color: var(--green);"><b>shared/</b><span>schema、frontmatter、prompt render、rule / rubric engine。</span></div>
+          <div class="map-box" style="--map-color: var(--blue);"><b>harness/</b><span>Runtime 节点：planner、generator、critic、review、archive。</span></div>
+        </div>
+        <div class="footer"><span>给新人一句话：先看 MAP，再按任务进目录。</span><span class="page-no">10 / 12</span></div>
+      </section>
+
+      <section class="slide" style="--accent: var(--green);">
+        <div class="top"><span class="badge">VALUE</span><span>分享价值</span></div>
+        <h2>它对团队真正有价值的地方</h2>
+        <p class="lead">不是某个模型调用，而是围绕模型调用建立了一套可协作、可审计、可复用的工作方式。</p>
+        <div class="cards">
+          <div class="card" style="--card-color: var(--blue);"><b>设计资产化</b><span>把经验从聊天记录和文件夹里提取出来，变成可检索资产。</span></div>
+          <div class="card" style="--card-color: var(--green);"><b>协作可追踪</b><span>Git、README、run notes、测试和导出检查让工作可复查。</span></div>
+          <div class="card" style="--card-color: var(--violet);"><b>AI 可治理</b><span>让 Agent 不只是生成，也能按规则执行、验证和归档。</span></div>
+        </div>
+        <div class="footer"><span>这就是 DesignOps 与 AI Runtime 结合的意义。</span><span class="page-no">11 / 12</span></div>
+      </section>
+
+      <section class="slide dark" style="--accent: var(--yellow);">
+        <div class="top"><span class="badge">SUMMARY</span><span>最后留下的判断</span></div>
+        <h2>这个仓库不是素材库，是 AI 时代的设计工作台</h2>
+        <p class="lead">它把资料、规则、执行流水线和输出规范连在一起，让每次 AI 设计工作都能留下可复用的资产。</p>
+        <div class="final-line">
+          资料库 + 规则库 + 执行流水线 + 输出规范<br>
+          = 一个可复盘、可验证、可演化的 AI Design OS。
+        </div>
+        <div class="footer"><span>下一步：让 Harness 逐步消费 Pipeline 产物，形成真实端到端任务 Runtime。</span><span class="page-no">12 / 12</span></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="controls" aria-label="幻灯片控制">
+    <button type="button" id="prev" aria-label="上一页">‹</button>
+    <button type="button" id="next" aria-label="下一页">›</button>
+  </div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const bar = document.getElementById('bar');
+    let current = 0;
+
+    function show(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      bar.style.width = `${((current + 1) / slides.length) * 100}%`;
+      const hash = `slide-${String(current + 1).padStart(2, '0')}`;
+      if (location.hash !== `#${hash}`) history.replaceState(null, '', `#${hash}`);
+    }
+
+    function fromHash() {
+      const match = location.hash.match(/slide-(\d+)/);
+      if (!match) return 0;
+      return Number(match[1]) - 1;
+    }
+
+    document.getElementById('prev').addEventListener('click', () => show(current - 1));
+    document.getElementById('next').addEventListener('click', () => show(current + 1));
+    window.addEventListener('hashchange', () => show(fromHash()));
+    window.addEventListener('keydown', (event) => {
+      if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+        event.preventDefault();
+        show(current + 1);
+      }
+      if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+        event.preventDefault();
+        show(current - 1);
+      }
+      if (event.key === 'Home') show(0);
+      if (event.key === 'End') show(slides.length - 1);
+    });
+
+    show(fromHash());
+  </script>
+</body>
+</html>
