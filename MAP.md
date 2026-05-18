@@ -35,7 +35,7 @@
 | **归档**通过评价的方向为 Pattern | `scripts/archive_design.py` | `references/30_Patterns/` |
 | **生成** 设计产物（render） | `scripts/generate_design.py` | `docs/ARCHITECTURE_OVERVIEW.md` |
 | **跑一次 Harness 任务**（mock lifecycle） | `scripts/run_harness_demo.py` 或直接 `harness/runtime.py` | `docs/HARNESS_USAGE.md`、`docs/HARNESS_M2_RUNTIME.md` |
-| **生成小红书图文**（HTML → Playwright → PNG） | 入口待定位 ⚠️ | `docs/xiaohongshu-*/`（按子目录索引） |
+| **生成小红书图文**（HTML → Playwright → PNG） | `docs/xiaohongshu-chat-summary/` | `docs/xiaohongshu-chat-summary/README.md`、`docs/OUTPUT_SKILL_SPEC.md` |
 | **运行测试** | `python3 -m pytest -q` | `tests/`、`AGENTS.md` 提交规则一节 |
 | **校验本 MAP** | `python3 scripts/lint_map.py` | 本文件第 7 节 |
 | **查看**仓库运行记录 / 历史 | 浏览 `references/90_Runs/` | — |

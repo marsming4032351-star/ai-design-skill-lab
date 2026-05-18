@@ -1,0 +1,153 @@
+version: 0.1
+purpose: "Lightweight Agent Runtime registry for design workflow orchestration."
+runtime_mode: "documented_state_flow"
+default_run_template: "runs/run_template.yaml"
+queue_root: "queue"
+memory_root: "memory"
+
+agents:
+  ceo:
+    name: "CEO Agent"
+    status: "planned"
+    role: "Decides project priority, business intent, and final approval boundaries."
+    spec: "agents/ceo/AGENT.md"
+    accepts:
+      - project_brief
+      - business_goal
+      - stakeholder_constraints
+    produces:
+      - decision_brief
+      - approval_gate
+      - next_agent
+    queues:
+      input: "queue/pending"
+      output: "queue/running"
+
+  design_ingest:
+    name: "Design Ingest Agent"
+    status: "planned"
+    role: "Turns raw design materials into structured inputs for downstream agents."
+    spec: "agents/design_ingest/AGENT.md"
+    accepts:
+      - source_files
+      - links
+      - notes
+      - reference_images
+    produces:
+      - material_manifest
+      - extracted_requirements
+      - asset_gaps
+    queues:
+      input: "queue/pending"
+      output: "queue/running"
+
+  prompt_optimizer:
+    name: "Prompt Optimizer Agent"
+    status: "planned"
+    role: "Converts strategy and references into reusable image, layout, and critique prompts."
+    spec: "agents/prompt_optimizer/AGENT.md"
+    accepts:
+      - design_brief
+      - references
+      - output_constraints
+    produces:
+      - prompt_set
+      - prompt_rationale
+      - negative_prompt_notes
+    queues:
+      input: "queue/running"
+      output: "queue/running"
+
+  design_critic:
+    name: "Design Critic Agent"
+    status: "runtime_ready"
+    role: "Reviews visual outputs against readability, brand, layout, feasibility, and publishing criteria."
+    spec: "agents/design_critic/AGENT.md"
+    runtime: "runtime/design_critic_runtime.md"
+    accepts:
+      - design_image
+      - design_brief
+      - brand_rules
+      - output_channel
+    produces:
+      - critique_report
+      - review_score
+      - approved
+      - next_action
+    queues:
+      input: "queue/review"
+      output_pass: "queue/done"
+      output_fail: "queue/running"
+
+  brand_manual:
+    name: "Brand Manual Agent"
+    status: "planned"
+    role: "Extracts repeatable brand rules from approved projects."
+    spec: "agents/brand_manual/AGENT.md"
+    accepts:
+      - approved_designs
+      - critique_reports
+      - brand_context
+    produces:
+      - brand_manual_notes
+      - reusable_rules
+      - pattern_candidates
+    queues:
+      input: "queue/done"
+      output: "queue/done"
+
+  xiaohongshu:
+    name: "Xiaohongshu Agent"
+    status: "planned"
+    role: "Turns design workflows and cases into publishable Xiaohongshu card posts."
+    spec: "agents/xiaohongshu/AGENT.md"
+    accepts:
+      - topic
+      - design_case
+      - card_outline
+      - publishing_constraints
+    produces:
+      - card_plan
+      - post_copy
+      - export_checklist
+    queues:
+      input: "queue/running"
+      output: "queue/review"
+
+  publisher:
+    name: "Publisher Agent"
+    status: "planned"
+    role: "Packages approved outputs for release and archive."
+    spec: "agents/publisher/AGENT.md"
+    accepts:
+      - approved_assets
+      - post_copy
+      - run_record
+    produces:
+      - publish_package
+      - archive_notes
+      - next_reuse_suggestion
+    queues:
+      input: "queue/done"
+      output: "queue/done"
+
+state_model:
+  pending:
+    path: "queue/pending"
+    meaning: "Run is defined but not assigned or started."
+  running:
+    path: "queue/running"
+    meaning: "Run is being worked by the current_agent."
+  review:
+    path: "queue/review"
+    meaning: "Run is awaiting critique, approval, or revision decision."
+  done:
+    path: "queue/done"
+    meaning: "Run is approved, archived, or intentionally closed."
+
+handoff_contract:
+  run_record: "Every handoff updates runs/*.yaml."
+  current_agent: "Must match one key under agents."
+  current_step: "Must describe the active workflow step in human-readable form."
+  status: "Must be pending, running, review, done, blocked, or archived."
+  history: "Append one entry per meaningful state transition."

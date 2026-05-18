@@ -1,0 +1,88 @@
+run_id: run_20260517_yulu_poster_review
+project_name: 御炉烤鸭
+task: 御炉烤鸭工艺海报评审
+current_agent: publisher
+next_agent: null
+current_step: Review poster draft against brand, readability, production, and Xiaohongshu
+  cover criteria.
+status: done
+inputs:
+  brief: 评审一张御炉烤鸭工艺海报草案，目标是突出手工挂炉、传统工艺、宴请价值和高级餐饮感。
+  assets:
+  - mock://yulu-roast-duck-craft-poster-draft.png
+  references:
+  - 品牌关键词：京味、炉火、匠心、宴请、现代中式
+  - 输出渠道：门店海报 / 小红书封面候选
+  constraints:
+  - 不使用真实图片，本记录仅模拟任务状态。
+  - 必须检查字体重叠、画面拥挤、品牌一致性和施工落地性。
+outputs:
+  files: []
+  notes: 待 Design Critic 输出评审报告。当前没有真实图片，先按模拟占位图进入 review 状态。
+  review_report:
+    agent: design_critic
+    mode: rule_based_mock_critique
+    score: 10
+    approved: true
+    recommendation: approve
+    issues:
+      text_overlap:
+        label: Text overlap
+        failed: false
+        penalty: 0
+        recommendation: No action needed.
+      font_too_small:
+        label: Font too small
+        failed: false
+        penalty: 0
+        recommendation: No action needed.
+      visual_overload:
+        label: Visual overload
+        failed: false
+        penalty: 0
+        recommendation: No action needed.
+      style_mismatch:
+        label: Style mismatch
+        failed: false
+        penalty: 0
+        recommendation: No action needed.
+    summary: Design passed the local rule-based critique.
+    revision_actions: []
+review_score: 10
+approved: true
+next_action: Archive or publish approved output.
+history:
+- at: '2026-05-17T00:00:00+08:00'
+  agent: system
+  from_status: null
+  to_status: pending
+  action: created_run
+  summary: Created simulated run for Yulu roast duck craft poster review.
+  review_score: null
+  approved: null
+- at: '2026-05-17T00:05:00+08:00'
+  agent: design_critic
+  from_status: pending
+  to_status: review
+  action: accepted_review_task
+  summary: Design Critic accepted the poster review task with a mock image reference.
+  review_score: null
+  approved: null
+- at: '2026-05-18T18:09:59+08:00'
+  agent: orchestrator
+  from_status: review
+  to_status: review
+  action: execute_design_critic
+  summary: Executed local rule-based Design Critic.
+  review_score: 10
+  approved: true
+- at: '2026-05-18T18:09:59+08:00'
+  agent: orchestrator
+  from_status: review
+  to_status: done
+  action: approve_mock_review
+  summary: Mock review approved the output.
+  review_score: 10
+  approved: true
+  next_agent: publisher
+recommendation: approve

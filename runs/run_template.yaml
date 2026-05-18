@@ -1,0 +1,27 @@
+run_id: "run_YYYYMMDD_project_task"
+project_name: "Project Name"
+task: "Describe the design workflow task."
+current_agent: "design_ingest"
+next_agent: null
+current_step: "Collect and structure inputs."
+status: "pending"
+inputs:
+  brief: ""
+  assets: []
+  references: []
+  constraints: []
+outputs:
+  files: []
+  notes: ""
+review_score: null
+approved: null
+next_action: "Assign the first agent and move the run to running."
+history:
+  - at: "YYYY-MM-DDTHH:MM:SS+08:00"
+    agent: "system"
+    from_status: null
+    to_status: "pending"
+    action: "created_run"
+    summary: "Initial run record created from template."
+    review_score: null
+    approved: null

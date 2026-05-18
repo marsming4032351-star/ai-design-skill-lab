@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Design Skill Lab · Design Data Factory</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --bg: #ece6d8;
+      --paper: #f6f1e4;
+      --paper-2: #fffaee;
+      --ink: #14181f;
+      --ink-2: #2a3340;
+      --muted: #6a7382;
+      --muted-2: #97a0ac;
+      --line: rgba(20,24,31,.14);
+      --line-soft: rgba(20,24,31,.08);
+      --dark: #14181f;
+
+      --red:    #d8442d;
+      --blue:   #2160d2;
+      --green:  #128057;
+      --yellow: #e8a523;
+      --violet: #6e4dbe;
+
+      /* ── Type scale ── */
+      --t-eyebrow: 13px;
+      --t-h2:      clamp(38px, 3.8vw, 54px);
+      --t-lead:    clamp(16px, 1.4vw, 20px);
+      --t-card-b:  22px;
+      --t-card-s:  14px;
+      --t-mono:    11px;
+
+      /* ── Spacing ── */
+      --pad-x: 80px;
+      --pad-y: 52px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .stage {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+
+    .deck {
+      position: relative;
+      width: min(1500px, calc(100vw - 44px));
+      aspect-ratio: 16 / 9;
+      background: var(--paper);
+      box-shadow: 0 28px 70px rgba(33,28,20,.22), 0 2px 0 rgba(33,28,20,.06);
+      overflow: hidden;
+    }
+
+    /* ── Slide base ─────────────────────────────────────────── */
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      /* Three-row safe layout: header / main / footer */
+      grid-template-rows: auto 1fr auto;
+      padding: var(--pad-y) var(--pad-x) 0;
+      background:
+        linear-gradient(90deg,  rgba(20,24,31,.032) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(180deg, rgba(20,24,31,.032) 1px, transparent 1px) 0 0 / 56px 56px,
+        var(--paper);
+      overflow: hidden;
+    }
+    .slide.active { display: grid; }
+
+    /* Inset frame decoration */
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 28px;
+      border: 1px solid var(--line);
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Corner accent square */
+    .slide::after {
+      content: "";
+      position: absolute;
+      right: 52px; top: 52px;
+      width: 16px; height: 16px;
+      background: var(--accent, var(--blue));
+      opacity: .9;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Dark variant */
+    .dark {
+      color: #fff;
+      background:
+        linear-gradient(90deg,  rgba(255,255,255,.038) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(180deg, rgba(255,255,255,.038) 1px, transparent 1px) 0 0 / 56px 56px,
+        var(--dark) !important;
+    }
+    .dark::before { border-color: rgba(255,255,255,.15); }
+
+    /* ── Top bar (row 1) ──────────────────────────────────────── */
+    .top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--muted);
+      font-size: var(--t-eyebrow);
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .top .crumb { letter-spacing: .12em; text-transform: uppercase; }
+    .dark .top   { color: rgba(255,255,255,.55); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 10px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      flex-shrink: 0;
+    }
+    .dark .badge { background: #fff; color: var(--dark); }
+
+    /* ── Body (row 2) ─────────────────────────────────────────── */
+    .body {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      margin-top: 28px;
+      padding-bottom: 6px;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    /* ── Footer (row 3) ────────────────────────────────────────── */
+    .footer {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 10px 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 500;
+      letter-spacing: .02em;
+    }
+    .dark .footer { color: rgba(255,255,255,.5); }
+    .footer .note { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .page-no {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      font-feature-settings: "tnum";
+      font-size: 12px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .page-no::before {
+      content: "";
+      width: 20px; height: 3px;
+      background: var(--accent, var(--blue));
+    }
+
+    /* ── Type ────────────────────────────────────────────────── */
+    h1,h2,h3,p { margin: 0; }
+
+    h2 {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      max-width: 1100px;
+      font-size: var(--t-h2);
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: -.005em;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 2;
+      margin-top: 10px;
+      max-width: 1000px;
+      color: var(--muted);
+      font-size: var(--t-lead);
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .dark .lead { color: rgba(255,255,255,.7); }
+
+    .accent { color: var(--accent, var(--blue)); }
+    .mono   { font-family: "SF Mono","Menlo","Consolas",monospace; letter-spacing: .04em; }
+
+    /* ─────────────────────────────────────────────────────────
+       01 COVER
+    ───────────────────────────────────────────────────────── */
+    .slide-cover {
+      padding-top: var(--pad-y);
+    }
+    .slide-cover .body {
+      display: grid;
+      grid-template-columns: 1.2fr .95fr;
+      gap: 56px;
+      align-items: stretch;
+      margin-top: 36px;
+      overflow: visible;
+    }
+    .cover-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+    }
+    .cover-eyebrow {
+      color: rgba(255,255,255,.45);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      letter-spacing: .18em;
+      margin-bottom: 18px;
+    }
+    .cover-title {
+      font-size: clamp(46px, 5.4vw, 84px);
+      line-height: .98;
+      font-weight: 900;
+      letter-spacing: -.015em;
+      color: #fff;
+    }
+    .cover-title em { font-style: normal; color: var(--red); }
+    .cover-sub {
+      margin-top: 20px;
+      max-width: 680px;
+      color: rgba(255,255,255,.72);
+      font-size: 18px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .cover-meta {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      gap: 36px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.18);
+    }
+    .cover-meta div { display: flex; flex-direction: column; gap: 5px; }
+    .cover-meta dt {
+      color: rgba(255,255,255,.38);
+      font-size: 10px;
+      letter-spacing: .18em;
+      font-weight: 700;
+    }
+    .cover-meta dd {
+      margin: 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .mark {
+      position: relative;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: 28px 26px 22px;
+      border: 1px solid rgba(255,255,255,.22);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.06), transparent 50%),
+        radial-gradient(circle at 80% 0%, rgba(216,68,45,.16), transparent 55%),
+        rgba(255,255,255,.02);
+    }
+    .mark::before,.mark::after {
+      content: "";
+      position: absolute;
+      width: 12px; height: 12px;
+      border: 2px solid rgba(255,255,255,.45);
+    }
+    .mark::before { top: -6px; left: -6px; border-right: 0; border-bottom: 0; }
+    .mark::after  { bottom: -6px; right: -6px; border-left: 0; border-top: 0; }
+
+    .mark-mono {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: rgba(255,255,255,.5);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      letter-spacing: .16em;
+    }
+    .mark-mono b { color: rgba(255,255,255,.82); font-weight: 700; }
+
+    .mark-stack {
+      align-self: end;
+      font-size: clamp(36px, 4vw, 52px);
+      line-height: .96;
+      font-weight: 900;
+      letter-spacing: -.01em;
+    }
+    .mark-stack span { display: block; }
+    .mark-stack .c1 { color: #fff; }
+    .mark-stack .c2 { color: rgba(255,255,255,.7); }
+    .mark-stack .c3 { color: var(--red); }
+
+    .mark-foot {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(255,255,255,.2);
+      color: rgba(255,255,255,.5);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .14em;
+      line-height: 1.5;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       02 WHY — symptom rows
+    ───────────────────────────────────────────────────────── */
+    .symptom {
+      position: relative;
+      z-index: 2;
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .symptom-row {
+      display: grid;
+      grid-template-columns: 52px 220px 1fr;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 20px;
+      border: 1px solid var(--line);
+      background: var(--paper-2);
+      border-left: 5px solid var(--row-color, var(--blue));
+    }
+    .symptom-num {
+      color: var(--row-color, var(--blue));
+      font-size: 22px;
+      font-weight: 900;
+      font-feature-settings: "tnum";
+    }
+    .symptom-title {
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+    .symptom-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .pullquote {
+      position: relative;
+      z-index: 2;
+      margin-top: 14px;
+      padding: 14px 20px;
+      border-left: 4px solid var(--accent, var(--blue));
+      color: var(--ink-2);
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       03 POSITION
+    ───────────────────────────────────────────────────────── */
+    .position {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+    .pos-card {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 18px 16px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--card-color, var(--blue));
+    }
+    .pos-card .role {
+      color: var(--card-color, var(--blue));
+      font-size: 10px;
+      letter-spacing: .16em;
+      font-weight: 900;
+    }
+    .pos-card h3 {
+      margin-top: 10px;
+      font-size: 24px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .pos-card .pos-en {
+      margin-top: 4px;
+      color: var(--muted-2);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+    }
+    .pos-card p {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .pos-card .verb {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      color: var(--card-color, var(--blue));
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      font-weight: 700;
+    }
+    .pos-rel {
+      position: relative;
+      z-index: 2;
+      margin-top: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+    .pos-rel .chip {
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: var(--ink);
+    }
+    .pos-rel .arrow { color: var(--muted-2); font-weight: 900; }
+
+    /* ─────────────────────────────────────────────────────────
+       04 STRUCTURE
+    ───────────────────────────────────────────────────────── */
+    .arch {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      display: grid;
+      gap: 8px;
+      flex: 1;
+      min-height: 0;
+    }
+    .arch-row {
+      display: grid;
+      grid-template-columns: 64px 200px 1fr 160px;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-left: 7px solid var(--layer-color);
+    }
+    .arch-idx {
+      color: var(--layer-color);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: .1em;
+    }
+    .arch-name { display: flex; flex-direction: column; gap: 3px; }
+    .arch-name b {
+      font-size: 18px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    .arch-name span {
+      color: var(--muted-2);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+    .arch-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+    .arch-path {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      color: var(--layer-color);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-align: right;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       05 / 06 / 09 FLOW
+    ───────────────────────────────────────────────────────── */
+    .flow {
+      position: relative;
+      z-index: 2;
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      flex: 1;
+      min-height: 0;
+      align-content: start;
+    }
+    .flow-node {
+      position: relative;
+      padding: 16px 14px 14px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--node-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .flow-step {
+      color: var(--node-color);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .14em;
+    }
+    .flow-node b {
+      display: block;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .flow-node .desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+    .flow-node .io {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      color: var(--muted-2);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      line-height: 1.5;
+      letter-spacing: .04em;
+    }
+    /* Arrow connectors between nodes */
+    .flow-node + .flow-node::before {
+      content: "→";
+      position: absolute;
+      left: -13px; top: 16px;
+      width: 13px; height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-2);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       07 BOUNDARY
+    ───────────────────────────────────────────────────────── */
+    .boundary {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+    .b-panel {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 22px 18px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--panel-color, var(--blue));
+      min-height: 0;
+    }
+    .b-tag {
+      display: inline-flex;
+      width: max-content;
+      padding: 4px 8px;
+      background: var(--panel-color, var(--blue));
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .16em;
+    }
+    .b-panel h3 {
+      margin-top: 12px;
+      font-size: 26px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+    .b-panel p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .b-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+    .b-item {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 12px;
+      padding: 10px 12px;
+      background: rgba(20,24,31,.04);
+      border-left: 3px solid var(--panel-color, var(--blue));
+    }
+    .b-item code {
+      color: var(--panel-color, var(--blue));
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .06em;
+    }
+    .b-item span {
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       08 OUTPUT
+    ───────────────────────────────────────────────────────── */
+    .output-grid {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      /* Fixed height to prevent overflow — leave room for note + footer */
+      flex: 1;
+      min-height: 0;
+    }
+    .out-card {
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 14px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--card-color, var(--blue));
+      min-height: 0;
+      overflow: hidden;
+    }
+    .out-card .ic {
+      width: 32px; height: 32px;
+      display: grid;
+      place-items: center;
+      background: var(--card-color, var(--blue));
+      color: #fff;
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 12px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .out-card h3 {
+      margin-top: 12px;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .out-card .pkg {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .out-card .meta {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      display: grid;
+      gap: 4px;
+      color: var(--muted-2);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+    }
+    .out-card .meta b { color: var(--ink); font-weight: 700; }
+
+    .output-note {
+      position: relative;
+      z-index: 2;
+      margin-top: 12px;
+      padding: 12px 18px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 700;
+      border-left: 4px solid var(--accent, var(--violet));
+      flex-shrink: 0;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       09 LOOP
+    ───────────────────────────────────────────────────────── */
+    .loop-meta {
+      position: relative;
+      z-index: 2;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      border: 1px dashed var(--line);
+      color: var(--ink);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .loop-meta .arc { color: var(--yellow); font-weight: 900; }
+
+    /* ─────────────────────────────────────────────────────────
+       10 MAP
+    ───────────────────────────────────────────────────────── */
+    .map {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+      align-content: start;
+    }
+    .map-box {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 7px;
+      padding: 14px 16px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--map-color, var(--blue));
+    }
+    .map-box .role {
+      color: var(--map-color, var(--blue));
+      font-size: 10px;
+      letter-spacing: .16em;
+      font-weight: 900;
+    }
+    .map-box b {
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 18px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+    .map-box span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       11 VALUE
+    ───────────────────────────────────────────────────────── */
+    .value {
+      position: relative;
+      z-index: 2;
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+    }
+    .v-row {
+      display: grid;
+      grid-template-columns: 70px 220px 1fr 160px;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 20px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--row-color);
+    }
+    .v-idx {
+      color: var(--row-color);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 13px;
+      letter-spacing: .12em;
+      font-weight: 900;
+    }
+    .v-name b {
+      display: block;
+      font-size: 20px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    .v-name span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted-2);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+    }
+    .v-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .v-for {
+      color: var(--row-color);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      font-weight: 700;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       12 SUMMARY
+    ───────────────────────────────────────────────────────── */
+    .sum {
+      position: relative;
+      z-index: 2;
+      margin-top: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+    }
+    .sum-eq {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 22px;
+      align-items: center;
+      padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,.18);
+      border-bottom: 1px solid rgba(255,255,255,.18);
+    }
+    .sum-eq .lhs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .sum-eq .chip {
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.03);
+    }
+    .sum-eq .chip span {
+      display: block;
+      color: rgba(255,255,255,.42);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      font-weight: 700;
+    }
+    .sum-eq .chip b {
+      display: block;
+      margin-top: 6px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -.005em;
+    }
+    .sum-eq .eq {
+      color: var(--yellow);
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .sum-eq .rhs {
+      color: #fff;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 900;
+      letter-spacing: -.005em;
+    }
+    .sum-eq .rhs em { font-style: normal; color: var(--yellow); }
+
+    .sum-next {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255,255,255,.52);
+      font-family: "SF Mono","Menlo","Consolas",monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      font-weight: 700;
+    }
+    .sum-next .arrow { color: var(--yellow); }
+
+    /* ─────────────────────────────────────────────────────────
+       Controls
+    ───────────────────────────────────────────────────────── */
+    .progress {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: 4px;
+      background: rgba(20,24,31,.12);
+      z-index: 20;
+    }
+    .bar {
+      height: 100%;
+      width: 0;
+      background: var(--blue);
+      transition: width .25s ease, background-color .25s ease;
+    }
+
+    .controls {
+      position: fixed;
+      right: 22px; top: 20px;
+      z-index: 21;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .counter {
+      padding: 0 10px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,250,240,.95);
+      border: 1px solid rgba(20,24,31,.22);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      color: var(--ink);
+      font-feature-settings: "tnum";
+    }
+    button.nav {
+      width: 36px; height: 32px;
+      border: 1px solid rgba(20,24,31,.22);
+      background: rgba(255,250,240,.95);
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    button.nav:hover { background: #fff; }
+    button.nav:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+    @media (max-width: 900px) {
+      .stage { padding: 10px; }
+      .deck { width: calc(100vw - 20px); }
+      .controls { display: none; }
+      :root {
+        --pad-x: 40px;
+        --pad-y: 36px;
+      }
+    }
+
+    @media print {
+      @page {
+        size: 1920px 1080px;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      body { background: #fff; }
+      .stage { display: block; width: 1920px; height: 1080px; padding: 0; }
+      .deck { width: 1920px; aspect-ratio: auto; box-shadow: none; overflow: visible; }
+      .slide {
+        position: relative;
+        display: flex !important;
+        flex-direction: column;
+        width: 1920px;
+        height: 1080px;
+        page-break-after: always;
+        break-after: page;
+      }
+      .progress, .controls { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <div class="deck" aria-live="polite">
+
+      <!-- 01 COVER -->
+      <section class="slide dark slide-cover active" style="--accent: var(--red);" data-screen-label="01 Cover">
+        <div class="top">
+          <span class="badge">PROJECT SHARE · 2026</span>
+          <span class="crumb">AI Design Skill Lab / Design Data Factory</span>
+        </div>
+        <div class="body">
+          <div class="cover-left">
+            <div>
+              <div class="cover-eyebrow">— A SYSTEM FOR AI-NATIVE DESIGN WORK</div>
+              <h1 class="cover-title">把 AI 设计<br>从一次性输出,<br>变成<em>可复用系统</em>。</h1>
+              <p class="cover-sub">资料 · 规则 · Prompt · 运行记录 · 输出成果——<br>统一沉淀为一个面向人和 Agent 的设计工作台。</p>
+            </div>
+            <dl class="cover-meta">
+              <div><dt>VERSION</dt><dd>v1 · 2026</dd></div>
+              <div><dt>SCOPE</dt><dd>Pipeline · Harness · Output</dd></div>
+              <div><dt>STATUS</dt><dd>M3 · 进行中</dd></div>
+            </dl>
+          </div>
+          <div class="mark">
+            <div class="mark-mono">
+              <span><b>SYS</b> · design-data-factory</span>
+              <span><b>RUN</b> · brief → reference → plan</span>
+              <span><b>OUT</b> · render → review → archive</span>
+            </div>
+            <div>
+              <div class="mark-stack">
+                <span class="c1">Design</span>
+                <span class="c2">Data</span>
+                <span class="c3">Factory.</span>
+              </div>
+              <div class="mark-foot">REPO · AI-DESIGN-SKILL-LAB<br>OS · DESIGN + AI RUNTIME</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">分享人 · Design Systems 团队 / 内部演示稿</span>
+          <span class="page-no">01 / 12</span>
+        </div>
+      </section>
+
+      <!-- 02 WHY -->
+      <section class="slide" style="--accent: var(--red);" data-screen-label="02 Why">
+        <div class="top">
+          <span class="badge">01 · WHY</span>
+          <span class="crumb">问题 / The Pain</span>
+        </div>
+        <div class="body">
+          <h2>AI 让"生成"几乎免费,<br>却让"沉淀"几乎不可能。</h2>
+          <p class="lead">真正的代价不在算力,而在每一次生成之后——上下文、判断和经验都消失了。</p>
+          <div class="symptom">
+            <div class="symptom-row" style="--row-color: var(--red);">
+              <span class="symptom-num">01</span>
+              <span class="symptom-title">上下文散落</span>
+              <span class="symptom-desc">Prompt、参考图、聊天记录散在不同工具里,事后无法还原"为什么这样做"。</span>
+            </div>
+            <div class="symptom-row" style="--row-color: var(--blue);">
+              <span class="symptom-num">02</span>
+              <span class="symptom-title">判断不可见</span>
+              <span class="symptom-desc">采纳与否决的理由停留在脑中和私聊里,无法被复查、被引用、被传承。</span>
+            </div>
+            <div class="symptom-row" style="--row-color: var(--green);">
+              <span class="symptom-num">03</span>
+              <span class="symptom-title">经验不回流</span>
+              <span class="symptom-desc">每个项目从零开始问、找、试,上一次的最佳实践无法成为下一次的起点。</span>
+            </div>
+          </div>
+          <div class="pullquote">所以问题不是"AI 不会做",而是"做完之后什么都不剩下"。</div>
+        </div>
+        <div class="footer">
+          <span class="note">从一次性生成,升级为可沉淀的设计系统</span>
+          <span class="page-no">02 / 12</span>
+        </div>
+      </section>
+
+      <!-- 03 POSITION -->
+      <section class="slide" style="--accent: var(--blue);" data-screen-label="03 Position">
+        <div class="top">
+          <span class="badge">02 · POSITION</span>
+          <span class="crumb">定位 / What It Is</span>
+        </div>
+        <div class="body">
+          <h2>不是素材库,不是工具集,<br>是一个面向 AI 的设计工作台。</h2>
+          <p class="lead">由三个相互独立又彼此衔接的部分构成,各司其职。</p>
+          <div class="position">
+            <div class="pos-card" style="--card-color: var(--blue);">
+              <span class="role">PART 1 · 资产层</span>
+              <h3>Design Data Factory</h3>
+              <span class="pos-en">DATA · references / prompts / rules</span>
+              <p>把设计经验拆成可索引、可版本化的工程资产:Pattern、Rule、Prompt、Run 记录。</p>
+              <span class="verb">→ ACCUMULATES KNOWLEDGE</span>
+            </div>
+            <div class="pos-card" style="--card-color: var(--green);">
+              <span class="role">PART 2 · 运行层</span>
+              <h3>Harness Runtime</h3>
+              <span class="pos-en">RUNTIME · planner / generator / critic</span>
+              <p>以状态机方式驱动一次 AI 设计任务的完整生命周期——计划、生成、评价、复审、归档。</p>
+              <span class="verb">→ EXECUTES TASKS</span>
+            </div>
+            <div class="pos-card" style="--card-color: var(--violet);">
+              <span class="role">PART 3 · 交付层</span>
+              <h3>Output Skill</h3>
+              <span class="pos-en">DELIVERY · packaged outputs</span>
+              <p>把判断结果打包为可发布、可演示、可归档的资产包——而不是临时截图。</p>
+              <span class="verb">→ DELIVERS ASSETS</span>
+            </div>
+          </div>
+          <div class="pos-rel">
+            <span class="chip">DATA</span><span class="arrow">→</span>
+            <span class="chip">RUNTIME</span><span class="arrow">→</span>
+            <span class="chip">DELIVERY</span>
+            <span style="margin-left:auto;">数据沉淀 · 流程驱动 · 资产交付</span>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">三件事相互独立,又互为前提。</span>
+          <span class="page-no">03 / 12</span>
+        </div>
+      </section>
+
+      <!-- 04 STRUCTURE -->
+      <section class="slide" style="--accent: var(--violet);" data-screen-label="04 Structure">
+        <div class="top">
+          <span class="badge">03 · STRUCTURE</span>
+          <span class="crumb">架构 / Four Layers</span>
+        </div>
+        <div class="body">
+          <h2>四层结构,自下而上,<br>从输入接住,到输出闭合。</h2>
+          <p class="lead">每一层职责单一,边界清晰——理解了这四层,就理解了仓库为什么这样拆。</p>
+          <div class="arch">
+            <div class="arch-row" style="--layer-color: var(--violet);">
+              <div class="arch-idx">L4</div>
+              <div class="arch-name"><b>输出层 · Delivery</b><span>RENDERS &amp; DELIVERABLES</span></div>
+              <div class="arch-desc">把判断转化为可展示成果:HTML deck、图文、评估报告、文案稿。</div>
+              <div class="arch-path">docs/<br>demo/ · tests/</div>
+            </div>
+            <div class="arch-row" style="--layer-color: var(--green);">
+              <div class="arch-idx">L3</div>
+              <div class="arch-name"><b>生产层 · Production</b><span>PIPELINE &amp; RUNTIME</span></div>
+              <div class="arch-desc">让流程可执行:CLI 处理资产,Runtime 编排任务,行为可观测、可复跑。</div>
+              <div class="arch-path">scripts/<br>harness/</div>
+            </div>
+            <div class="arch-row" style="--layer-color: var(--blue);">
+              <div class="arch-idx">L2</div>
+              <div class="arch-name"><b>资产层 · Assets</b><span>STRUCTURED KNOWLEDGE</span></div>
+              <div class="arch-desc">把经验结构化:Pattern、Rule、Prompt、schema——可索引、可引用、可版本化。</div>
+              <div class="arch-path">references/<br>shared/</div>
+            </div>
+            <div class="arch-row" style="--layer-color: var(--red);">
+              <div class="arch-idx">L1</div>
+              <div class="arch-name"><b>资料层 · Inbox</b><span>RAW INPUTS</span></div>
+              <div class="arch-desc">接住未消化的输入:文章、brief、截图、外部参考——隔离区,先不动手。</div>
+              <div class="arch-path">00_Inbox_Staging/<br>imports/</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">L1 → L4 自下而上:接住 · 沉淀 · 执行 · 交付</span>
+          <span class="page-no">04 / 12</span>
+        </div>
+      </section>
+
+      <!-- 05 PIPELINE -->
+      <section class="slide" style="--accent: var(--blue);" data-screen-label="05 Pipeline">
+        <div class="top">
+          <span class="badge">04 · PIPELINE</span>
+          <span class="crumb">资产生产链路 / Data Pipeline</span>
+        </div>
+        <div class="body">
+          <h2>Pipeline 把原始资料,<br>加工成结构化资产。</h2>
+          <p class="lead">五个单步 CLI,每一步可独立运行、独立检查——失败可重试,产物可追溯。</p>
+          <div class="flow">
+            <div class="flow-node" style="--node-color: var(--red);">
+              <div class="flow-step">STEP 01</div>
+              <b>scan</b>
+              <div class="desc">盘点原始资料,生成 manifest 与 Asset 记录。</div>
+              <div class="io">IN · raw files<br>OUT · manifest</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--blue);">
+              <div class="flow-step">STEP 02</div>
+              <b>run</b>
+              <div class="desc">结合 brief、Prompt、Pattern 生成设计 Plan。</div>
+              <div class="io">IN · brief + assets<br>OUT · plan draft</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--green);">
+              <div class="flow-step">STEP 03</div>
+              <b>critic</b>
+              <div class="desc">用 rubric 和 rule 评价方向是否值得继续。</div>
+              <div class="io">IN · plan<br>OUT · scored report</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--violet);">
+              <div class="flow-step">STEP 04</div>
+              <b>archive</b>
+              <div class="desc">把通过评价的方向沉淀为可复用 Pattern。</div>
+              <div class="io">IN · plan<br>OUT · pattern</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--yellow);">
+              <div class="flow-step">STEP 05</div>
+              <b>generate</b>
+              <div class="desc">把方向转换为 Visual 或最终输出素材。</div>
+              <div class="io">IN · pattern<br>OUT · asset</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">入口: <span class="mono">scripts/</span>　共享能力: <span class="mono">shared/</span></span>
+          <span class="page-no">05 / 12</span>
+        </div>
+      </section>
+
+      <!-- 06 HARNESS -->
+      <section class="slide" style="--accent: var(--green);" data-screen-label="06 Harness">
+        <div class="top">
+          <span class="badge">05 · HARNESS</span>
+          <span class="crumb">任务生命周期 / State Machine</span>
+        </div>
+        <div class="body">
+          <h2>Harness 是任务的外壳,<br>负责"任务怎么跑完"。</h2>
+          <p class="lead">一个 deterministic 状态机:把 AI 设计任务从目标到归档,变成五个可观测节点。</p>
+          <div class="flow">
+            <div class="flow-node" style="--node-color: var(--blue);">
+              <div class="flow-step">STATE 01</div>
+              <b>Goal</b>
+              <div class="desc">明确本次任务要解决的问题与约束。</div>
+              <div class="io">→ planner</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--green);">
+              <div class="flow-step">STATE 02</div>
+              <b>Planner</b>
+              <div class="desc">拆解目标,给出可执行的子步骤。</div>
+              <div class="io">→ generator</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--yellow);">
+              <div class="flow-step">STATE 03</div>
+              <b>Generator</b>
+              <div class="desc">生成候选设计或 mock 结果。</div>
+              <div class="io">→ critic</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--red);">
+              <div class="flow-step">STATE 04</div>
+              <b>Critic</b>
+              <div class="desc">评价结果;不达标则回到 generator 重试。</div>
+              <div class="io">↺ retry / ↓</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--violet);">
+              <div class="flow-step">STATE 05</div>
+              <b>Review</b>
+              <div class="desc">人工边界停点;通过后归档进资产库。</div>
+              <div class="io">→ archive</div>
+            </div>
+          </div>
+          <div class="pullquote">当前是 deterministic mock lifecycle——真实任务流转,但不调用 Pipeline CLI。</div>
+        </div>
+        <div class="footer">
+          <span class="note">关注点:状态流转 · 失败重试 · 人工边界 · 任务可观测</span>
+          <span class="page-no">06 / 12</span>
+        </div>
+      </section>
+
+      <!-- 07 BOUNDARY -->
+      <section class="slide" style="--accent: var(--red);" data-screen-label="07 Boundary">
+        <div class="top">
+          <span class="badge">06 · BOUNDARY</span>
+          <span class="crumb">边界 / Now vs Next</span>
+        </div>
+        <div class="body">
+          <h2>当前:Pipeline 与 Harness<br>各自演化,尚未打通。</h2>
+          <p class="lead">这是整个仓库最重要的一道边界——讲清楚,协作才不会错位。</p>
+          <div class="boundary">
+            <div class="b-panel" style="--panel-color: var(--blue);">
+              <span class="b-tag">NOW · 当前状态</span>
+              <h3>独立验证</h3>
+              <p>Pipeline 验证资产生产能力,Harness 验证任务生命周期。互不依赖,各跑各的。</p>
+              <div class="b-list">
+                <div class="b-item"><code>PIPELINE</code><span>真实处理 references / shared 资产</span></div>
+                <div class="b-item"><code>HARNESS</code><span>Mock 运行 planner / generator / critic</span></div>
+                <div class="b-item"><code>BRIDGE</code><span>两者之间暂时没有调用关系</span></div>
+              </div>
+            </div>
+            <div class="b-panel" style="--panel-color: var(--green);">
+              <span class="b-tag">NEXT · 目标状态</span>
+              <h3>逐步打通</h3>
+              <p>M4 起,Harness 开始消费 Pipeline 产物;M6 形成端到端的多 Agent Runtime。</p>
+              <div class="b-list">
+                <div class="b-item"><code>M4 · MEM</code><span>Memory · 消费历史 Pattern</span></div>
+                <div class="b-item"><code>M5 · EVAL</code><span>Evaluator · 引入质量门</span></div>
+                <div class="b-item"><code>M6 · AGT</code><span>Multi-Agent · 端到端 Runtime</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">先把边界讲清楚,协作和路线图才有共同语言。</span>
+          <span class="page-no">07 / 12</span>
+        </div>
+      </section>
+
+      <!-- 08 OUTPUT -->
+      <section class="slide" style="--accent: var(--violet);" data-screen-label="08 Output">
+        <div class="top">
+          <span class="badge">07 · OUTPUT SKILL</span>
+          <span class="crumb">交付规范 / Output as Asset</span>
+        </div>
+        <div class="body">
+          <h2>输出不是最后一张截图,<br>而是一个可回流的资产包。</h2>
+          <p class="lead">每一次交付都带着来源、参数、检查结果,能被复盘、复用、归档。</p>
+          <div class="output-grid">
+            <div class="out-card" style="--card-color: var(--red);">
+              <div class="ic">RH</div>
+              <h3>小红书图文</h3>
+              <div class="pkg">HTML/CSS 源文件 + 截图,导出 1080 × 1350 PNG,封面与文案同源。</div>
+              <div class="meta">
+                <span><b>SIZE</b> · 1080 × 1350</span>
+                <span><b>FILES</b> · html / css / png</span>
+                <span><b>SOURCE</b> · brief + pattern</span>
+              </div>
+            </div>
+            <div class="out-card" style="--card-color: var(--blue);">
+              <div class="ic">DK</div>
+              <h3>HTML Deck</h3>
+              <div class="pkg">横向 16:9 演示稿,可浏览、可投屏、可打印——本页就是一个实例。</div>
+              <div class="meta">
+                <span><b>SIZE</b> · 1920 × 1080</span>
+                <span><b>FILES</b> · index.html</span>
+                <span><b>SOURCE</b> · plan + pattern</span>
+              </div>
+            </div>
+            <div class="out-card" style="--card-color: var(--green);">
+              <div class="ic">QC</div>
+              <h3>输出检查</h3>
+              <div class="pkg">检查结构、尺寸、中文可读性、来源记录——统一标准,统一归档。</div>
+              <div class="meta">
+                <span><b>SPEC</b> · OUTPUT_SKILL</span>
+                <span><b>GATE</b> · rule + rubric</span>
+                <span><b>SINK</b> · pattern lib</span>
+              </div>
+            </div>
+          </div>
+          <div class="output-note">每一份输出都是下一份输入。这是闭环的关键节点。</div>
+        </div>
+        <div class="footer">
+          <span class="note">起点: <span class="mono">docs/OUTPUT_SKILL_SPEC.md</span></span>
+          <span class="page-no">08 / 12</span>
+        </div>
+      </section>
+
+      <!-- 09 LOOP -->
+      <section class="slide" style="--accent: var(--yellow);" data-screen-label="09 Loop">
+        <div class="top">
+          <span class="badge">08 · END TO END</span>
+          <span class="crumb">闭环 / The Loop</span>
+        </div>
+        <div class="body">
+          <h2>一次任务,从 brief 进来,<br>到 pattern 出去——闭合。</h2>
+          <p class="lead">关心的不是"这次做完",而是"做完之后,下一次能不能更快、更稳、更准"。</p>
+          <div class="flow">
+            <div class="flow-node" style="--node-color: var(--red);">
+              <div class="flow-step">IN · BRIEF</div>
+              <b>接收</b>
+              <div class="desc">目标、资料、限制、场景进入 staging,先隔离不动。</div>
+              <div class="io">→ 00_Inbox_Staging</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--blue);">
+              <div class="flow-step">REF · 参考</div>
+              <b>判断</b>
+              <div class="desc">外部资料是否值得吸收,变成可复用资产。</div>
+              <div class="io">→ references/</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--green);">
+              <div class="flow-step">RUN · 计划</div>
+              <b>生成</b>
+              <div class="desc">产出方向 Plan,记录消耗了哪些资产与决策。</div>
+              <div class="io">→ harness / plan</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--violet);">
+              <div class="flow-step">OUT · 渲染</div>
+              <b>交付</b>
+              <div class="desc">转换为 HTML、图文、deck 或 visual 输出包。</div>
+              <div class="io">→ render / deliver</div>
+            </div>
+            <div class="flow-node" style="--node-color: var(--yellow);">
+              <div class="flow-step">LOOP · 沉淀</div>
+              <b>回流</b>
+              <div class="desc">通过评价的判断,沉淀为 Pattern / Rule。</div>
+              <div class="io">↺ pattern lib</div>
+            </div>
+          </div>
+          <div class="loop-meta">
+            <span>BRIEF → REFERENCE → PLAN → RENDER → REVIEW → ARCHIVE</span>
+            <span class="arc">↺ REUSE — 下一次的起点</span>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">每一次任务,都在让下一次更便宜。</span>
+          <span class="page-no">09 / 12</span>
+        </div>
+      </section>
+
+      <!-- 10 MAP -->
+      <section class="slide" style="--accent: var(--blue);" data-screen-label="10 Map">
+        <div class="top">
+          <span class="badge">09 · MAP</span>
+          <span class="crumb">仓库导航 / How To Read</span>
+        </div>
+        <div class="body">
+          <h2>读这个仓库,<br>从一句话和一份地图开始。</h2>
+          <p class="lead">不必读完所有文件——MAP.md 是第一事实源,其他目录围绕资料、资产、生产、输出各司其职。</p>
+          <div class="map">
+            <div class="map-box" style="--map-color: var(--red);">
+              <span class="role">START · 入口</span>
+              <b>MAP.md</b>
+              <span>当前结构、任务路由、Pipeline 与 Harness 的边界声明。</span>
+            </div>
+            <div class="map-box" style="--map-color: var(--violet);">
+              <span class="role">DOCS · 说明</span>
+              <b>docs/</b>
+              <span>架构说明、输出包规范、评估文档、协作指南。</span>
+            </div>
+            <div class="map-box" style="--map-color: var(--yellow);">
+              <span class="role">DATA · 资产</span>
+              <b>references/</b>
+              <span>Pattern、Rule、Prompt、schema、Run 历史记录。</span>
+            </div>
+            <div class="map-box" style="--map-color: var(--blue);">
+              <span class="role">CLI · 工具</span>
+              <b>scripts/</b>
+              <span>Pipeline 单步 CLI:scan / run / critic / archive / generate。</span>
+            </div>
+            <div class="map-box" style="--map-color: var(--green);">
+              <span class="role">CORE · 共享</span>
+              <b>shared/</b>
+              <span>schema 解析、prompt render、rule / rubric engine 等共用能力。</span>
+            </div>
+            <div class="map-box" style="--map-color: var(--blue);">
+              <span class="role">RUNTIME · 运行</span>
+              <b>harness/</b>
+              <span>Runtime 节点:planner / generator / critic / review。</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">给新人一句话:先看 MAP,再按任务走目录。</span>
+          <span class="page-no">10 / 12</span>
+        </div>
+      </section>
+
+      <!-- 11 VALUE -->
+      <section class="slide" style="--accent: var(--green);" data-screen-label="11 Value">
+        <div class="top">
+          <span class="badge">10 · VALUE</span>
+          <span class="crumb">价值 / Why It Matters</span>
+        </div>
+        <div class="body">
+          <h2>它真正的价值,<br>不是某次生成,而是工作方式本身。</h2>
+          <p class="lead">围绕 AI 调用建立的可协作、可审计、可复用的设计运行方式——这是本质区别。</p>
+          <div class="value">
+            <div class="v-row" style="--row-color: var(--blue);">
+              <div class="v-idx">V·01</div>
+              <div class="v-name"><b>设计资产化</b><span>KNOWLEDGE AS ASSETS</span></div>
+              <div class="v-desc">把经验从聊天记录和文件夹中提取出来,变成可检索、可引用、可版本化的工程资产。</div>
+              <div class="v-for">FOR<br>DESIGN TEAM</div>
+            </div>
+            <div class="v-row" style="--row-color: var(--green);">
+              <div class="v-idx">V·02</div>
+              <div class="v-name"><b>协作可追踪</b><span>AUDITABLE COLLAB</span></div>
+              <div class="v-desc">Git、README、run notes 形成天然审计链;每次决策可复查,判断不消失在私聊里。</div>
+              <div class="v-for">FOR<br>BRAND &amp; OPS</div>
+            </div>
+            <div class="v-row" style="--row-color: var(--violet);">
+              <div class="v-idx">V·03</div>
+              <div class="v-name"><b>AI 可治理</b><span>GOVERNED AGENTS</span></div>
+              <div class="v-desc">Agent 不只是生成,而是按规则执行、被验证、可回放;DesignOps 与 AI Runtime 自然衔接。</div>
+              <div class="v-for">FOR<br>AI WORKFLOW</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">不是用 AI 多做一点,而是让每一次 AI 工作都留下复利。</span>
+          <span class="page-no">11 / 12</span>
+        </div>
+      </section>
+
+      <!-- 12 SUMMARY -->
+      <section class="slide dark" style="--accent: var(--yellow);" data-screen-label="12 Summary">
+        <div class="top">
+          <span class="badge">11 · SUMMARY</span>
+          <span class="crumb">总结 / The Verdict</span>
+        </div>
+        <div class="body">
+          <h2 style="color:#fff;">这个仓库不是素材库,<br>是 AI 时代的<span style="color:var(--yellow);">设计工作台</span>。</h2>
+          <p class="lead">它把资料、规则、执行流水线与输出规范连为一体——让每一次 AI 设计工作都能留下可复用的资产。</p>
+          <div class="sum">
+            <div class="sum-eq">
+              <div class="lhs">
+                <div class="chip"><span>L2 · DATA</span><b>资料库</b></div>
+                <div class="chip"><span>L2 · RULES</span><b>规则库</b></div>
+                <div class="chip"><span>L3 · RUNTIME</span><b>执行流水线</b></div>
+                <div class="chip"><span>L4 · DELIVERY</span><b>输出规范</b></div>
+              </div>
+              <div class="eq">=</div>
+              <div class="rhs">一个可复盘、<br>可验证、<br>可演化的<br><em>AI Design OS.</em></div>
+            </div>
+            <div class="sum-next">
+              <span>NEXT · HARNESS CONSUMES PIPELINE</span>
+              <span class="arrow">→ END-TO-END RUNTIME · M6</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="note">下一步:让 Harness 逐步消费 Pipeline 产物。</span>
+          <span class="page-no">12 / 12</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div class="controls" aria-label="幻灯片控制">
+    <button type="button" class="nav" id="prev" aria-label="上一页">‹</button>
+    <span class="counter" id="counter">01 / 12</span>
+    <button type="button" class="nav" id="next" aria-label="下一页">›</button>
+  </div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const bar    = document.getElementById('bar');
+    const counter= document.getElementById('counter');
+    let current  = 0;
+
+    function show(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((s, i) => s.classList.toggle('active', i === current));
+
+      const pct = ((current + 1) / slides.length) * 100;
+      bar.style.width = `${pct}%`;
+
+      const accent = getComputedStyle(slides[current]).getPropertyValue('--accent').trim();
+      if (accent) bar.style.background = accent;
+
+      const num   = String(current + 1).padStart(2, '0');
+      const total = String(slides.length).padStart(2, '0');
+      counter.textContent = `${num} / ${total}`;
+
+      const hash = `slide-${num}`;
+      if (location.hash !== `#${hash}`) history.replaceState(null, '', `#${hash}`);
+    }
+
+    function fromHash() {
+      const m = location.hash.match(/slide-(\d+)/);
+      return m ? Number(m[1]) - 1 : 0;
+    }
+
+    document.getElementById('prev').addEventListener('click', () => show(current - 1));
+    document.getElementById('next').addEventListener('click', () => show(current + 1));
+    window.addEventListener('hashchange', () => show(fromHash()));
+    window.addEventListener('keydown', e => {
+      if (['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); show(current + 1); }
+      if (['ArrowLeft','PageUp'].includes(e.key))        { e.preventDefault(); show(current - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End')  show(slides.length - 1);
+    });
+
+    show(fromHash());
+  </script>
+</body>
+</html>

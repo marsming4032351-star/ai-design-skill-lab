@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>聊天总结图文包｜AI Design Skill Lab</title>
+  <style>
+    :root {
+      --bg: #f2ede3;
+      --paper: #fffaf0;
+      --paper-2: #f8f1e6;
+      --ink: #17212c;
+      --muted: #5f6976;
+      --line: rgba(23,33,44,.12);
+      --red: #cc4b2c;
+      --blue: #235fd0;
+      --green: #198563;
+      --gold: #bb8a1f;
+      --violet: #6d4fbc;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+    body {
+      font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+      padding: 36px 0 56px;
+      display: grid;
+      justify-items: center;
+      gap: 36px;
+    }
+
+    .card {
+      width: 1080px;
+      height: 1350px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(23,33,44,.045) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(23,33,44,.045) 1px, transparent 1px),
+        var(--paper);
+      background-size: 54px 54px;
+      box-shadow: 0 24px 72px rgba(61,44,26,.18);
+      border: 1px solid rgba(23,33,44,.08);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border: 2px solid rgba(23,33,44,.18);
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      right: -168px;
+      bottom: -172px;
+      width: 520px;
+      height: 520px;
+      border: 82px solid var(--accent, var(--blue));
+      opacity: .12;
+      transform: rotate(18deg);
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      padding: 74px 72px 66px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      font-size: 22px;
+      line-height: 1.15;
+      font-weight: 850;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 46px;
+      padding: 8px 16px;
+      background: #1e2731;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      flex-shrink: 0;
+    }
+
+    .kicker {
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing: .12em;
+      color: var(--accent, var(--blue));
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    .hero {
+      max-width: 860px;
+      font-size: 86px;
+      line-height: 1.03;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .hero em,
+    .accent { color: var(--accent, var(--blue)); font-style: normal; }
+
+    .lead {
+      margin-top: 22px;
+      max-width: 860px;
+      color: var(--muted);
+      font-size: 30px;
+      line-height: 1.48;
+      font-weight: 700;
+    }
+
+    .panel {
+      margin-top: 42px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.58);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 850;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 34px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .box {
+      padding: 24px 22px 20px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--accent, var(--blue));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dark .box {
+      background: rgba(250,247,240,.96);
+      color: var(--ink);
+      border-color: rgba(23,33,44,.14);
+    }
+
+    .box b {
+      font-size: 30px;
+      line-height: 1.08;
+      font-weight: 950;
+      color: inherit;
+    }
+
+    .box p {
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.44;
+      font-weight: 650;
+    }
+
+    .dark .box p {
+      color: var(--muted);
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .flow span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      font-size: 19px;
+      font-weight: 850;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.38;
+      font-weight: 700;
+    }
+
+    .mini {
+      max-width: 540px;
+    }
+
+    .page {
+      min-width: 98px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.55);
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .dark {
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,.04) 1px, transparent 1px),
+        #10151b;
+      color: #fff;
+    }
+    .dark::before { border-color: rgba(255,255,255,.15); }
+    .dark .topline, .dark .lead, .dark .footer { color: rgba(255,255,255,.72); }
+    .dark .badge { background: #fff; color: #10151b; }
+    .dark .box,
+    .dark .chip,
+    .dark .flow span { background: rgba(255,255,255,.06); color: #fff; border-color: rgba(255,255,255,.16); }
+    .dark .chip { color: #10151b; background: rgba(255,255,255,.95); }
+    .dark .flow span { color: #10151b; background: rgba(255,255,255,.95); }
+    .dark .box b { color: #10151b; }
+    .dark .page { background: rgba(255,255,255,.08); color: #fff; }
+
+    .small { font-size: 18px; }
+    .mono { font-family: "SF Mono","Menlo","Consolas",monospace; letter-spacing: .04em; }
+
+    .page-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .page-wrap:not(:target) { display: none; }
+    .page-wrap:first-of-type { display: grid; }
+
+    @media print {
+      @page { size: 1080px 1350px; margin: 0; }
+      html, body { width: 1080px; height: 1350px; margin: 0; padding: 0; overflow: hidden; }
+      body { display: block; background: #fff; }
+      .page-wrap { display: block; page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+  <section class="page-wrap" id="card-01">
+    <article class="card dark" style="--accent: var(--red);">
+      <div class="content">
+        <div class="topline">
+          <span class="badge">XHS · 5 CARDS</span>
+          <span class="kicker">chat summary</span>
+        </div>
+
+        <div>
+          <h1 class="hero">我把最近这段聊天，<em>压成了 5 张图</em>。</h1>
+          <p class="lead">这组图不是讲某个单点功能，而是把整个仓库的目的、结构、输出规范和生图链路，整理成小白能顺着看懂的一条线。</p>
+
+          <div class="panel">
+            <div class="chip-row">
+              <span class="chip">仓库目的</span>
+              <span class="chip">四层结构</span>
+              <span class="chip">Output Skill</span>
+              <span class="chip">Lovart / imagegen</span>
+              <span class="chip">HTML / PDF / PNG</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="mini">先看结论，再看结构，最后看工具怎么分工。</div>
+          <div class="page">01 / 05</div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="page-wrap" id="card-02">
+    <article class="card" style="--accent: var(--blue);">
+      <div class="content">
+        <div class="topline">
+          <span class="badge">01 · 这个仓库在做什么</span>
+          <span class="kicker">purpose</span>
+        </div>
+
+        <div>
+          <h2 class="hero">它不是素材库，<br>而是一个 <em>AI 设计工作台</em>。</h2>
+          <p class="lead">仓库的目标很简单：把一次设计工作里散落的资料、Prompt、规则、运行记录和输出成果，沉淀成未来可以复用的资产。</p>
+
+          <div class="card-grid">
+            <div class="box">
+              <b>Design Data Factory</b>
+              <p>把原始资料加工成结构化资产，像工厂一样一层层沉淀。</p>
+            </div>
+            <div class="box">
+              <b>Harness Runtime</b>
+              <p>模拟一条任务怎么跑完，让 Agent 按生命周期做事。</p>
+            </div>
+            <div class="box">
+              <b>Output Skill</b>
+              <p>把输出整理成可发布、可演示、可归档的成品包。</p>
+            </div>
+            <div class="box">
+              <b>MAP.md</b>
+              <p>告诉你仓库入口在哪，先读什么，再走哪条路。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="mini">一句话：它想解决的不是“会不会生成”，而是“生成完能不能留下来”。</div>
+          <div class="page">02 / 05</div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="page-wrap" id="card-03">
+    <article class="card" style="--accent: var(--green);">
+      <div class="content">
+        <div class="topline">
+          <span class="badge">02 · 仓库的四层结构</span>
+          <span class="kicker">structure</span>
+        </div>
+
+        <div>
+          <h2 class="hero">先分层，<br>再理解每个目录的职责。</h2>
+          <p class="lead">聊天里讲的“资料层、资产层、生产层、任务与输出层”，其实是在说：不同文件有不同任务，不要混在一起。</p>
+
+          <div class="card-grid" style="grid-template-columns: 1fr;">
+            <div class="box" style="--accent: var(--red);">
+              <b>资料层 → 先收集</b>
+              <p>`00_Inbox_Staging`、`imports`、`references`：先把输入放进来，再判断值不值得吸收。</p>
+            </div>
+            <div class="box" style="--accent: var(--blue);">
+              <b>资产层 → 再沉淀</b>
+              <p>`docs`、`templates`、`prompts`、`rules`：把方法、模板、规范和说明变成可复用资产。</p>
+            </div>
+            <div class="box" style="--accent: var(--green);">
+              <b>生产层 → 负责执行</b>
+              <p>`scripts`、`harness`、`tests`：把事情跑起来、验起来，而不是只写说明。</p>
+            </div>
+            <div class="box" style="--accent: var(--violet);">
+              <b>任务与输出层 → 负责路由和归档</b>
+              <p>`MAP.md`、`AGENTS.md`、`CLAUDE.md`、`soul.md`、`CHANGES`：先指路，再记录价值观和历史。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="mini">简单理解：先接住资料，再加工成资产，最后通过流程输出成品。</div>
+          <div class="page">03 / 05</div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="page-wrap" id="card-04">
+    <article class="card" style="--accent: var(--violet);">
+      <div class="content">
+        <div class="topline">
+          <span class="badge">03 · 输出技能怎么分工</span>
+          <span class="kicker">output skill</span>
+        </div>
+
+        <div>
+          <h2 class="hero">Output Skill 不是模板，<br>而是 <em>输出生产流水线</em>。</h2>
+          <p class="lead">它关心的是：怎么把内容先规划，再设计，再构建，再验证，最后导出成能交付的东西。</p>
+
+          <div class="flow">
+            <span>Plan</span>
+            <span>→</span>
+            <span>Design</span>
+            <span>→</span>
+            <span>Build</span>
+            <span>→</span>
+            <span>Validate</span>
+            <span>→</span>
+            <span>Export</span>
+          </div>
+
+          <div class="card-grid" style="grid-template-columns: 1fr 1fr; margin-top: 28px;">
+            <div class="box">
+              <b>它能管什么</b>
+              <p>HTML 演示页、PPT 风格图文、小红书图文、PDF、视频脚本文档。</p>
+            </div>
+            <div class="box">
+              <b>它不干什么</b>
+              <p>它不替代主流程代码，也不复制第三方仓库的实现。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="mini">这就是为什么它和 `docs/OUTPUT_SKILL_SPEC.md` 是一类东西，而不是一张成品图。</div>
+          <div class="page">04 / 05</div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="page-wrap" id="card-05">
+    <article class="card dark" style="--accent: var(--gold);">
+      <div class="content">
+        <div class="topline">
+          <span class="badge">04 · 生图链路怎么分工</span>
+          <span class="kicker">image vs lovart</span>
+        </div>
+
+        <div>
+          <h2 class="hero">你问的生图工具，<br>其实有 <em>两条线</em>。</h2>
+          <p class="lead">`imagegen` 是系统里的通用生图能力；`design-generate` 才是当前仓库里接 Lovart API 的那条视觉生产线。</p>
+
+          <div class="card-grid">
+            <div class="box">
+              <b>imagegen</b>
+              <p>偏 OpenAI 图像生成能力，用来直接出图或改图。</p>
+            </div>
+            <div class="box">
+              <b>design-generate</b>
+              <p>仓库里的视觉生产流程，对接 `shared/lovart_hook.py` 和 `scripts/generate_design.py`。</p>
+            </div>
+            <div class="box">
+              <b>Lovart</b>
+              <p>真实的生图后端，适合 live 模式；没有 key 时会走 mock 占位图。</p>
+            </div>
+            <div class="box">
+              <b>你该怎么说</b>
+              <p>要 Lovart：说“用 design-generate 走 live 模式”。要占位图：说“走 mock 模式”。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="mini">最后一句：先搞清楚工具分工，再决定是出图、归档，还是把方法沉淀成规范。</div>
+          <div class="page">05 / 05</div>
+        </div>
+      </div>
+    </article>
+  </section>
+</body>
+</html>
